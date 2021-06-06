@@ -1666,6 +1666,7 @@ class Ui_MainWindow(object):
         font4 = QFont()
         font4.setFamily(u"Segoe UI")
         font4.setPointSize(12)
+        font4.setBold(True)
         self.label_user_icon.setFont(font4)
         self.label_user_icon.setStyleSheet(u"QLabel {\n"
 "	border-radius: 30px;\n"
@@ -1774,6 +1775,7 @@ class Ui_MainWindow(object):
         font6 = QFont()
         font6.setFamily(u"Segoe UI")
         font6.setPointSize(14)
+        font6.setBold(True)
         self.label.setFont(font6)
         self.label.setAlignment(Qt.AlignCenter)
 
@@ -2852,6 +2854,7 @@ class Ui_MainWindow(object):
         self.label_64 = QLabel(self.frame_62)
         font = QFont()
         font.setPointSize(12)
+        font.setBold(True)
         self.label_64.setFont(font)
         self.label_64.setObjectName("label_64")
         self.verticalLayout_611.addWidget(self.label_64)
@@ -3648,6 +3651,7 @@ class Ui_MainWindow(object):
         font8 = QFont()
         font8.setFamily(u"Segoe UI")
         font8.setPointSize(12)
+        font8.setBold(True)
         self.pushButton.setFont(font8)
         self.pushButton.setStyleSheet(u"QPushButton {\n"
 "	border: 2px solid rgb(52, 59, 72);\n"
@@ -4106,6 +4110,7 @@ class Ui_MainWindow(object):
         font.setFamily("Segoe UI")
         font.setPointSize(12)
         font.setItalic(True)
+        font.setBold(True)
         font.setWeight(75)
         self.labelVersion_4.setFont(font)
         self.verticalLayout_6.addWidget(self.labelVersion_4)

@@ -73,6 +73,7 @@ class MainWindow(QMainWindow):
         if(ltype=='master'):
             UIFunctions.addNewMenu(self, "New User", "new_user", "url(:/16x16/icons/16x16/cil-user-follow.png)", True)
             UIFunctions.addNewMenu(self, "Expenditure Confirmation", "expenditure_confirm", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
+            UIFunctions.addNewMenu(self, "Donation Confirmation", "Donation_confirm", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
         ## ==> END ##
 
         # START MENU => SELECTION
@@ -180,9 +181,15 @@ class MainWindow(QMainWindow):
             btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
 
         if btnWidget.objectName() == "expenditure_confirm":
-            self.ui.stackedWidget.setCurrentWidget(self.ui.confirmation_page)
-            UIFunctions.resetStyle(self, "confirmation_page")
+            self.ui.stackedWidget.setCurrentWidget(self.ui.exp_confirmation_page)
+            UIFunctions.resetStyle(self, "exp_confirmation_page")
             UIFunctions.labelPage(self, "confirma")
+            btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
+        
+        if btnWidget.objectName() == "Donation_confirm":
+            self.ui.stackedWidget.setCurrentWidget(self.ui.donation_confirmation_page)
+            UIFunctions.resetStyle(self, "donation_confirmation_page")
+            UIFunctions.labelPage(self, "donation_confirmation_page")
             btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
         
         
@@ -233,7 +240,7 @@ class MainWindow(QMainWindow):
     ############################## ---/--/--- ##############################
 
 if __name__ == "__main__":
-    #sys.exit(app.exec_())
+#sys.exit(app.exec_())
     app = QApplication(sys.argv)
     QtGui.QFontDatabase.addApplicationFont('fonts/segoeui.ttf')
     QtGui.QFontDatabase.addApplicationFont('fonts/segoeuib.ttf')

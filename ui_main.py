@@ -2,12 +2,10 @@ from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
     QRect, QSize, QUrl, Qt)
 from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
     QFontDatabase, QIcon, QLinearGradient, QPalette, QPainter, QPixmap,
-    QRadialGradient)
+    QRadialGradient, QStandardItem)
 from PySide2.QtCharts import QtCharts
 from PySide2.QtGui import QPainter
 from PySide2.QtWidgets import *
-from add_donor_confirmation import *
-from ok_popup import *
 import files_rc
 import mysql.connector
 from datetime import datetime
@@ -15,7 +13,564 @@ from datetime import date
 from datetime import timedelta
 from viewdonations import Ui_Forma
 import sys
+
+from add_donor_confirmation import *
+from ok_popup import *
+
 class Ui_MainWindow(object):
+    def maindeposit(self):
+        c = self.tableWidget6.columnCount()
+        r = self.tableWidget6.rowCount()
+        amount = 0
+        mrnl = []
+        temp = []
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        for i in range(r):
+            print(i)
+            if self.tableWidget6.item(i, 0).checkState() == Qt.Checked:
+                temp.append(self.tableWidget6.itemAt(i, 0))
+                print("yes")
+                mrn = self.tableWidget6.item(i, 4)
+                mrnl.append(int(mrn.text()))
+                dep = self.tableWidget6.item(i, 7)
+                amount+=int(dep.text())
+                #print(mrn, dep)
+                print(mrn.text(), dep.text())
+                mycursor.execute("update main_cashbook set deposited = 1  where master_registration_number = {0}".format(int(mrn.text())))
+        name = "Deposition of donations with master registration numbers "
+        for x in mrnl:
+            name+=str(x)
+            name+=", "
+        now = datetime.now()
+        fnow = now.strftime('%Y-%m-%d %H:%M:%S')
+        print(name)
+        
+        mycursor.execute("select * from main_cashbook ORDER BY transaction_id DESC LIMIT 1")
+        myresult = mycursor.fetchall()
+        balance = myresult[0][8]
+        
+        dep =1
+        sql = "INSERT INTO main_cashbook (date,name,credit,balance,deposited) VALUES (%s,%s,%s,%s,%s)"
+        val = (fnow,name,amount,int(balance)-amount,dep)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        bank = self.comboBox_66.currentText()
+        mycursor.execute("select balance from bank_statement where bank_name = '{0}'".format(bank))
+        r = mycursor.fetchall()
+        balance = r[-1][0]
+        
+        sql = "INSERT INTO bank_statement (bank_name,date,description,deposits,balance) VALUES (%s,%s,%s,%s,%s)"
+        val = (bank,fnow,name,amount,int(balance)+amount)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        msg = "Successfully deposited into bank"
+        self.dialog = QDialog()
+        self.ui = Ui_OK()
+        self.ui.setupUi(self.dialog,msg)
+        self.dialog.exec()   
+        self.stackedWidget.setCurrentIndex(0)  
+    
+    def cashbookselection(self):
+        book = self.comboBox6.currentText()
+        if book == "Main Cashbook":
+            self.buttoncash = QRadioButton("only undeposited entries", self.cashbook)
+            self.horizontalLayout_69.addWidget(self.buttoncash)
+        elif book == "Petty Cashbook":
+            if self.horizontalLayout_69.count()==7:
+                item = self.horizontalLayout_69.takeAt(6)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+            while self.horizontalLayout_611.count():
+                item = self.horizontalLayout_611.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+    def get_cashbook_details(self):
+        fdate = self.dateEdit.date()
+        fdate = fdate.toPython()
+        fdate = fdate.strftime('%Y-%m-%d')
+        tdate = self.dateEdit_62.date()
+        tdate = tdate.toPython()
+        tdate = tdate.strftime('%Y-%m-%d')
+        book = self.comboBox6.currentText()
+        
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        if book == "Main Cashbook":
+            status =0
+            if self.buttoncash.isChecked():
+                status =1
+            if status == 1:
+                self.comboBox_66 = QComboBox(self.cashbook)
+                self.comboBox_66.setObjectName("comboBox_66")
+                mydb = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="anirudh123",
+                database = "chitra_gupta"
+                )
+                print(mydb)
+                mycursor = mydb.cursor()
+                mycursor.execute("select * from banks")
+                myresult = mycursor.fetchall()
+                i=0
+                for x in myresult:
+                    self.comboBox_66.addItem("")
+                    self.comboBox_66.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
+                    i+=1
+                if self.horizontalLayout_611.count()==2:
+                    pass
+                else:
+                    self.horizontalLayout_611.addWidget(self.comboBox_66)
+                    self.pushButton_62 = QPushButton(self.cashbook)
+                    self.pushButton_62.setObjectName("pushButton_62")
+                    self.pushButton_62.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+                    self.pushButton_62.clicked.connect(self.maindeposit)
+                    self.horizontalLayout_611.addWidget(self.pushButton_62)
+                    self.pushButton_62.setText(QCoreApplication.translate("MainWindow", "Deposit"))
+                print(fdate,tdate)
+                self.label_64.setText(QCoreApplication.translate("MainWindow", "Main cashbook:"))
+                mycursor.execute("select * from main_cashbook where date between '{0}' and '{1}' and deposited = 0".format(tdate,fdate))
+                myresult = mycursor.fetchall()
+                print(myresult)
+                c=0
+                if len(myresult)!=0:
+                    c = len(myresult[0])
+                r = len(myresult)
+                self.tableWidget6.setRowCount(r)
+                self.tableWidget6.setColumnCount(c)
+                self.tableWidget6.setStyleSheet("QTableWidget {    \n"
+"    background-color: rgb(39, 44, 54);\n"
+"    padding: 10px;\n"
+"    border-radius: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item{\n"
+"    border-color: rgb(44, 49, 60);\n"
+"    padding-left: 5px;\n"
+"    padding-right: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item:selected{\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}\n"
+"QScrollBar:horizontal {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    height: 14px;\n"
+"    margin: 0px 21px 0 21px;\n"
+"    border-radius: 0px;\n"
+"}\n"
+" QScrollBar:vertical {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    width: 14px;\n"
+"    margin: 21px 0 21px 0;\n"
+"    border-radius: 0px;\n"
+" }\n"
+"QHeaderView::section{\n"
+"    Background-color: rgb(39, 44, 54);\n"
+"    max-width: 30px;\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"    border-style: none;\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"    border-right: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::horizontalHeader {    \n"
+"    background-color: rgb(81, 255, 0);\n"
+"}\n"
+"QHeaderView::section:horizontal\n"
+"{\n"
+"    border: 1px solid rgb(32, 34, 42);\n"
+"    background-color: rgb(27, 29, 35);\n"
+"    padding: 3px;\n"
+"    border-top-left-radius: 7px;\n"
+"    border-top-right-radius: 7px;\n"
+"}\n"
+"QHeaderView::section:vertical\n"
+"{\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"")     
+        
+                self.tableWidget6.setRowCount(0)
+                index = 0
+                columns = ["Status","transaction_id", "Date","Name","Master Registration Number","Reciept Number","Category","Debit","Credit","Balance"]
+                self.tableWidget6.setHorizontalHeaderLabels(columns)
+            #rb = [QRadioButton() for x in range(r)]
+            #for i in range(r):
+        #    self.tableWidget.setCellWidget(index, i+1,rb[i] )
+                for row_number, row_data in enumerate(myresult):
+            #print(row_number)
+                    self.tableWidget6.insertRow(row_number)
+                    for column_number, data in enumerate(row_data):
+                    #print(column_number)
+                        item_checked = QTableWidgetItem()
+                        item_checked.setCheckState(Qt.Unchecked)
+                        item_checked.setFlags(Qt.ItemIsUserCheckable |Qt.ItemIsEnabled)
+                    #item_checked.setCheckable(True)
+                        self.tableWidget6.setItem(row_number,0, item_checked)
+                        self.tableWidget6.setItem(row_number, column_number+1, QTableWidgetItem(str(data)))
+            elif status==0:
+                print(fdate,tdate)
+                self.label_64.setText(QCoreApplication.translate("MainWindow", "Main cashbook:"))
+                mycursor.execute("select * from main_cashbook where date between '{0}' and '{1}'".format(tdate,fdate))
+                myresult = mycursor.fetchall()
+                print(myresult)
+                c=0
+                if len(myresult)!=0:
+                    c = len(myresult[0])
+                r = len(myresult)
+                self.tableWidget6.setRowCount(r)
+                self.tableWidget6.setColumnCount(c)
+                self.tableWidget6.setStyleSheet("QTableWidget {    \n"
+"    background-color: rgb(39, 44, 54);\n"
+"    padding: 10px;\n"
+"    border-radius: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item{\n"
+"    border-color: rgb(44, 49, 60);\n"
+"    padding-left: 5px;\n"
+"    padding-right: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item:selected{\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}\n"
+"QScrollBar:horizontal {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    height: 14px;\n"
+"    margin: 0px 21px 0 21px;\n"
+"    border-radius: 0px;\n"
+"}\n"
+" QScrollBar:vertical {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    width: 14px;\n"
+"    margin: 21px 0 21px 0;\n"
+"    border-radius: 0px;\n"
+" }\n"
+"QHeaderView::section{\n"
+"    Background-color: rgb(39, 44, 54);\n"
+"    max-width: 30px;\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"    border-style: none;\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"    border-right: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::horizontalHeader {    \n"
+"    background-color: rgb(81, 255, 0);\n"
+"}\n"
+"QHeaderView::section:horizontal\n"
+"{\n"
+"    border: 1px solid rgb(32, 34, 42);\n"
+"    background-color: rgb(27, 29, 35);\n"
+"    padding: 3px;\n"
+"    border-top-left-radius: 7px;\n"
+"    border-top-right-radius: 7px;\n"
+"}\n"
+"QHeaderView::section:vertical\n"
+"{\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"")     
+        
+                self.tableWidget6.setRowCount(0)
+                index = 0
+                columns = ["transaction_id", "Date","Name","Master Registration Number","Reciept Number","Category","Debit","Credit","Balance"]
+                self.tableWidget6.setHorizontalHeaderLabels(columns)
+            #rb = [QRadioButton() for x in range(r)]
+            #for i in range(r):
+        #    self.tableWidget.setCellWidget(index, i+1,rb[i] )
+                for row_number, row_data in enumerate(myresult):
+            #print(row_number)
+                    self.tableWidget6.insertRow(row_number)
+                    for column_number, data in enumerate(row_data):
+                    #print(column_number)
+                        #item_checked = QTableWidgetItem()
+                        #item_checked.setCheckState(Qt.Checked)
+                    #item_checked.setCheckable(True)
+                        #self.tableWidget6.setItem(column_number,0, item_checked)
+                        self.tableWidget6.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+
+        if book == "Petty Cashbook":
+            self.label_64.setText(QCoreApplication.translate("MainWindow", "Petty cashbook:"))
+            print(fdate,tdate)
+            #self.label_64.setText(QCoreApplication.translate("MainWindow", "Main cashbook:"))
+            mycursor.execute("select * from petty_cashbook where date between '{0}' and '{1}'".format(tdate,fdate))
+            myresult = mycursor.fetchall()
+            print(myresult)
+            c=0
+            if len(myresult)!=0:
+                c = len(myresult[0])
+            r = len(myresult)
+            self.tableWidget6.setRowCount(r)
+            self.tableWidget6.setColumnCount(c)
+            self.tableWidget6.setStyleSheet("QTableWidget {    \n"
+"    background-color: rgb(39, 44, 54);\n"
+"    padding: 10px;\n"
+"    border-radius: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item{\n"
+"    border-color: rgb(44, 49, 60);\n"
+"    padding-left: 5px;\n"
+"    padding-right: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item:selected{\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}\n"
+"QScrollBar:horizontal {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    height: 14px;\n"
+"    margin: 0px 21px 0 21px;\n"
+"    border-radius: 0px;\n"
+"}\n"
+" QScrollBar:vertical {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    width: 14px;\n"
+"    margin: 21px 0 21px 0;\n"
+"    border-radius: 0px;\n"
+" }\n"
+"QHeaderView::section{\n"
+"    Background-color: rgb(39, 44, 54);\n"
+"    max-width: 30px;\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"    border-style: none;\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"    border-right: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::horizontalHeader {    \n"
+"    background-color: rgb(81, 255, 0);\n"
+"}\n"
+"QHeaderView::section:horizontal\n"
+"{\n"
+"    border: 1px solid rgb(32, 34, 42);\n"
+"    background-color: rgb(27, 29, 35);\n"
+"    padding: 3px;\n"
+"    border-top-left-radius: 7px;\n"
+"    border-top-right-radius: 7px;\n"
+"}\n"
+"QHeaderView::section:vertical\n"
+"{\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"")     
+        
+            self.tableWidget6.setRowCount(0)
+            index = 0
+            columns = ["transaction_id", "Date","Towards","Voucher Number","Category","Debit","Credit","Balance"]
+            self.tableWidget6.setHorizontalHeaderLabels(columns)
+            #rb = [QRadioButton() for x in range(r)]
+            #for i in range(r):
+        #    self.tableWidget.setCellWidget(index, i+1,rb[i] )
+            for row_number, row_data in enumerate(myresult):
+            #print(row_number)
+                self.tableWidget6.insertRow(row_number)
+                for column_number, data in enumerate(row_data):
+                    #print(column_number)
+                    self.tableWidget6.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+    
+    def add__scheme(self):
+        a = self.lineEdit15.text()
+        b = self.lineEdit_152.text()
+        c = self.lineEdit_153.text()
+        d = self.lineEdit_156.text()
+        print(a,b,c)
+
+        if not b.isnumeric() or not c.isnumeric() or not d.isnumeric() :
+            msg = "Check your entries"
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec()     
+        else:
+            mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="anirudh123",
+            database = "chitra_gupta"
+            )
+            mycursor = mydb.cursor()
+            sql = "INSERT schemes (idschemes,name,validity,remainder) VALUES (%s, %s,%s,%s)"
+            val = (d,a,b,c)
+            mycursor.execute(sql,val)
+            mydb.commit()
+            msg = "Database updated!!!"
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec()   
+
+    def add_category(self):
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from log ORDER BY loginid DESC LIMIT 1")
+        myresult = mycursor.fetchall()
+        ltype = myresult[0][1]
+        if ltype == "master":
+            self.stackedWidget.setCurrentIndex(16)
+        else:
+            msg = "You dont have permissions to add scheme"
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec()
+
+    
+    def get_statement(self):
+        fdate = self.dateEdit14.date()
+        fdate = fdate.toPython()
+        fdate = fdate.strftime('%Y-%m-%d')
+        tdate = self.dateEdit_142.date()
+        tdate = tdate.toPython()
+        tdate = tdate.strftime('%Y-%m-%d')
+        bank = self.comboBox14.currentText()
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        print(mydb)
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from bank_statement where bank_name = '{0}' and date between '{1}' and '{2}'".format(bank,fdate,tdate))
+        myresult = mycursor.fetchall()
+        print(myresult)
+
+        c=0
+        if len(myresult)!=0:
+            c = len(myresult[0])
+        r = len(myresult)
+        self.tableWidget14.setRowCount(r)
+        self.tableWidget14.setColumnCount(c)
+        self.tableWidget14.setObjectName("tableWidget")
+        self.tableWidget14.setStyleSheet("QTableWidget {    \n"
+"    background-color: rgb(39, 44, 54);\n"
+"    padding: 10px;\n"
+"    border-radius: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item{\n"
+"    border-color: rgb(44, 49, 60);\n"
+"    padding-left: 5px;\n"
+"    padding-right: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item:selected{\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}\n"
+"QScrollBar:horizontal {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    height: 14px;\n"
+"    margin: 0px 21px 0 21px;\n"
+"    border-radius: 0px;\n"
+"}\n"
+" QScrollBar:vertical {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    width: 14px;\n"
+"    margin: 21px 0 21px 0;\n"
+"    border-radius: 0px;\n"
+" }\n"
+"QHeaderView::section{\n"
+"    Background-color: rgb(39, 44, 54);\n"
+"    max-width: 30px;\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"    border-style: none;\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"    border-right: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::horizontalHeader {    \n"
+"    background-color: rgb(81, 255, 0);\n"
+"}\n"
+"QHeaderView::section:horizontal\n"
+"{\n"
+"    border: 1px solid rgb(32, 34, 42);\n"
+"    background-color: rgb(27, 29, 35);\n"
+"    padding: 3px;\n"
+"    border-top-left-radius: 7px;\n"
+"    border-top-right-radius: 7px;\n"
+"}\n"
+"QHeaderView::section:vertical\n"
+"{\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"")     
+        
+        self.tableWidget14.setRowCount(0)
+        index = 0
+        columns = ["transaction_id", "bank_name","date","description"," withdrawals","deposits","Balance"]
+        self.tableWidget14.setHorizontalHeaderLabels(columns)
+        #rb = [QRadioButton() for x in range(r)]
+        #for i in range(r):
+        #    self.tableWidget.setCellWidget(index, i+1,rb[i] )
+        for row_number, row_data in enumerate(myresult):
+         #print(row_number)
+         self.tableWidget14.insertRow(row_number)
+         for column_number, data in enumerate(row_data):
+                    #print(column_number)
+           self.tableWidget14.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+
+    def bankacc(self):
+        now = datetime.now()
+        self.dateEdit14.setDate(now)
+        self.dateEdit_142.setDate(now)
+        self.stackedWidget.setCurrentIndex(15)
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        print(mydb)
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from banks")
+        myresult = mycursor.fetchall()
+        i=0
+        for x in myresult:
+            self.comboBox14.addItem("")
+            self.comboBox14.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
+            i+=1
     def edit_exp_details(self):
         vouchnum= self.lineEdit_56.text()
         mydb = mysql.connector.connect(
@@ -45,6 +600,7 @@ class Ui_MainWindow(object):
         #vdate = vdate.toPython()
         #vdate = vdate.strftime('%Y-%m-%d')
         #cdated= self.dateEdit_52.date()
+        
         #cdated = cdated.toPython()
         #cdated = cdated.strftime('%Y-%m-%d')
         #cdrawn= self.dateEdit_53.date()
@@ -426,7 +982,7 @@ class Ui_MainWindow(object):
         print(mydb)
         mycursor = mydb.cursor()
         mycursor.execute("select * from log ORDER BY loginid DESC LIMIT 1")
-        myresult = mycursor.fetchall()
+        myresult = mycursor.fetchall() 
         ltype = myresult[0][1]
         mid = myresult[0][0]
         mycursor = mydb.cursor()
@@ -449,6 +1005,16 @@ class Ui_MainWindow(object):
                 sql = "INSERT INTO pettycashbook (voucherid,paidto, voucherdate,amount,type,payment_mode,check_dated,towards,drawn_on,masterid,checked) VALUES (%s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
                 t=1
                 val = (vouchnum,name,vdate,amount,type_exp,mode,cdated,towards,cdrawn,myresult[0][0],t)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                mycursor.execute("select * from petty_cashbook ORDER BY transaction_id DESC LIMIT 1")
+                myresult = mycursor.fetchall()
+                if len(myresult) == 0:
+                    balance = 0
+                else:
+                    balance = myresult[0][7]
+                sql = "INSERT INTO petty_cashbook (date,name,reciept_number,category,credit,balance) VALUES (%s, %s,%s,%s,%s,%s)"
+                val = (vdate,towards,vouchnum,type_exp,amount,int(balance)-int(amount))
                 mycursor.execute(sql, val)
                 mydb.commit()
                 msg = "Database updated successfully."
@@ -474,6 +1040,16 @@ class Ui_MainWindow(object):
             if insert == 1:
                 sql = "INSERT INTO pettycashbook (voucherid,paidto, voucherdate,amount,type,payment_mode,check_dated,towards,drawn_on) VALUES (%s, %s,%s,%s,%s,%s,%s,%s,%s)"
                 val = (vouchnum,name,vdate,amount,type_exp,mode,cdated,towards,cdrawn)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                mycursor.execute("select * from petty_cashbook ORDER BY transaction_id DESC LIMIT 1")
+                myresult = mycursor.fetchall()
+                if len(myresult) == 0:
+                    balance = 0
+                else:
+                    balance = myresult[0][7]
+                sql = "INSERT INTO petty_cashbook (date,name,reciept_number,category,credit,balance) VALUES (%s, %s,%s,%s,%s,%s)"
+                val = (vdate,towards,vouchnum,type_exp,amount,int(balance)-int(amount))
                 mycursor.execute(sql, val)
                 mydb.commit()
                 msg = "Database updated successfully."
@@ -930,7 +1506,14 @@ class Ui_MainWindow(object):
         mycursor.execute("select * from all_donors where phone = {0}".format(phone))
         myresult = mycursor.fetchall()
         print(myresult)
-        donor_id = myresult[0][0]
+        if len(myresult)!=0:
+            donor_id = myresult[0][0]
+        else:
+            msg = "Donor is not available in database please add the new donor"
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec()
         mycursor.execute("select * from schemes where name = '{0}'".format(category))
         cat = mycursor.fetchall()
         catid = cat[0][0]
@@ -956,6 +1539,19 @@ class Ui_MainWindow(object):
             mydb.commit()
             mycursor.execute("update all_donors set number_of_times_donated = number_of_times_donated+1 where donor_id = {0}".format(donor_id))
             mydb.commit()
+            mycursor.execute("select * from main_cashbook ORDER BY transaction_id DESC LIMIT 1")
+            myresult = mycursor.fetchall()
+            if len(myresult)==0:
+                sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                val = (formatted_dd,donation_in_name, master_registration, book_number,category,int(amount),int(amount))
+                mycursor.execute(sql, val)
+                mydb.commit()
+            else:
+                balance = myresult[0][8]
+                sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                val = (formatted_dd,donation_in_name, master_registration, book_number,category,int(amount),int(balance)+int(amount))
+                mycursor.execute(sql, val)
+                mydb.commit()
             msg = "Database updated Successfully and donation has been saved"
             self.dialog = QDialog()
             self.ui = Ui_OK()
@@ -1919,6 +2515,28 @@ class Ui_MainWindow(object):
         icon312.addFile(u":/16x16/icons/16x16/cil-credit-card.png", QSize(), QIcon.Normal, QIcon.Off)
         self.commandLinkButton_312.setIcon(icon312)
         self.gridLayout_3.addWidget(self.commandLinkButton_312, 0, 0, 1, 1)
+
+        self.commandLinkButton_315 = QCommandLinkButton(self.expenditure_opening)
+        self.commandLinkButton_315.setObjectName("commandLinkButton_315")
+        self.commandLinkButton_315.setStyleSheet(u"QCommandLinkButton {	\n"
+"	color: rgb(85, 170, 255);\n"
+"	border-radius: 5px;\n"
+"	padding: 5px;\n"
+"}\n"
+"QCommandLinkButton:hover {	\n"
+"	color: rgb(210, 210, 210);\n"
+"	background-color: rgb(44, 49, 60);\n"
+"}\n"
+"QCommandLinkButton:pressed {	\n"
+"	color: rgb(210, 210, 210);\n"
+"	background-color: rgb(52, 58, 71);\n"
+"}")
+        #self.commandLinkButton_312.clicked.connect(self.new_donation_button)
+        self.commandLinkButton_315.clicked.connect(self.bankacc)
+        icon315 = QIcon()
+        icon315.addFile(u":/16x16/icons/16x16/cil-credit-card.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.commandLinkButton_315.setIcon(icon315)
+        self.gridLayout_3.addWidget(self.commandLinkButton_315, 0, 3, 1, 1)
         self.label_314 = QLabel(self.expenditure_opening)
         font = QFont()
         font.setFamily("Segoe UI")
@@ -2814,6 +3432,15 @@ class Ui_MainWindow(object):
         self.dateEdit = QDateEdit(self.frame_content_wid_61)
         self.dateEdit.setObjectName("dateEdit")
         self.horizontalLayout_69.addWidget(self.dateEdit)
+        self.comboBox6 = QComboBox(self.frame_content_wid_61)
+        self.comboBox6.setObjectName("comboBox6")
+        self.comboBox6.addItem("Petty Cashbook")
+        self.comboBox6.addItem("Main Cashbook")
+        self.comboBox6.currentIndexChanged.connect(self.cashbookselection)
+        now = datetime.now()
+        self.dateEdit_62.setDate(now)
+        self.dateEdit.setDate(now)
+        self.horizontalLayout_69.addWidget(self.comboBox6)
         self.pushButton6 = QPushButton(self.frame_content_wid_61)
         self.pushButton6.setObjectName("pushButton6")
         self.pushButton6.setStyleSheet(u"QPushButton {\n"
@@ -2829,6 +3456,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
+        self.pushButton6.clicked.connect(self.get_cashbook_details)
         self.horizontalLayout_69.addWidget(self.pushButton6)
         self.verticalLayout_67.addWidget(self.frame_content_wid_61)
         self.verticalLayout_615.addWidget(self.frame_div_content_61)
@@ -2969,22 +3597,8 @@ class Ui_MainWindow(object):
         self.lcdNumber_62.setObjectName("lcdNumber_62")
         self.gridLayout6.addWidget(self.lcdNumber_62, 1, 1, 1, 1)
         self.verticalLayout_611.addLayout(self.gridLayout6)
-        self.pushButton_62 = QPushButton(self.frame_62)
-        self.pushButton_62.setObjectName("pushButton_62")
-        self.pushButton_62.setStyleSheet(u"QPushButton {\n"
-"	border: 2px solid rgb(52, 59, 72);\n"
-"	border-radius: 5px;	\n"
-"	background-color: rgb(52, 59, 72);\n"
-"}\n"
-"QPushButton:hover {\n"
-"	background-color: rgb(57, 65, 80);\n"
-"	border: 2px solid rgb(61, 70, 86);\n"
-"}\n"
-"QPushButton:pressed {	\n"
-"	background-color: rgb(35, 40, 49);\n"
-"	border: 2px solid rgb(43, 50, 61);\n"
-"}")
-        self.verticalLayout_611.addWidget(self.pushButton_62)
+        self.horizontalLayout_611 = QHBoxLayout(self.cashbook)
+        self.verticalLayout_611.addLayout(self.horizontalLayout_611)
         self.horizontalLayout_612.addWidget(self.frame_62)
         self.verticalLayout_66.addWidget(self.frame_63)
         self.stackedWidget.addWidget(self.cashbook)
@@ -3378,11 +3992,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_1210.addLayout(self.horizontalLayout_1213)
         self.stackedWidget.addWidget(self.donation_remainder)
 
-        self.confirmation_page = QWidget()
-        self.confirmation_page.setObjectName("confirmation_page")
-        self.verticalLayout_116 = QVBoxLayout(self.confirmation_page)
+        self.exp_confirmation_page = QWidget()
+        self.exp_confirmation_page.setObjectName("exp_confirmation_page")
+        self.verticalLayout_116 = QVBoxLayout(self.exp_confirmation_page)
         self.verticalLayout_116.setObjectName("verticalLayout_116")
-        self.frame = QFrame(self.confirmation_page)
+        self.frame = QFrame(self.exp_confirmation_page)
         self.frame.setStyleSheet("border-radius: 5px;")
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
@@ -3433,7 +4047,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_117.addWidget(self.frame_content_wid_111)
         self.verticalLayout_1115.addWidget(self.frame_div_content_111)
         self.verticalLayout_116.addWidget(self.frame)
-        self.frame_112 = QFrame(self.confirmation_page)
+        self.frame_112 = QFrame(self.exp_confirmation_page)
         self.frame_112.setMinimumSize(QSize(0, 150))
         self.frame_112.setStyleSheet("background-color: rgb(39, 44, 54);\n"
 "border-radius: 5px;")
@@ -3571,7 +4185,382 @@ class Ui_MainWindow(object):
         self.horizontalLayout_1112.addWidget(self.pushButton_112)
         self.verticalLayout_1111.addWidget(self.frame_113)
         self.verticalLayout_116.addWidget(self.frame_112)
-        self.stackedWidget.addWidget(self.confirmation_page)
+        self.stackedWidget.addWidget(self.exp_confirmation_page)
+
+        self.donation_confirmation_page = QWidget()
+        self.donation_confirmation_page.setObjectName("donation_confirmation_page")
+        self.verticalLayout_116 = QVBoxLayout(self.donation_confirmation_page)
+        self.verticalLayout_116.setObjectName("verticalLayout_116")
+        self.frame = QFrame(self.donation_confirmation_page)
+        self.frame.setStyleSheet("border-radius: 5px;")
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout_1115 = QVBoxLayout(self.frame)
+        self.verticalLayout_1115.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_1115.setSpacing(0)
+        self.verticalLayout_1115.setObjectName("verticalLayout_1115")
+        self.frame_div_content_111 = QFrame(self.frame)
+        self.frame_div_content_111.setMinimumSize(QSize(0, 110))
+        self.frame_div_content_111.setMaximumSize(QSize(16777215, 110))
+        self.frame_div_content_111.setStyleSheet("background-color: rgb(41, 45, 56);\n"
+"border-radius: 5px;\n"
+"")
+        self.frame_div_content_111.setFrameShape(QFrame.NoFrame)
+        self.frame_div_content_111.setFrameShadow(QFrame.Raised)
+        self.frame_div_content_111.setObjectName("frame_div_content_111")
+        self.verticalLayout_117 = QVBoxLayout(self.frame_div_content_111)
+        self.verticalLayout_117.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_117.setSpacing(0)
+        self.verticalLayout_117.setObjectName("verticalLayout_117")
+        self.frame_title_wid_111 = QFrame(self.frame_div_content_111)
+        self.frame_title_wid_111.setMaximumSize(QSize(16777215, 35))
+        self.frame_title_wid_111.setStyleSheet("background-color: rgb(39, 44, 54);")
+        self.frame_title_wid_111.setFrameShape(QFrame.StyledPanel)
+        self.frame_title_wid_111.setFrameShadow(QFrame.Raised)
+        self.frame_title_wid_111.setObjectName("frame_title_wid_111")
+        self.verticalLayout_118 = QVBoxLayout(self.frame_title_wid_111)
+        self.verticalLayout_118.setObjectName("verticalLayout_118")
+        self.labelBoxBlenderInstalation12 = QLabel(self.frame_title_wid_111)
+        font = QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.labelBoxBlenderInstalation12.setFont(font)
+        self.labelBoxBlenderInstalation12.setStyleSheet("")
+        self.labelBoxBlenderInstalation12.setAlignment(Qt.AlignCenter)
+        self.labelBoxBlenderInstalation12.setObjectName("labelBoxBlenderInstalation12")
+        self.verticalLayout_118.addWidget(self.labelBoxBlenderInstalation12)
+        self.verticalLayout_117.addWidget(self.frame_title_wid_111)
+        self.frame_content_wid_111 = QFrame(self.frame_div_content_111)
+        self.frame_content_wid_111.setFrameShape(QFrame.NoFrame)
+        self.frame_content_wid_111.setFrameShadow(QFrame.Raised)
+        self.frame_content_wid_111.setObjectName("frame_content_wid_111")
+        self.horizontalLayout_119 = QHBoxLayout(self.frame_content_wid_111)
+        self.horizontalLayout_119.setObjectName("horizontalLayout_119")
+        self.verticalLayout_117.addWidget(self.frame_content_wid_111)
+        self.verticalLayout_1115.addWidget(self.frame_div_content_111)
+        self.verticalLayout_116.addWidget(self.frame)
+        self.frame_112 = QFrame(self.donation_confirmation_page)
+        self.frame_112.setMinimumSize(QSize(0, 150))
+        self.frame_112.setStyleSheet("background-color: rgb(39, 44, 54);\n"
+"border-radius: 5px;")
+        self.frame_112.setFrameShape(QFrame.StyledPanel)
+        self.frame_112.setFrameShadow(QFrame.Raised)
+        self.frame_112.setObjectName("frame_112")
+        self.verticalLayout_1111 = QVBoxLayout(self.frame_112)
+        self.verticalLayout_1111.setObjectName("verticalLayout_1111")
+        self.tableWidget11 = QTableWidget(self.frame_112)
+        self.tableWidget11.setObjectName("tableWidget11")
+        self.tableWidget11.setColumnCount(0)
+        self.tableWidget11.setRowCount(0)
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        print(mydb)
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from all_donations where checked = 0 ")
+        myresult = mycursor.fetchall()
+        c= 0
+        if(len(myresult)!=0):         
+            c = len(myresult[0])
+        r = len(myresult)
+        self.tableWidget11.setColumnCount(c)
+        self.tableWidget11.setRowCount(r)
+        for row_number, row_data in enumerate(myresult):
+         #print(row_number)
+         self.tableWidget11.insertRow(row_number)
+         for column_number, data in enumerate(row_data):
+                    #print(column_number)
+           self.tableWidget11.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        self.tableWidget11.setStyleSheet("QTableWidget {    \n"
+"    background-color: rgb(39, 44, 54);\n"
+"    padding: 10px;\n"
+"    border-radius: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item{\n"
+"    border-color: rgb(44, 49, 60);\n"
+"    padding-left: 5px;\n"
+"    padding-right: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item:selected{\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}\n"
+"QScrollBar:horizontal {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    height: 14px;\n"
+"    margin: 0px 21px 0 21px;\n"
+"    border-radius: 0px;\n"
+"}\n"
+" QScrollBar:vertical {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    width: 14px;\n"
+"    margin: 21px 0 21px 0;\n"
+"    border-radius: 0px;\n"
+" }\n"
+"QHeaderView::section{\n"
+"    Background-color: rgb(39, 44, 54);\n"
+"    max-width: 30px;\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"    border-style: none;\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"    border-right: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::horizontalHeader {    \n"
+"    background-color: rgb(81, 255, 0);\n"
+"}\n"
+"QHeaderView::section:horizontal\n"
+"{\n"
+"    border: 1px solid rgb(32, 34, 42);\n"
+"    background-color: rgb(27, 29, 35);\n"
+"    padding: 3px;\n"
+"    border-top-left-radius: 7px;\n"
+"    border-top-right-radius: 7px;\n"
+"}\n"
+"QHeaderView::section:vertical\n"
+"{\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"")
+        columns = ["database id","vocher id","paid to","voucher date","amount","type of expenditure","payment mode","date on check","towards","drawn on","master id","checked"]
+        self.tableWidget11.setHorizontalHeaderLabels(columns)
+        self.verticalLayout_1111.addWidget(self.tableWidget11)
+        self.frame_113 = QFrame(self.frame_112)
+        self.frame_113.setMinimumSize(QSize(0, 150))
+        self.frame_113.setFrameShape(QFrame.StyledPanel)
+        self.frame_113.setFrameShadow(QFrame.Raised)
+        self.frame_113.setObjectName("frame_113")
+        self.horizontalLayout_1112 = QHBoxLayout(self.frame_113)
+        self.horizontalLayout_1112.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_1112.setSpacing(0)
+        self.horizontalLayout_1112.setObjectName("horizontalLayout_1112")
+        self.pushButton_134 = QPushButton(self.frame_113)
+        self.pushButton_134.setObjectName("pushButton_134")
+        self.pushButton_134.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        #self.pushButton_124.clicked.connect(self.exp_edit)
+        self.horizontalLayout_1112.addWidget(self.pushButton_134)
+        self.pushButton_132 = QPushButton(self.frame_113)
+        self.pushButton_132.setText("")
+        self.pushButton_132.setObjectName("pushButton_132")
+        self.pushButton_132.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        #self.pushButton_122.clicked.connect(self.exp_confirm)
+        self.horizontalLayout_1112.addWidget(self.pushButton_132)
+        self.verticalLayout_1111.addWidget(self.frame_113)
+        self.verticalLayout_116.addWidget(self.frame_112)
+        self.stackedWidget.addWidget(self.donation_confirmation_page)
+
+
+        self.bank_statement = QWidget()
+        self.bank_statement.setObjectName("bank_statement")
+        self.verticalLayout_1410 = QVBoxLayout(self.bank_statement)
+        self.verticalLayout_1410.setObjectName("verticalLayout_1410")
+        self.verticalLayout_146 = QVBoxLayout()
+        self.verticalLayout_146.setObjectName("verticalLayout_146")
+        self.label14 = QLabel(self.bank_statement)
+        self.label14.setMaximumSize(QSize(16777215, 30))
+        font = QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label14.setFont(font)
+        self.label14.setAlignment(Qt.AlignCenter)
+        self.label14.setObjectName("label14")
+        self.verticalLayout_146.addWidget(self.label14)
+        self.horizontalLayout_149 = QHBoxLayout()
+        self.horizontalLayout_149.setObjectName("horizontalLayout_149")
+        self.label_142 = QLabel(self.bank_statement)
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_142.setFont(font)
+        self.label_142.setObjectName("label_142")
+        self.horizontalLayout_149.addWidget(self.label_142)
+        self.dateEdit14 = QDateEdit(self.bank_statement)
+        self.dateEdit14.setObjectName("dateEdit14")
+        self.horizontalLayout_149.addWidget(self.dateEdit14)
+        self.label_143 =QLabel(self.bank_statement)
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_143.setFont(font)
+        self.label_143.setObjectName("label_143")
+        self.horizontalLayout_149.addWidget(self.label_143)
+        self.dateEdit_142 =QDateEdit(self.bank_statement)
+        self.dateEdit_142.setObjectName("dateEdit_142")
+        self.horizontalLayout_149.addWidget(self.dateEdit_142)
+        self.verticalLayout_146.addLayout(self.horizontalLayout_149)
+        self.verticalLayout_1410.addLayout(self.verticalLayout_146)
+        self.horizontalLayout_1412 = QHBoxLayout()
+        self.horizontalLayout_1412.setObjectName("horizontalLayout_1412")
+        self.label_144 = QLabel(self.bank_statement)
+        self.label_144.setObjectName("label_144")
+        self.horizontalLayout_1412.addWidget(self.label_144)
+        self.comboBox14 = QComboBox(self.bank_statement)
+        self.comboBox14.setObjectName("comboBox14")
+        self.horizontalLayout_1412.addWidget(self.comboBox14)
+        self.verticalLayout_1410.addLayout(self.horizontalLayout_1412)
+        self.pushButton14 = QPushButton(self.bank_statement)
+        self.pushButton14.setObjectName("pushButton14")
+        self.pushButton14.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.pushButton14.clicked.connect(self.get_statement)
+        self.verticalLayout_1410.addWidget(self.pushButton14)
+        self.tableWidget14 = QTableWidget(self.bank_statement)
+        self.tableWidget14.setObjectName("tableWidget14")
+        self.tableWidget14.setColumnCount(0)
+        self.tableWidget14.setRowCount(0)
+        self.verticalLayout_1410.addWidget(self.tableWidget14)
+        self.stackedWidget.addWidget(self.bank_statement)
+
+        self.add_scheme = QWidget()
+        self.add_scheme.setObjectName("add_scheme")
+        self.verticalLayout_1510 = QVBoxLayout(self.add_scheme)
+        self.verticalLayout_1510.setObjectName("verticalLayout_1510")
+        self.verticalLayout_156 = QVBoxLayout()
+        self.verticalLayout_156.setObjectName("verticalLayout_156")
+        self.label15 = QLabel(self.add_scheme)
+        self.label15.setMaximumSize(QSize(16777215, 40))
+        font = QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label15.setFont(font)
+        self.label15.setAlignment(Qt.AlignCenter)
+        self.label15.setObjectName("label15")
+        self.verticalLayout_156.addWidget(self.label15)
+        self.gridLayout15 = QGridLayout()
+        self.gridLayout15.setObjectName("gridLayout15")
+        self.gridLayout15.setHorizontalSpacing(30)
+        self.gridLayout15.setVerticalSpacing(40)
+        self.lineEdit_153 = QLineEdit(self.add_scheme)
+        self.lineEdit_153.setMinimumSize(QSize(0, 30))
+        font = QFont()
+        font.setPointSize(12)
+        self.lineEdit_153.setFont(font)
+        self.lineEdit_153.setObjectName("lineEdit_153")
+        self.gridLayout15.addWidget(self.lineEdit_153, 3, 1, 1, 1)
+        self.label_152 = QLabel(self.add_scheme)
+        font = QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_152.setFont(font)
+        self.label_152.setObjectName("label_152")
+        self.gridLayout15.addWidget(self.label_152, 1, 0, 1, 1)
+        self.label_156 = QLabel(self.add_scheme)
+        font = QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_156.setFont(font)
+        self.label_156.setObjectName("label_156")
+        self.gridLayout15.addWidget(self.label_156, 0, 0, 1, 1)
+        self.lineEdit15 =QLineEdit(self.add_scheme)
+        self.lineEdit15.setMinimumSize(QSize(0, 30))
+        self.lineEdit15.setObjectName("lineEdit15")
+        self.gridLayout15.addWidget(self.lineEdit15, 1, 1, 1, 1)
+        self.lineEdit_152 = QLineEdit(self.add_scheme)
+        self.lineEdit_152.setMinimumSize(QSize(0, 30))
+        font = QFont()
+        font.setPointSize(14)
+        self.lineEdit_152.setFont(font)
+        self.lineEdit_152.setObjectName("lineEdit_152")
+        self.gridLayout15.addWidget(self.lineEdit_152, 2, 1, 1, 1)
+        self.lineEdit_156 = QLineEdit(self.add_scheme)
+        self.lineEdit_156.setMinimumSize(QSize(0, 30))
+        font = QFont()
+        font.setPointSize(14)
+        self.lineEdit_156.setFont(font)
+        self.lineEdit_156.setObjectName("lineEdit_152")
+        self.gridLayout15.addWidget(self.lineEdit_156, 0, 1, 1, 1)
+        self.label_153 = QLabel(self.add_scheme)
+        font = QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_153.setFont(font)
+        self.label_153.setObjectName("label_153")
+        self.gridLayout15.addWidget(self.label_153, 2, 0, 1, 1)
+        self.label_154 = QLabel(self.add_scheme)
+        font =QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_154.setFont(font)
+        self.label_154.setObjectName("label_154")
+        self.gridLayout15.addWidget(self.label_154, 3, 0, 1, 1)
+        self.pushButton15 = QPushButton(self.add_scheme)
+        self.pushButton15.setMinimumSize(QSize(0, 30))
+        self.pushButton15.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.pushButton15.clicked.connect(self.add__scheme)
+        font = QFont()
+        font.setPointSize(12)
+        self.pushButton15.setFont(font)
+        self.pushButton15.setObjectName("pushButton15")
+        self.gridLayout15.addWidget(self.pushButton15, 4, 1, 1, 1)
+        self.verticalLayout_156.addLayout(self.gridLayout15)
+        self.verticalLayout_1510.addLayout(self.verticalLayout_156)
+        self.stackedWidget.addWidget(self.add_scheme)
 
         self.page_widgets = QWidget()
         self.page_widgets.setObjectName(u"page_widgets")
@@ -3920,6 +4909,29 @@ class Ui_MainWindow(object):
         self.reports.setIcon(icon6)
 
         self.gridLayout_2.addWidget(self.reports, 1, 6, 1, 1)
+
+        self.adds = QCommandLinkButton(self.frame_2)
+        self.adds.setObjectName(u"adds")
+        self.adds.setStyleSheet(u"QCommandLinkButton {	\n"
+"	color: rgb(85, 170, 255);\n"
+"	border-radius: 5px;\n"
+"	padding: 5px;\n"
+"}\n"
+"QCommandLinkButton:hover {	\n"
+"	color: rgb(210, 210, 210);\n"
+"	background-color: rgb(44, 49, 60);\n"
+"}\n"
+"QCommandLinkButton:pressed {	\n"
+"	color: rgb(210, 210, 210);\n"
+"	background-color: rgb(52, 58, 71);\n"
+"}")
+        self.adds.clicked.connect(self.add_category)
+        icon6 = QIcon()
+        icon6.addFile(u":/16x16/icons/16x16/cil-chart-line.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.adds.setIcon(icon6)
+        self.adds.setText(QCoreApplication.translate("MainWindow", u"Add Scheme/Category", None))
+        self.gridLayout_2.addWidget(self.adds, 1, 8, 1, 1)
+            
 
        # self.horizontalSlider = QSlider(self.frame_2)
        # self.horizontalSlider.setObjectName(u"horizontalSlider")
@@ -4317,11 +5329,12 @@ class Ui_MainWindow(object):
         self.new_donor.setText(QCoreApplication.translate("MainWindow", u"New Donor", None))
         self.reports.setText(QCoreApplication.translate("MainWindow", u"Analysis", None))
         self.remainders.setText(QCoreApplication.translate("MainWindow", u"Donation Remainders", None))
-
+        
         self.label31.setText(QCoreApplication.translate("MainWindow", "Expenditures"))
         self.commandLinkButton_312.setText(QCoreApplication.translate("MainWindow", u"Cash Book", None))
         self.commandLinkButton_314.setText(QCoreApplication.translate("MainWindow", u"New Expenditure", None))
         self.commandLinkButton_313.setText(QCoreApplication.translate("MainWindow", u"Analysis and Student Details", None))
+        self.commandLinkButton_315.setText(QCoreApplication.translate("MainWindow", u"Bank", None))
         self.label_312.setText(QCoreApplication.translate("MainWindow", "Today\'s Expenditure"))
         self.label_313.setText(QCoreApplication.translate("MainWindow", "Yesterday\'s Expenditure"))
         self.label_314.setText(QCoreApplication.translate("MainWindow", "This Week\'s Expenditure"))
@@ -4422,7 +5435,7 @@ class Ui_MainWindow(object):
         item.setText(QCoreApplication.translate("MainWindow", "Balance"))
         self.label_68.setText(QCoreApplication.translate("MainWindow", "Total debitted:"))
         self.label_65.setText(QCoreApplication.translate("MainWindow", "Total creditted:"))
-        self.pushButton_62.setText(QCoreApplication.translate("MainWindow", "Temp"))
+        
 
         self.label_87.setText(QCoreApplication.translate("MainWindow", "New User"))
         self.label_813.setText(QCoreApplication.translate("MainWindow", "Designation"))
@@ -4453,9 +5466,28 @@ class Ui_MainWindow(object):
         self.pushButton_114.setText(QCoreApplication.translate("MainWindow", "Edit"))
         self.pushButton_112.setText(QCoreApplication.translate("MainWindow", "Confirm"))
 
+        self.labelBoxBlenderInstalation12.setText(QCoreApplication.translate("MainWindow", "DONATION CONFIRMATION"))
+        self.pushButton_134.setText(QCoreApplication.translate("MainWindow", "Edit"))
+        self.pushButton_132.setText(QCoreApplication.translate("MainWindow", "Confirm"))
+
         self.label12.setText(QCoreApplication.translate("MainWindow", "Donation Remainders"))
         self.pushButton_122.setText(QCoreApplication.translate("MainWindow", "Remainded"))
 
-        self.label_credits.setText(QCoreApplication.translate("MainWindow", u"Registered by: Thunder Buddies", None))
+        self.label14.setText(QCoreApplication.translate("MainWindow", "Bank Statement "))
+        self.label_142.setText(QCoreApplication.translate("MainWindow", "From"))
+        self.label_143.setText(QCoreApplication.translate("MainWindow", " To"))
+        self.label_144.setText(QCoreApplication.translate("MainWindow", "Choose Bank"))
+        self.pushButton14.setText(QCoreApplication.translate("MainWindow", "Get Statement"))
+
+        self.label15.setText(QCoreApplication.translate("MainWindow", "Add Scheme"))
+        self.lineEdit_153.setText(QCoreApplication.translate("MainWindow", "number of days"))
+        self.label_152.setText(QCoreApplication.translate("MainWindow", "Scheme Name:"))
+        self.lineEdit_152.setText(QCoreApplication.translate("MainWindow", "in years"))
+        self.label_153.setText(QCoreApplication.translate("MainWindow", "Validity"))
+        self.label_154.setText(QCoreApplication.translate("MainWindow", "Reminder (in days)"))
+        self.label_156.setText(QCoreApplication.translate("MainWindow", "Scheme id"))
+        self.pushButton15.setText(QCoreApplication.translate("MainWindow", "Add scheme"))
+
+        self.label_credits.setText(QCoreApplication.translate("MainWindow", u"Registered by: Team Chitra Gupta", None))
         self.label_version.setText(QCoreApplication.translate("MainWindow", u"v1.0.0", None))
     # retranslateUi

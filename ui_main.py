@@ -18,6 +18,58 @@ from add_donor_confirmation import *
 from ok_popup import *
 
 class Ui_MainWindow(object):
+    def manual_trasaction_page(self):
+        self.stackedWidget.setCurrentIndex(20)
+    def add_exp_cat(self):
+        a = self.lineEdit_182.text()
+        b = self.lineEdit_183.text()
+        c = b+" " + a
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        sql = "INSERT INTO type_expenditure (code,code_name) VALUES (%s,%s)"
+        val = (b,c)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        msg = "Database successfully updated."
+        self.dialog = QDialog()
+        self.ui = Ui_OK()
+        self.ui.setupUi(self.dialog,msg)
+        self.dialog.exec()
+        self.stackedWidget.setCurrentIndex(0)
+    def add_exp_cat_page(self):
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from log ORDER BY loginid DESC LIMIT 1")
+        myresult = mycursor.fetchall()
+        ltype = myresult[0][1]
+        if ltype == "master":
+            self.stackedWidget.setCurrentIndex(19)
+        else:
+            msg = "You dont have permission to add expenditure category"
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec()
+    def addYears(self,date, years):
+        result = date + timedelta(366 * years)
+        if years > 0:
+            while result.year - date.year > years or date.month < result.month or date.day < result.day:
+                result += timedelta(-1)
+        elif years < 0:
+            while result.year - date.year < years or date.month > result.month or date.day > result.day:
+                result += timedelta(1)
+        #print "input: %s output: %s" % (date, result)
+        return result
     def donation_edit(self):
         a = self.tableWidget12.currentRow()
         print(a)
@@ -278,8 +330,10 @@ class Ui_MainWindow(object):
         bank = self.comboBox_66.currentText()
         mycursor.execute("select balance from bank_statement where bank_name = '{0}'".format(bank))
         r = mycursor.fetchall()
-        balance = r[-1][0]
-        
+        if len(r)!=0:
+            balance = r[-1][0]
+        else:
+            balance =0
         sql = "INSERT INTO bank_statement (bank_name,date,description,deposits,balance) VALUES (%s,%s,%s,%s,%s)"
         val = (bank,fnow,name,amount,int(balance)+amount)
         mycursor.execute(sql, val)
@@ -897,8 +951,17 @@ class Ui_MainWindow(object):
         )
         print(mydb)
         mycursor = mydb.cursor()
-        mycursor.execute("update all_donations ado, all_donors ad set ado.reminded = 1 where curdate() > remind_date and reminded =0 and ado.id_donor = ad.donor_id;")
-        mydb.commit()
+        r = self.tableWidget12.rowCount()
+        amount = 0
+        temp = []
+        for i in range(r):
+            print(i)
+            if self.tableWidget12.item(i, 0).checkState() == Qt.Checked:
+                temp = self.tableWidget12.item(i, 1)
+                id_d = int(temp.text())
+                mycursor.execute("update all_donations set reminded = 1 where id_donations = {0}".format(id_d))
+                mydb.commit()
+                self.tableWidget12.removeRow(i)
         self.stackedWidget.setCurrentIndex(0)
 
     def donation_remainder_button(self):
@@ -917,17 +980,17 @@ class Ui_MainWindow(object):
         if len(myresult)!=0:
             c = len(myresult[0])
         r = len(myresult)
-        self.tableWidget = QTableWidget()
+        self.tableWidget12 = QTableWidget()
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(10)
         sizePolicy.setVerticalStretch(10)
         sizePolicy.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
-        self.tableWidget.setSizePolicy(sizePolicy)
-        self.tableWidget.setMinimumSize(QSize(0, 0))
-        self.tableWidget.setRowCount(r)
-        self.tableWidget.setColumnCount(c)
-        self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setStyleSheet("QTableWidget {    \n"
+        self.tableWidget12.setSizePolicy(sizePolicy)
+        self.tableWidget12.setMinimumSize(QSize(0, 0))
+        self.tableWidget12.setRowCount(r)
+        self.tableWidget12.setColumnCount(c+1)
+        self.tableWidget12.setObjectName("tableWidget12")
+        self.tableWidget12.setStyleSheet("QTableWidget {    \n"
 "    background-color: rgb(39, 44, 54);\n"
 "    padding: 10px;\n"
 "    border-radius: 5px;\n"
@@ -982,7 +1045,7 @@ class Ui_MainWindow(object):
 "}\n"
 "")     
         
-        self.tableWidget.setRowCount(0)
+        self.tableWidget12.setRowCount(0)
         index = 0
         columns = ["id_donation", "donation_in_name","phone","email"," date_of_donation","donation_date","Ocassion","remarks"]
         self.tableWidget.setHorizontalHeaderLabels(columns)
@@ -991,13 +1054,18 @@ class Ui_MainWindow(object):
         #    self.tableWidget.setCellWidget(index, i+1,rb[i] )
         for row_number, row_data in enumerate(myresult):
          #print(row_number)
-         self.tableWidget.insertRow(row_number)
+         self.tableWidget12.insertRow(row_number)
          for column_number, data in enumerate(row_data):
                     #print(column_number)
-           self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+           item_checked = QTableWidgetItem()
+           item_checked.setCheckState(Qt.Unchecked)
+           item_checked.setFlags(Qt.ItemIsUserCheckable |Qt.ItemIsEnabled)
+                    #item_checked.setCheckable(True)
+           self.tableWidget12.setItem(row_number,0, item_checked) 
+           self.tableWidget12.setItem(row_number, column_number+1, QTableWidgetItem(str(data)))
         if self.verticalLayout_121212.count() !=0: 
             self.verticalLayout_121212.itemAt(0).widget().deleteLater()
-        self.verticalLayout_121212.addWidget(self.tableWidget)
+        self.verticalLayout_121212.addWidget(self.tableWidget12)
     
     def exp_confirm(self):
         mydb = mysql.connector.connect(
@@ -1369,7 +1437,7 @@ class Ui_MainWindow(object):
         tod = tod.toPython()
         ftod = tod.strftime('%Y-%m-%d')
         mycursor = mydb.cursor()
-        mycursor.execute( "select * from all_donations where date_of_donation between '{0}' and '{1}'".format(ffromd,ftod))
+        mycursor.execute( "select * from donations where date_of_donation between '{0}' and '{1}'".format(ffromd,ftod))
         myresult = mycursor.fetchall()
         c = len(myresult[0])
         r = len(myresult)
@@ -1762,14 +1830,14 @@ class Ui_MainWindow(object):
             update = mycursor.fetchall()
             l = len(update)
             if l==0:
-                sql = "INSERT INTO all_donations (id_donor, date_of_donation,donation_date,donation_in_name,master_registration_number,reciept_number,payment_mode,payment_description,Ocassion,remarks,category,id_student,amount,remind_date) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-                val = (int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end)
+                sql = "INSERT INTO all_donations (id_donor, date_of_donation,donation_date,donation_in_name,master_registration_number,reciept_number,payment_mode,payment_description,Ocassion,remarks,category,id_student,amount,remind_date,date_show) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                val = (int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end,formatted_dd)
                 mycursor.execute(sql, val)
                 mydb.commit()
                 mycursor.execute("update all_donors set number_of_times_donated = number_of_times_donated+1 where donor_id = {0}".format(donor_id))
                 mydb.commit()
             elif l>0:
-                sql = "Update all_donations set id_donor = {0}, date_of_donation = '{1}',donation_date = '{2}',donation_in_name = '{3}',reciept_number = {5},payment_mode = '{6}',payment_description = '{7}',Ocassion = '{8}',remarks ='{9}',category = {10},id_student = {11},amount = '{12}',remind_date = '{13}' where master_registration_number = {4}".format(int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end)
+                sql = "Update all_donations set id_donor = {0}, date_of_donation = '{1}',donation_date = '{2}',donation_in_name = '{3}',reciept_number = {5},payment_mode = '{6}',payment_description = '{7}',Ocassion = '{8}',remarks ='{9}',category = {10},id_student = {11},amount = '{12}',remind_date = '{13}',date_show = '{14}' where master_registration_number = {4}".format(int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end,formatted_dd)
                 #val = (int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end)
                 mycursor.execute(sql)
                 mydb.commit()
@@ -2815,6 +2883,29 @@ class Ui_MainWindow(object):
         self.commandLinkButton_314.setIcon(icon314)
         self.commandLinkButton_314.clicked.connect(self.deb_voucher)
         self.gridLayout_3.addWidget(self.commandLinkButton_314, 0, 1, 1, 1)
+        self.commandLinkButton_316 = QCommandLinkButton(self.expenditure_opening)
+        self.commandLinkButton_316.setObjectName("commandLinkButton_314")
+        self.commandLinkButton_316.setStyleSheet(u"QCommandLinkButton {	\n"
+"	color: rgb(85, 170, 255);\n"
+"	border-radius: 5px;\n"
+"	padding: 5px;\n"
+"}\n"
+"QCommandLinkButton:hover {	\n"
+"	color: rgb(210, 210, 210);\n"
+"	background-color: rgb(44, 49, 60);\n"
+"}\n"
+"QCommandLinkButton:pressed {	\n"
+"	color: rgb(210, 210, 210);\n"
+"	background-color: rgb(52, 58, 71);\n"
+"}")
+        #self.commandLinkButton_312.clicked.connect(self.new_donation_button)
+        icon316 = QIcon()
+        icon316.addFile(u":/16x16/icons/16x16/cil-credit-card.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.commandLinkButton_316.setIcon(icon316)
+        self.commandLinkButton_316.clicked.connect(self.add_exp_cat_page)
+        self.gridLayout_3.addWidget(self.commandLinkButton_316, 0, 4, 1, 1)
+
+
         self.lcdNumber = QLCDNumber(self.expenditure_opening)
         self.lcdNumber.setObjectName("lcdNumber")
         self.gridLayout_3.addWidget(self.lcdNumber, 2, 1, 1, 1)
@@ -4709,6 +4800,23 @@ class Ui_MainWindow(object):
         self.pushButton141.clicked.connect(self.add_bank)
         self.verticalLayout_1410.addWidget(self.tableWidget14)
         self.verticalLayout_1410.addWidget(self.pushButton141)
+        self.pushButton142 = QPushButton(self.bank_statement)
+        self.pushButton142.setObjectName("pushButton142")
+        self.pushButton142.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.pushButton142.clicked.connect(self.manual_trasaction_page)
+        self.verticalLayout_1410.addWidget(self.pushButton142)
         self.stackedWidget.addWidget(self.bank_statement)
 
         self.add_scheme = QWidget()
@@ -5020,6 +5128,147 @@ class Ui_MainWindow(object):
         self.pushButton16.clicked.connect(self.add_bank_account)
         self.verticalLayout_1610.addWidget(self.pushButton16)
         self.stackedWidget.addWidget(self.add_bank_acc)
+
+        self.add_category_page = QWidget()
+        self.add_category_page.setObjectName("add_category_page")
+        self.verticalLayout_1810 = QVBoxLayout(self.add_category_page)
+        self.verticalLayout_1810.setObjectName("verticalLayout_1810")
+        self.gridLayout_183 = QGridLayout()
+        self.gridLayout_183.setObjectName("gridLayout_183")
+        self.label_182 = QLabel(self.add_category_page)
+        self.label_182.setMaximumSize(QSize(16777215, 80))
+        font = QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_182.setFont(font)
+        self.label_182.setObjectName("label_182")
+        self.gridLayout_183.addWidget(self.label_182, 1, 0, 1, 1)
+        self.label_183 = QLabel(self.add_category_page)
+        self.label_183.setMaximumSize(QSize(16777215, 80))
+        font = QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_183.setFont(font)
+        self.label_183.setObjectName("label_183")
+        self.gridLayout_183.addWidget(self.label_183, 2, 0, 1, 1)
+        self.lineEdit_183 = QLineEdit(self.add_category_page)
+        self.lineEdit_183.setMaximumSize(QSize(16777215, 60))
+        self.lineEdit_183.setObjectName("lineEdit_183")
+        self.gridLayout_183.addWidget(self.lineEdit_183, 2, 1, 1, 2)
+        self.lineEdit_182 = QLineEdit(self.add_category_page)
+        self.lineEdit_182.setMaximumSize((QSize(16777215, 50)))
+        self.lineEdit_182.setObjectName("lineEdit_182")
+        self.gridLayout_183.addWidget(self.lineEdit_182, 1, 2, 1, 1)
+        self.label = QLabel(self.add_category_page)
+        self.label.setMaximumSize(QSize(16777215, 70))
+        font = QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label.setFont(font)
+        #self.label.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.label.setObjectName("label")
+        self.gridLayout_183.addWidget(self.label, 0, 0, 1, 3)
+        self.pushButton_182 = QPushButton(self.add_category_page)
+        self.pushButton_182.setMaximumSize((QSize(16777215, 50)))
+        self.pushButton_182.setObjectName("pushButton_182")
+        self.pushButton_182.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.pushButton_182.clicked.connect(self.add_exp_cat)
+        self.gridLayout_183.addWidget(self.pushButton_182, 3, 0, 1, 3)
+        self.verticalLayout_1810.addLayout(self.gridLayout_183)
+        self.stackedWidget.addWidget(self.add_category_page)
+
+
+        self.manual_transaction = QWidget()
+        self.manual_transaction.setObjectName("manual_transaction")
+        self.verticalLayout_1910 = QVBoxLayout(self.manual_transaction)
+        self.verticalLayout_1910.setObjectName("verticalLayout_1910")
+        self.gridLayout_194 = QGridLayout()
+        self.gridLayout_194.setObjectName("gridLayout_194")
+        self.radioButton_192 = QRadioButton(self.manual_transaction)
+        self.radioButton_192.setObjectName("radioButton_192")
+        self.gridLayout_194.addWidget(self.radioButton_192, 6, 0, 1, 1)
+        self.lineEdit_192 = QLineEdit(self.manual_transaction)
+        self.lineEdit_192.setMaximumSize(QSize(16777215, 35))
+        self.lineEdit_192.setObjectName("lineEdit_192")
+        self.gridLayout_194.addWidget(self.lineEdit_192, 4, 1, 1, 2)
+        self.comboBox_192 = QComboBox(self.manual_transaction)
+        self.comboBox_192.setMaximumSize(QSize(16777215, 40))
+        self.comboBox_192.setObjectName("comboBox_192")
+        self.gridLayout_194.addWidget(self.comboBox_192, 3, 1, 1, 2)
+        self.label_192 = QLabel(self.manual_transaction)
+        self.label_192.setMaximumSize(QSize(16777215, 50))
+        font = QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_192.setFont(font)
+        self.label_192.setObjectName("label_192")
+        self.gridLayout_194.addWidget(self.label_192, 1, 0, 1, 1)
+        self.label_195 = QLabel(self.manual_transaction)
+        font = QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_195.setFont(font)
+        self.label_195.setObjectName("label_195")
+        self.gridLayout_194.addWidget(self.label_195, 5, 0, 1, 1)
+        self.textEdit19 = QTextEdit(self.manual_transaction)
+        self.textEdit19.setMaximumSize(QSize(16777215, 170))
+        self.textEdit19.setObjectName("textEdit19")
+        self.gridLayout_194.addWidget(self.textEdit19, 5, 1, 1, 2)
+        self.label_194 = QLabel(self.manual_transaction)
+        font = QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_194.setFont(font)
+        self.label_194.setObjectName("label_194")
+        self.gridLayout_194.addWidget(self.label_194, 4, 0, 1, 1)
+        self.dateEdit19 = QDateEdit(self.manual_transaction)
+        self.dateEdit19.setMaximumSize(QSize(16777215, 40))
+        self.dateEdit19.setObjectName("dateEdit19")
+        self.gridLayout_194.addWidget(self.dateEdit19, 1, 1, 1, 2)
+        self.label19 = QLabel(self.manual_transaction)
+        self.label19.setMaximumSize(QSize(16777215, 80))
+        font = QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label19.setFont(font)
+        self.label19.setObjectName("label19")
+        self.gridLayout_194.addWidget(self.label19, 0, 0, 1, 3)
+        self.radioButton_193 = QRadioButton(self.manual_transaction)
+        self.radioButton_193.setObjectName("radioButton_193")
+        self.gridLayout_194.addWidget(self.radioButton_193, 6, 2, 1, 1)
+        self.label_193 = QLabel(self.manual_transaction)
+        self.label_193.setMaximumSize(QSize(16777215, 50))
+        font = QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_193.setFont(font)
+        self.label_193.setObjectName("label_193")
+        self.gridLayout_194.addWidget(self.label_193, 3, 0, 1, 1)
+        self.pushButton_192 = QPushButton(self.manual_transaction)
+        self.pushButton_192.setObjectName("pushButton_192")
+        self.gridLayout_194.addWidget(self.pushButton_192, 7, 0, 1, 3)
+        self.verticalLayout_1910.addLayout(self.gridLayout_194)
+        self.stackedWidget.addWidget(self.manual_transaction)
 
         self.page_widgets = QWidget()
         self.page_widgets.setObjectName(u"page_widgets")
@@ -5432,19 +5681,20 @@ class Ui_MainWindow(object):
         now = datetime.now()
         now = now.strftime('%Y-%m-%d')
         mycursor = mydb.cursor()
-        mycursor.execute("select * from all_donations where donation_date = '{0}' ".format(now))
+        mycursor.execute("select * from  donations where id_donations in (select id_donations from all_donations where date_show = '{0}')".format(now))
         myresult = mycursor.fetchall()
+        print(myresult)
         self.tableWidget.setObjectName(u"tableWidget")
         c=0
         if len(myresult)!=0:
             c = len(myresult[0])
         r = len(myresult)
         self.tableWidget = QTableWidget()
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(10)
-        sizePolicy.setVerticalStretch(10)
-        sizePolicy.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
-        self.tableWidget.setSizePolicy(sizePolicy)
+        #sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        #sizePolicy.setHorizontalStretch(100)
+        #sizePolicy.setVerticalStretch(100)
+        #sizePolicy.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
+        #self.tableWidget.setSizePolicy(sizePolicy)
         self.tableWidget.setMinimumSize(QSize(0, 0))
         self.tableWidget.setRowCount(r)
         self.tableWidget.setColumnCount(c)
@@ -5551,27 +5801,48 @@ class Ui_MainWindow(object):
 "    border: 1px solid rgb(44, 49, 60);\n"
 "}\n"
 "")     
-        self.tableWidget.setFrameShape(QFrame.NoFrame)
-        self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.tableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
-        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tableWidget.setAlternatingRowColors(False)
-        self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tableWidget.setShowGrid(True)
-        self.tableWidget.setGridStyle(Qt.SolidLine)
-        self.tableWidget.setSortingEnabled(False)
-        self.tableWidget.horizontalHeader().setVisible(True)
-        self.tableWidget.horizontalHeader().setCascadingSectionResizes(True)
-        self.tableWidget.horizontalHeader().setDefaultSectionSize(200)
-        self.tableWidget.horizontalHeader().setStretchLastSection(True)
-        self.tableWidget.verticalHeader().setVisible(False)
-        self.tableWidget.verticalHeader().setCascadingSectionResizes(False)
-        self.tableWidget.verticalHeader().setHighlightSections(False)
-        self.tableWidget.verticalHeader().setStretchLastSection(True)
+        #self.tableWidget.setFrameShape(QFrame.NoFrame)
+        #self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        #self.tableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        #self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        #self.tableWidget.setAlternatingRowColors(False)
+        #self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection)
+        #self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        #self.tableWidget.setShowGrid(True)
+        #self.tableWidget.setGridStyle(Qt.SolidLine)
+        #self.tableWidget.setSortingEnabled(False)
+        #self.tableWidget.horizontalHeader().setVisible(True)
+        #self.tableWidget.horizontalHeader().setCascadingSectionResizes(True)
+        #self.tableWidget.horizontalHeader().setDefaultSectionSize(300)
+        #self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        #self.tableWidget.verticalHeader().setVisible(False)
+        #self.tableWidget.verticalHeader().setCascadingSectionResizes(True)
+        #self.tableWidget.verticalHeader().setHighlightSections(False)
+        #self.tableWidget.verticalHeader().setStretchLastSection(True)
 
         self.horizontalLayout_12.addWidget(self.tableWidget)
-
+        today = datetime.now()
+        yesterday = today - timedelta(days = 1)
+        mycursor.execute("select * from schemes")
+        sch = mycursor.fetchall()
+        #for x in sch:
+        #    if category == x[1]:
+        #        end = today + timedelta(days=x[2])
+        formatted_yesterday = yesterday.strftime('%Y-%m-%d')
+        mycursor.execute("select * from all_donations where date_show = '{0}'".format(formatted_yesterday))
+        alldonations = mycursor.fetchall()
+        for y in alldonations:
+            for x in sch:
+                if y[11] == x[0]:
+                    valid = self.addYears(y[3],x[3])
+                    nexty = self.addYears(y[18],1)
+                    validc = valid.strftime('%y-%m-%d')
+                    nextyc = nexty.strftime('%y-%m-%d')
+                    print(valid,nexty)
+                    if nextyc<validc:
+                        print("inn")
+                        mycursor.execute("update all_donations set date_show = '{0}' where id_donations = {1}".format(nexty,y[0]))
+                        mydb.commit()
         self.labelVersion_4 = QLabel(self.page_widgets)
         self.labelVersion_4.setObjectName(u"labelVersion_3")
         #self.labelVersion_4.setStyleSheet(u"color: rgb(98, 103, 111);")
@@ -5794,10 +6065,12 @@ class Ui_MainWindow(object):
         self.commandLinkButton_314.setText(QCoreApplication.translate("MainWindow", u"New Expenditure", None))
         self.commandLinkButton_313.setText(QCoreApplication.translate("MainWindow", u"Analysis and Student Details", None))
         self.commandLinkButton_315.setText(QCoreApplication.translate("MainWindow", u"Bank", None))
+        self.commandLinkButton_316.setText(QCoreApplication.translate("MainWindow", u"Add expenditure category", None))
         self.label_312.setText(QCoreApplication.translate("MainWindow", "Today\'s Expenditure"))
         self.label_313.setText(QCoreApplication.translate("MainWindow", "Yesterday\'s Expenditure"))
         self.label_314.setText(QCoreApplication.translate("MainWindow", "This Week\'s Expenditure"))
         self.label_315.setText(QCoreApplication.translate("MainWindow", "Basic Statistics"))
+        
         #self.label31.setText(QCoreApplication.translate("MainWindow", "Expenditures"))
         #self.commandLinkButton_312.setText((QCoreApplication.translate("MainWindow", "Cash Book"))
         #self.label_314.setText(QCoreApplication.translate("MainWindow", "This Week\'s Expenditure"))
@@ -5938,6 +6211,7 @@ class Ui_MainWindow(object):
         self.label_144.setText(QCoreApplication.translate("MainWindow", "Choose Bank"))
         self.pushButton14.setText(QCoreApplication.translate("MainWindow", "Get Statement"))
         self.pushButton141.setText(QCoreApplication.translate("MainWindow", "Add Bank Account"))
+        self.pushButton142.setText(QCoreApplication.translate("MainWindow", "Add Manual Transaction"))
 
         self.label15.setText(QCoreApplication.translate("MainWindow", "Add Scheme"))
         self.lineEdit_153.setText(QCoreApplication.translate("MainWindow", "number of days"))
@@ -5947,6 +6221,20 @@ class Ui_MainWindow(object):
         self.label_154.setText(QCoreApplication.translate("MainWindow", "Reminder (in days)"))
         self.label_156.setText(QCoreApplication.translate("MainWindow", "Scheme id"))
         self.pushButton15.setText(QCoreApplication.translate("MainWindow", "Add scheme"))
+
+        self.label_182.setText(QCoreApplication.translate("MainWindow", "Category name"))
+        self.label_183.setText(QCoreApplication.translate("MainWindow", "Category Code"))
+        self.label.setText(QCoreApplication.translate("MainWindow", "                                                    Add Category"))
+        self.pushButton_182.setText(QCoreApplication.translate("MainWindow", "Add category"))
+
+        self.radioButton_192.setText(QCoreApplication.translate("MainWindow", "Withdrawal"))
+        self.label_192.setText(QCoreApplication.translate("MainWindow", "Date"))
+        self.label_195.setText(QCoreApplication.translate("MainWindow", "Discription"))
+        self.label_194.setText(QCoreApplication.translate("MainWindow", "Enter Amount"))
+        self.label19.setText(QCoreApplication.translate("MainWindow", "                                          Manual Transaction"))
+        self.radioButton_193.setText(QCoreApplication.translate("MainWindow", "Deposit/Intrest"))
+        self.label_193.setText(QCoreApplication.translate("MainWindow", "Select Bank"))
+        self.pushButton_192.setText(QCoreApplication.translate("MainWindow", "Confirm Transaction"))
 
         self.label17.setText(QCoreApplication.translate("MainWindow", "Withdraw from Bank"))
         self.label_172.setText(QCoreApplication.translate("MainWindow", "Date"))

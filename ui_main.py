@@ -18,6 +18,221 @@ from add_donor_confirmation import *
 from ok_popup import *
 
 class Ui_MainWindow(object):
+    def donation_edit(self):
+        a = self.tableWidget12.currentRow()
+        print(a)
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        print(mydb)
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from all_donations where checked = 0 ")
+        myresult = mycursor.fetchall()
+        info = myresult[a]
+        #donation_in_name = self.lineEdit_212.text()
+        #master_registration = self.lineEdit_214.text()
+        #payment_mode = str(self.comboBox_2.currentText())
+        #payment_description =  self.textEdit211.toPlainText()
+        #occasion = str(self.comboBox_3.currentText())
+        #remarks = self.textEdit_212.toPlainText()
+        #category = str(self.comboBox_4.currentText())
+        #student = str(self.comboBox_5.currentText())
+        #book_number = self.lineEdit_215.text()
+        #phone = self.lineEdit_213.text()
+        #date_of_donation = self.dateTimeEdit.dateTime()
+        #date_of_donation = date_of_donation.toPython()
+        #formatted_dod = date_of_donation.strftime('%Y-%m-%d %H:%M:%S')
+        #donation_date = self.dateEdit2.date()
+        #amount = self.lineEdit_2115.text()
+        #print(donation_date)
+        #donation_date = donation_date.toPython()
+        #formatted_dd = donation_date.strftime('%Y-%m-%d')
+        #today = donation_date
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="anirudh123",
+            database = "chitra_gupta"
+                )
+
+        print(mydb)
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from schemes")
+        myresult = mycursor.fetchall()
+        for x in myresult:
+            self.comboBox_4.addItem(str(x[1]))
+        self.lineEdit_212.setText(QCoreApplication.translate("MainWindow", info[4]))
+        self.lineEdit_214.setText(QCoreApplication.translate("MainWindow", str(info[5])))
+        self.lineEdit_215.setText(QCoreApplication.translate("MainWindow", str(info[6])))
+        self.textEdit_212.setHtml(QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n""body { background-color: rgba(66, 73, 90, 255);}"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p></body></html>"))
+        self.textEdit211.setHtml(QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n""body { background-color: rgba(66, 73, 90, 255);}"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p></body></html>"))
+        self.textEdit211.insertHtml(info[8])
+        #self.textEdit_212.clear()
+        #self.textEdit211.insertPlainText(QCoreApplication.translate("MainWindow", info[8]))
+        #self.textEdit_212.insertPlainText(QCoreApplication.translate("MainWindow", info[10]))
+        self.textEdit_212.insertHtml(info[10])
+        self.lineEdit_2115.setText(QCoreApplication.translate("MainWindow", str(info[13])))
+
+        #a = a.toPython()
+        self.dateTimeEdit.setDate(info[2])
+        self.dateEdit2.setDate(info[3])
+        #self.dateEdit_53.setDate(myresult[0][9])
+        self.comboBox_2.setCurrentText(info[7])
+        self.comboBox_3.setCurrentText(info[9])
+        self.comboBox_4.setCurrentIndex(int(info[11]) - 1)
+        self.comboBox_5.setCurrentIndex(int(info[12]))
+
+        mycursor.execute("SELECT * FROM chitra_gupta.all_donors where donor_id = {0}".format(info[1]))
+        myresult = mycursor.fetchall()
+        self.lineEdit_217.setText(QCoreApplication.translate("MainWindow", myresult[0][2]))
+        self.lineEdit_216.setText(QCoreApplication.translate("MainWindow", myresult[0][1]))
+        self.lineEdit_213.setText(QCoreApplication.translate("MainWindow", myresult[0][4]))
+        self.stackedWidget.setCurrentIndex(4)
+
+    def donation_confirm(self):
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        print(mydb)
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from log ORDER BY loginid DESC LIMIT 1")
+        myresult = mycursor.fetchall()
+        mid = myresult[0][0]
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from all_donations where checked = 0")
+        result = mycursor.fetchall()
+        mycursor.execute("update all_donations set checked = 1, master_id = '{0}'  where checked = 0".format(mid))
+        mydb.commit()
+        for x in result:
+            mycursor.execute("select * from main_cashbook ORDER BY transaction_id DESC LIMIT 1")
+            myresult = mycursor.fetchall()
+            if len(myresult)==0:
+                sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                val = (x[2],x[4], x[5], x[6],x[11],int(x[13]),int(x[13]))
+                mycursor.execute(sql, val)
+                mydb.commit()
+            else:
+                balance = myresult[0][8]
+                sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                val = (x[2],x[4], x[5], x[6],x[11],int(x[13]),int(balance)+int(x[13]))
+                mycursor.execute(sql, val)
+                mydb.commit()
+        msg = "Updated successfully"
+        self.dialog = QDialog()
+        self.ui = Ui_OK()
+        self.ui.setupUi(self.dialog,msg)
+        self.dialog.exec()
+        self.tableWidget12.clearContents()
+        self.stackedWidget.setCurrentIndex(0)
+    def add_bank_account(self):
+        bank = self.lineEdit16.text()
+        name = self.lineEdit_162.text()
+        description = self.textEdit16.toPlainText()
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        sql = "INSERT INTO banks (bank_name,bank_details,description) VALUES (%s, %s,%s)"
+        val = (name, bank,description)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        msg = "Database updated successfully. Bank has been added in your accounts."
+        self.dialog = QDialog()
+        self.ui = Ui_OK()
+        self.ui.setupUi(self.dialog,msg)
+        self.dialog.exec() 
+        self.stackedWidget.setCurrentIndex(15)
+    def add_bank(self):
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from log ORDER BY loginid DESC LIMIT 1")
+        myresult = mycursor.fetchall()
+        ltype = myresult[0][1]
+        if ltype == "master":
+            self.stackedWidget.setCurrentIndex(18)
+        else:
+            msg = "Else you dont have permission to add bank account"
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec() 
+    def withdraw_from_bank(self):
+        date = self.dateEdit17.date()
+        date = date.toPython()
+        date = date.strftime('%Y-%m-%d')
+        bank = self.comboBox17.currentText()
+        amount = self.lineEdit17.text()
+        description = self.textEdit17.toPlainText()
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute("select balance from bank_statement where bank_name = '{0}'".format(bank))
+        r = mycursor.fetchall()
+        if len(r)!=0:
+            balance = r[-1][0]
+        else:
+            balance = 0
+        if int(balance)<int(amount):
+            msg = "Sorry you cant withdraw since the selected bank doesnot have enough balance."
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec() 
+        elif len(description)==0:
+            msg = "Description is to be filled."
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec() 
+        else:
+            exptype = "Withdrawal from bank"
+            mycursor.execute("select balance from petty_cashbook")
+            result = mycursor.fetchall()
+            if len(result)!=0:
+                pbalance = result[-1][0]
+            else:
+                pbalance = 0
+            sql = "INSERT INTO petty_cashbook (date,reciept_number,category,debit,balance) VALUES (%s, %s,%s,%s,%s)"
+            val = (date,description,exptype,amount,int(pbalance)+int(amount))
+            mycursor.execute(sql, val)
+            sql = "INSERT INTO bank_statement (bank_name,date,description,withdrawal,balance) VALUES (%s,%s,%s,%s,%s)"
+            val = (bank,date,description,amount,int(balance)-int(amount))
+            mycursor.execute(sql, val)
+            mydb.commit()
+            msg = "Database updated successfully. The amount has been withdrawn."
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec() 
+            self.stackedWidget.setCurrentIndex(8)
+    def pettywithdraw(self):
+        self.stackedWidget.setCurrentIndex(17)
     def maindeposit(self):
         c = self.tableWidget6.columnCount()
         r = self.tableWidget6.rowCount()
@@ -79,6 +294,11 @@ class Ui_MainWindow(object):
     def cashbookselection(self):
         book = self.comboBox6.currentText()
         if book == "Main Cashbook":
+            #while self.horizontalLayout_611.count():
+            #    item = self.horizontalLayout_611.takeAt(0)
+            #    widget = item.widget()
+            #    if widget is not None:
+            #        widget.deleteLater()
             self.buttoncash = QRadioButton("only undeposited entries", self.cashbook)
             self.horizontalLayout_69.addWidget(self.buttoncash)
         elif book == "Petty Cashbook":
@@ -322,6 +542,27 @@ class Ui_MainWindow(object):
                         self.tableWidget6.setItem(row_number, column_number, QTableWidgetItem(str(data)))
 
         if book == "Petty Cashbook":
+            if self.horizontalLayout_611.count()==1:
+                pass
+            else:
+                self.pushButton_63 = QPushButton(self.cashbook)
+                self.pushButton_63.setObjectName("pushButton_62")
+                self.pushButton_63.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+                self.pushButton_63.clicked.connect(self.pettywithdraw)
+                self.pushButton_63.setText(QCoreApplication.translate("MainWindow", "WithDraw"))
+                self.horizontalLayout_611.addWidget(self.pushButton_63)
             self.label_64.setText(QCoreApplication.translate("MainWindow", "Petty cashbook:"))
             print(fdate,tdate)
             #self.label_64.setText(QCoreApplication.translate("MainWindow", "Main cashbook:"))
@@ -410,7 +651,7 @@ class Ui_MainWindow(object):
         d = self.lineEdit_156.text()
         print(a,b,c)
 
-        if not b.isnumeric() or not c.isnumeric() or not d.isnumeric() :
+        if not b.isnumeric() or not c.isnumeric() or not d.isnumeric() or len(a)==0 or len(b)==0 or len(c)==0 or len(d==0):
             msg = "Check your entries"
             self.dialog = QDialog()
             self.ui = Ui_OK()
@@ -563,14 +804,7 @@ class Ui_MainWindow(object):
         database = "chitra_gupta"
         )
         print(mydb)
-        mycursor = mydb.cursor()
-        mycursor.execute("select * from banks")
-        myresult = mycursor.fetchall()
-        i=0
-        for x in myresult:
-            self.comboBox14.addItem("")
-            self.comboBox14.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
-            i+=1
+        
     def edit_exp_details(self):
         vouchnum= self.lineEdit_56.text()
         mydb = mysql.connector.connect(
@@ -783,13 +1017,23 @@ class Ui_MainWindow(object):
         l = len(result)
         mycursor.execute("update pettycashbook set checked = 1, masterid = '{0}'  where checked = 0".format(mid))
         mydb.commit()
+        for x in result:
+            mycursor.execute("select * from petty_cashbook ORDER BY transaction_id DESC LIMIT 1")
+            myresult = mycursor.fetchall()
+            if len(myresult) == 0:
+                balance = 0
+            else:
+                balance = myresult[0][7]
+            sql = "INSERT INTO petty_cashbook (date,name,reciept_number,category,credit,balance) VALUES (%s, %s,%s,%s,%s,%s)"
+            val = (x[3],x[8],x[1],x[5],int(x[4]),int(balance)-int(x[4]))
+            mycursor.execute(sql, val)
+            mydb.commit()
         msg = "Updated successfully"
         self.dialog = QDialog()
         self.ui = Ui_OK()
         self.ui.setupUi(self.dialog,msg)
         self.dialog.exec()
-        for i in range((l+1)*2):
-            self.tableWidget11.removeRow(i)
+        self.tableWidget11.clearContents()
         self.stackedWidget.setCurrentIndex(0)
 
     
@@ -1007,16 +1251,7 @@ class Ui_MainWindow(object):
                 val = (vouchnum,name,vdate,amount,type_exp,mode,cdated,towards,cdrawn,myresult[0][0],t)
                 mycursor.execute(sql, val)
                 mydb.commit()
-                mycursor.execute("select * from petty_cashbook ORDER BY transaction_id DESC LIMIT 1")
-                myresult = mycursor.fetchall()
-                if len(myresult) == 0:
-                    balance = 0
-                else:
-                    balance = myresult[0][7]
-                sql = "INSERT INTO petty_cashbook (date,name,reciept_number,category,credit,balance) VALUES (%s, %s,%s,%s,%s,%s)"
-                val = (vdate,towards,vouchnum,type_exp,amount,int(balance)-int(amount))
-                mycursor.execute(sql, val)
-                mydb.commit()
+                
                 msg = "Database updated successfully."
                 self.dialog = QDialog()
                 self.ui = Ui_OK()
@@ -1040,16 +1275,6 @@ class Ui_MainWindow(object):
             if insert == 1:
                 sql = "INSERT INTO pettycashbook (voucherid,paidto, voucherdate,amount,type,payment_mode,check_dated,towards,drawn_on) VALUES (%s, %s,%s,%s,%s,%s,%s,%s,%s)"
                 val = (vouchnum,name,vdate,amount,type_exp,mode,cdated,towards,cdrawn)
-                mycursor.execute(sql, val)
-                mydb.commit()
-                mycursor.execute("select * from petty_cashbook ORDER BY transaction_id DESC LIMIT 1")
-                myresult = mycursor.fetchall()
-                if len(myresult) == 0:
-                    balance = 0
-                else:
-                    balance = myresult[0][7]
-                sql = "INSERT INTO petty_cashbook (date,name,reciept_number,category,credit,balance) VALUES (%s, %s,%s,%s,%s,%s)"
-                val = (vdate,towards,vouchnum,type_exp,amount,int(balance)-int(amount))
                 mycursor.execute(sql, val)
                 mydb.commit()
                 msg = "Database updated successfully."
@@ -1533,24 +1758,20 @@ class Ui_MainWindow(object):
             mycursor = mydb.cursor()
             if(student==''):
                 student=0
-            sql = "INSERT INTO all_donations (id_donor, date_of_donation,donation_date,donation_in_name,master_registration_number,reciept_number,payment_mode,payment_description,Ocassion,remarks,category,id_student,amount,remind_date) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            val = (int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end)
-            mycursor.execute(sql, val)
-            mydb.commit()
-            mycursor.execute("update all_donors set number_of_times_donated = number_of_times_donated+1 where donor_id = {0}".format(donor_id))
-            mydb.commit()
-            mycursor.execute("select * from main_cashbook ORDER BY transaction_id DESC LIMIT 1")
-            myresult = mycursor.fetchall()
-            if len(myresult)==0:
-                sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-                val = (formatted_dd,donation_in_name, master_registration, book_number,category,int(amount),int(amount))
+            mycursor.execute("select * from all_donations where master_registration_number = {0}".format(master_registration))
+            update = mycursor.fetchall()
+            l = len(update)
+            if l==0:
+                sql = "INSERT INTO all_donations (id_donor, date_of_donation,donation_date,donation_in_name,master_registration_number,reciept_number,payment_mode,payment_description,Ocassion,remarks,category,id_student,amount,remind_date) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                val = (int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end)
                 mycursor.execute(sql, val)
                 mydb.commit()
-            else:
-                balance = myresult[0][8]
-                sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-                val = (formatted_dd,donation_in_name, master_registration, book_number,category,int(amount),int(balance)+int(amount))
-                mycursor.execute(sql, val)
+                mycursor.execute("update all_donors set number_of_times_donated = number_of_times_donated+1 where donor_id = {0}".format(donor_id))
+                mydb.commit()
+            elif l>0:
+                sql = "Update all_donations set id_donor = {0}, date_of_donation = '{1}',donation_date = '{2}',donation_in_name = '{3}',reciept_number = {5},payment_mode = '{6}',payment_description = '{7}',Ocassion = '{8}',remarks ='{9}',category = {10},id_student = {11},amount = '{12}',remind_date = '{13}' where master_registration_number = {4}".format(int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end)
+                #val = (int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end)
+                mycursor.execute(sql)
                 mydb.commit()
             msg = "Database updated Successfully and donation has been saved"
             self.dialog = QDialog()
@@ -4074,13 +4295,19 @@ class Ui_MainWindow(object):
         if(len(myresult)!=0):         
             c = len(myresult[0])
         r = len(myresult)
+        print(r)
         self.tableWidget11.setColumnCount(c)
         self.tableWidget11.setRowCount(r)
         for row_number, row_data in enumerate(myresult):
          #print(row_number)
-         self.tableWidget11.insertRow(row_number)
+         #self.tableWidget11.insertRow(row_number)
          for column_number, data in enumerate(row_data):
                     #print(column_number)
+           #item_checked = QTableWidgetItem()
+           #item_checked.setCheckState(Qt.Unchecked)
+           #item_checked.setFlags(Qt.ItemIsUserCheckable |Qt.ItemIsEnabled)
+                    #item_checked.setCheckable(True)
+           #self.tableWidget11.setItem(row_number,0, item_checked)
            self.tableWidget11.setItem(row_number, column_number, QTableWidgetItem(str(data)))
         self.tableWidget11.setStyleSheet("QTableWidget {    \n"
 "    background-color: rgb(39, 44, 54);\n"
@@ -4189,39 +4416,39 @@ class Ui_MainWindow(object):
 
         self.donation_confirmation_page = QWidget()
         self.donation_confirmation_page.setObjectName("donation_confirmation_page")
-        self.verticalLayout_116 = QVBoxLayout(self.donation_confirmation_page)
-        self.verticalLayout_116.setObjectName("verticalLayout_116")
-        self.frame = QFrame(self.donation_confirmation_page)
-        self.frame.setStyleSheet("border-radius: 5px;")
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
-        self.frame.setObjectName("frame")
-        self.verticalLayout_1115 = QVBoxLayout(self.frame)
-        self.verticalLayout_1115.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_1115.setSpacing(0)
-        self.verticalLayout_1115.setObjectName("verticalLayout_1115")
-        self.frame_div_content_111 = QFrame(self.frame)
-        self.frame_div_content_111.setMinimumSize(QSize(0, 110))
-        self.frame_div_content_111.setMaximumSize(QSize(16777215, 110))
-        self.frame_div_content_111.setStyleSheet("background-color: rgb(41, 45, 56);\n"
+        self.verticalLayout_126 = QVBoxLayout(self.donation_confirmation_page)
+        self.verticalLayout_126.setObjectName("verticalLayout_126")
+        self.frame12 = QFrame(self.donation_confirmation_page)
+        self.frame12.setStyleSheet("border-radius: 5px;")
+        self.frame12.setFrameShape(QFrame.StyledPanel)
+        self.frame12.setFrameShadow(QFrame.Raised)
+        self.frame12.setObjectName("frame12")
+        self.verticalLayout_1215 = QVBoxLayout(self.frame12)
+        self.verticalLayout_1215.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_1215.setSpacing(0)
+        self.verticalLayout_1215.setObjectName("verticalLayout_1215")
+        self.frame_div_content_121 = QFrame(self.frame12)
+        self.frame_div_content_121.setMinimumSize(QSize(0, 110))
+        self.frame_div_content_121.setMaximumSize(QSize(16777215, 110))
+        self.frame_div_content_121.setStyleSheet("background-color: rgb(41, 45, 56);\n"
 "border-radius: 5px;\n"
 "")
-        self.frame_div_content_111.setFrameShape(QFrame.NoFrame)
-        self.frame_div_content_111.setFrameShadow(QFrame.Raised)
-        self.frame_div_content_111.setObjectName("frame_div_content_111")
-        self.verticalLayout_117 = QVBoxLayout(self.frame_div_content_111)
-        self.verticalLayout_117.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_117.setSpacing(0)
-        self.verticalLayout_117.setObjectName("verticalLayout_117")
-        self.frame_title_wid_111 = QFrame(self.frame_div_content_111)
-        self.frame_title_wid_111.setMaximumSize(QSize(16777215, 35))
-        self.frame_title_wid_111.setStyleSheet("background-color: rgb(39, 44, 54);")
-        self.frame_title_wid_111.setFrameShape(QFrame.StyledPanel)
-        self.frame_title_wid_111.setFrameShadow(QFrame.Raised)
-        self.frame_title_wid_111.setObjectName("frame_title_wid_111")
-        self.verticalLayout_118 = QVBoxLayout(self.frame_title_wid_111)
-        self.verticalLayout_118.setObjectName("verticalLayout_118")
-        self.labelBoxBlenderInstalation12 = QLabel(self.frame_title_wid_111)
+        self.frame_div_content_121.setFrameShape(QFrame.NoFrame)
+        self.frame_div_content_121.setFrameShadow(QFrame.Raised)
+        self.frame_div_content_121.setObjectName("frame_div_content_121")
+        self.verticalLayout_127 = QVBoxLayout(self.frame_div_content_121)
+        self.verticalLayout_127.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_127.setSpacing(0)
+        self.verticalLayout_127.setObjectName("verticalLayout_127")
+        self.frame_title_wid_121 = QFrame(self.frame_div_content_121)
+        self.frame_title_wid_121.setMaximumSize(QSize(16777215, 35))
+        self.frame_title_wid_121.setStyleSheet("background-color: rgb(39, 44, 54);")
+        self.frame_title_wid_121.setFrameShape(QFrame.StyledPanel)
+        self.frame_title_wid_121.setFrameShadow(QFrame.Raised)
+        self.frame_title_wid_121.setObjectName("frame_title_wid_121")
+        self.verticalLayout_128 = QVBoxLayout(self.frame_title_wid_121)
+        self.verticalLayout_128.setObjectName("verticalLayout_118")
+        self.labelBoxBlenderInstalation12 = QLabel(self.frame_title_wid_121)
         font = QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(12)
@@ -4231,30 +4458,30 @@ class Ui_MainWindow(object):
         self.labelBoxBlenderInstalation12.setStyleSheet("")
         self.labelBoxBlenderInstalation12.setAlignment(Qt.AlignCenter)
         self.labelBoxBlenderInstalation12.setObjectName("labelBoxBlenderInstalation12")
-        self.verticalLayout_118.addWidget(self.labelBoxBlenderInstalation12)
-        self.verticalLayout_117.addWidget(self.frame_title_wid_111)
-        self.frame_content_wid_111 = QFrame(self.frame_div_content_111)
-        self.frame_content_wid_111.setFrameShape(QFrame.NoFrame)
-        self.frame_content_wid_111.setFrameShadow(QFrame.Raised)
-        self.frame_content_wid_111.setObjectName("frame_content_wid_111")
-        self.horizontalLayout_119 = QHBoxLayout(self.frame_content_wid_111)
-        self.horizontalLayout_119.setObjectName("horizontalLayout_119")
-        self.verticalLayout_117.addWidget(self.frame_content_wid_111)
-        self.verticalLayout_1115.addWidget(self.frame_div_content_111)
-        self.verticalLayout_116.addWidget(self.frame)
-        self.frame_112 = QFrame(self.donation_confirmation_page)
-        self.frame_112.setMinimumSize(QSize(0, 150))
-        self.frame_112.setStyleSheet("background-color: rgb(39, 44, 54);\n"
+        self.verticalLayout_128.addWidget(self.labelBoxBlenderInstalation12)
+        self.verticalLayout_127.addWidget(self.frame_title_wid_121)
+        self.frame_content_wid_121 = QFrame(self.frame_div_content_121)
+        self.frame_content_wid_121.setFrameShape(QFrame.NoFrame)
+        self.frame_content_wid_121.setFrameShadow(QFrame.Raised)
+        self.frame_content_wid_121.setObjectName("frame_content_wid_121")
+        self.horizontalLayout_129 = QHBoxLayout(self.frame_content_wid_121)
+        self.horizontalLayout_129.setObjectName("horizontalLayout_129")
+        self.verticalLayout_127.addWidget(self.frame_content_wid_121)
+        self.verticalLayout_1215.addWidget(self.frame_div_content_121)
+        self.verticalLayout_126.addWidget(self.frame12)
+        self.frame_122 = QFrame(self.donation_confirmation_page)
+        self.frame_122.setMinimumSize(QSize(0, 150))
+        self.frame_122.setStyleSheet("background-color: rgb(39, 44, 54);\n"
 "border-radius: 5px;")
-        self.frame_112.setFrameShape(QFrame.StyledPanel)
-        self.frame_112.setFrameShadow(QFrame.Raised)
-        self.frame_112.setObjectName("frame_112")
-        self.verticalLayout_1111 = QVBoxLayout(self.frame_112)
-        self.verticalLayout_1111.setObjectName("verticalLayout_1111")
-        self.tableWidget11 = QTableWidget(self.frame_112)
-        self.tableWidget11.setObjectName("tableWidget11")
-        self.tableWidget11.setColumnCount(0)
-        self.tableWidget11.setRowCount(0)
+        self.frame_122.setFrameShape(QFrame.StyledPanel)
+        self.frame_122.setFrameShadow(QFrame.Raised)
+        self.frame_122.setObjectName("frame_122")
+        self.verticalLayout_1211 = QVBoxLayout(self.frame_122)
+        self.verticalLayout_1211.setObjectName("verticalLayout_1211")
+        self.tableWidget12 = QTableWidget(self.frame_122)
+        self.tableWidget12.setObjectName("tableWidget12")
+        self.tableWidget12.setColumnCount(0)
+        self.tableWidget12.setRowCount(0)
         mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -4269,15 +4496,15 @@ class Ui_MainWindow(object):
         if(len(myresult)!=0):         
             c = len(myresult[0])
         r = len(myresult)
-        self.tableWidget11.setColumnCount(c)
-        self.tableWidget11.setRowCount(r)
+        self.tableWidget12.setColumnCount(c)
+        self.tableWidget12.setRowCount(r)
         for row_number, row_data in enumerate(myresult):
          #print(row_number)
-         self.tableWidget11.insertRow(row_number)
+         #self.tableWidget12.insertRow(row_number)
          for column_number, data in enumerate(row_data):
                     #print(column_number)
-           self.tableWidget11.setItem(row_number, column_number, QTableWidgetItem(str(data)))
-        self.tableWidget11.setStyleSheet("QTableWidget {    \n"
+           self.tableWidget12.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        self.tableWidget12.setStyleSheet("QTableWidget {    \n"
 "    background-color: rgb(39, 44, 54);\n"
 "    padding: 10px;\n"
 "    border-radius: 5px;\n"
@@ -4332,18 +4559,18 @@ class Ui_MainWindow(object):
 "}\n"
 "")
         columns = ["database id","vocher id","paid to","voucher date","amount","type of expenditure","payment mode","date on check","towards","drawn on","master id","checked"]
-        self.tableWidget11.setHorizontalHeaderLabels(columns)
-        self.verticalLayout_1111.addWidget(self.tableWidget11)
-        self.frame_113 = QFrame(self.frame_112)
-        self.frame_113.setMinimumSize(QSize(0, 150))
-        self.frame_113.setFrameShape(QFrame.StyledPanel)
-        self.frame_113.setFrameShadow(QFrame.Raised)
-        self.frame_113.setObjectName("frame_113")
-        self.horizontalLayout_1112 = QHBoxLayout(self.frame_113)
-        self.horizontalLayout_1112.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_1112.setSpacing(0)
-        self.horizontalLayout_1112.setObjectName("horizontalLayout_1112")
-        self.pushButton_134 = QPushButton(self.frame_113)
+        self.tableWidget12.setHorizontalHeaderLabels(columns)
+        self.verticalLayout_1211.addWidget(self.tableWidget12)
+        self.frame_123 = QFrame(self.frame_122)
+        self.frame_123.setMinimumSize(QSize(0, 150))
+        self.frame_123.setFrameShape(QFrame.StyledPanel)
+        self.frame_123.setFrameShadow(QFrame.Raised)
+        self.frame_123.setObjectName("frame_123")
+        self.horizontalLayout_1212 = QHBoxLayout(self.frame_123)
+        self.horizontalLayout_1212.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_1212.setSpacing(0)
+        self.horizontalLayout_1212.setObjectName("horizontalLayout_1212")
+        self.pushButton_134 = QPushButton(self.frame_123)
         self.pushButton_134.setObjectName("pushButton_134")
         self.pushButton_134.setStyleSheet(u"QPushButton {\n"
 "	border: 2px solid rgb(52, 59, 72);\n"
@@ -4358,9 +4585,9 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
-        #self.pushButton_124.clicked.connect(self.exp_edit)
-        self.horizontalLayout_1112.addWidget(self.pushButton_134)
-        self.pushButton_132 = QPushButton(self.frame_113)
+        self.pushButton_134.clicked.connect(self.donation_edit)
+        self.horizontalLayout_1212.addWidget(self.pushButton_134)
+        self.pushButton_132 = QPushButton(self.frame_123)
         self.pushButton_132.setText("")
         self.pushButton_132.setObjectName("pushButton_132")
         self.pushButton_132.setStyleSheet(u"QPushButton {\n"
@@ -4376,10 +4603,10 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
-        #self.pushButton_122.clicked.connect(self.exp_confirm)
-        self.horizontalLayout_1112.addWidget(self.pushButton_132)
-        self.verticalLayout_1111.addWidget(self.frame_113)
-        self.verticalLayout_116.addWidget(self.frame_112)
+        self.pushButton_132.clicked.connect(self.donation_confirm)
+        self.horizontalLayout_1212.addWidget(self.pushButton_132)
+        self.verticalLayout_1211.addWidget(self.frame_123)
+        self.verticalLayout_126.addWidget(self.frame_122)
         self.stackedWidget.addWidget(self.donation_confirmation_page)
 
 
@@ -4433,6 +4660,14 @@ class Ui_MainWindow(object):
         self.horizontalLayout_1412.addWidget(self.label_144)
         self.comboBox14 = QComboBox(self.bank_statement)
         self.comboBox14.setObjectName("comboBox14")
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from banks")
+        myresult = mycursor.fetchall()
+        i=0
+        for x in myresult:
+            self.comboBox14.addItem("")
+            self.comboBox14.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
+            i+=1
         self.horizontalLayout_1412.addWidget(self.comboBox14)
         self.verticalLayout_1410.addLayout(self.horizontalLayout_1412)
         self.pushButton14 = QPushButton(self.bank_statement)
@@ -4456,7 +4691,24 @@ class Ui_MainWindow(object):
         self.tableWidget14.setObjectName("tableWidget14")
         self.tableWidget14.setColumnCount(0)
         self.tableWidget14.setRowCount(0)
+        self.pushButton141 = QPushButton(self.bank_statement)
+        self.pushButton141.setObjectName("pushButton141")
+        self.pushButton141.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.pushButton141.clicked.connect(self.add_bank)
         self.verticalLayout_1410.addWidget(self.tableWidget14)
+        self.verticalLayout_1410.addWidget(self.pushButton141)
         self.stackedWidget.addWidget(self.bank_statement)
 
         self.add_scheme = QWidget()
@@ -4561,6 +4813,213 @@ class Ui_MainWindow(object):
         self.verticalLayout_156.addLayout(self.gridLayout15)
         self.verticalLayout_1510.addLayout(self.verticalLayout_156)
         self.stackedWidget.addWidget(self.add_scheme)
+
+        self.withdraw = QWidget()
+        self.withdraw.setObjectName("withdraw")
+        self.verticalLayout_1710 = QVBoxLayout(self.withdraw)
+        self.verticalLayout_1710.setObjectName("verticalLayout_1710")
+        self.verticalLayout_176 = QVBoxLayout()
+        self.verticalLayout_176.setObjectName("verticalLayout_176")
+        self.label17 = QLabel(self.withdraw)
+        self.label17.setMaximumSize(QSize(16777215, 30))
+        font = QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label17.setFont(font)
+        self.label17.setAlignment(Qt.AlignCenter)
+        self.label17.setObjectName("label17")
+        self.verticalLayout_176.addWidget(self.label17)
+        self.gridLayout17 = QGridLayout()
+        self.gridLayout17.setObjectName("gridLayout17")
+        self.gridLayout17.setHorizontalSpacing(30)
+        self.gridLayout17.setVerticalSpacing(40)
+        self.label_172 = QLabel(self.withdraw)
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_172.setFont(font)
+        self.label_172.setObjectName("label_172")
+        self.gridLayout17.addWidget(self.label_172, 0, 0, 1, 1)
+        self.comboBox17 = QComboBox(self.withdraw)
+        self.comboBox17.setMinimumSize(QSize(0, 30))
+        self.comboBox17.setObjectName("comboBox17")
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        print(mydb)
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from banks")
+        myresult = mycursor.fetchall()
+        i=0
+        for x in myresult:
+            self.comboBox17.addItem("")
+            self.comboBox17.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
+            i+=1
+        self.gridLayout17.addWidget(self.comboBox17, 1, 1, 1, 1)
+        self.label_173 = QLabel(self.withdraw)
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_173.setFont(font)
+        self.label_173.setObjectName("label_173")
+        self.gridLayout17.addWidget(self.label_173, 2, 0, 1, 1)
+        self.lineEdit17 = QLineEdit(self.withdraw)
+        self.lineEdit17.setMinimumSize(QSize(0, 30))
+        self.lineEdit17.setObjectName("lineEdit17")
+        self.gridLayout17.addWidget(self.lineEdit17, 2, 1, 1, 1)
+        self.label_174 = QLabel(self.withdraw)
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_174.setFont(font)
+        self.label_174.setObjectName("label_174")
+        self.gridLayout17.addWidget(self.label_174, 1, 0, 1, 1)
+        self.dateEdit17 = QDateEdit(self.withdraw)
+        self.dateEdit17.setMinimumSize(QSize(0, 30))
+        now = datetime.now()
+        self.dateEdit17.setDate(now)
+        font = QFont()
+        font.setPointSize(11)
+        self.dateEdit17.setFont(font)
+        self.dateEdit17.setObjectName("dateEdit17")
+        self.gridLayout17.addWidget(self.dateEdit17, 0, 1, 1, 1)
+        self.label_175 = QLabel(self.withdraw)
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_175.setFont(font)
+        self.label_175.setObjectName("label_175")
+        self.gridLayout17.addWidget(self.label_175, 3, 0, 1, 1)
+        self.textEdit17 = QTextEdit(self.withdraw)
+        self.textEdit17.setMaximumSize(QSize(16777215, 100))
+        font = QFont()
+        font.setPointSize(12)
+        self.textEdit17.setFont(font)
+        self.textEdit17.setObjectName("textEdit17")
+        self.gridLayout17.addWidget(self.textEdit17, 3, 1, 1, 1)
+        self.verticalLayout_176.addLayout(self.gridLayout17)
+        self.verticalLayout_1710.addLayout(self.verticalLayout_176)
+        self.pushButton17 =QPushButton(self.withdraw)
+        self.pushButton17.setMinimumSize(QSize(0, 30))
+        self.pushButton17.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.pushButton17.setFont(font)
+        self.pushButton17.setObjectName("pushButton17")
+        self.pushButton17.clicked.connect(self.withdraw_from_bank)
+        self.verticalLayout_1710.addWidget(self.pushButton17)
+        self.stackedWidget.addWidget(self.withdraw)
+
+        self.add_bank_acc = QWidget()
+        self.add_bank_acc.setObjectName("add_bank_acc")
+        self.verticalLayout_1610 = QVBoxLayout(self.add_bank_acc)
+        self.verticalLayout_1610.setObjectName("verticalLayout_1610")
+        self.verticalLayout_166 = QVBoxLayout()
+        self.verticalLayout_166.setObjectName("verticalLayout_166")
+        self.label116 = QLabel(self.add_bank_acc)
+        self.label116.setMaximumSize(QSize(16777215, 30))
+        font = QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label116.setFont(font)
+        self.label116.setAlignment(Qt.AlignCenter)
+        self.label116.setObjectName("label116")
+        self.verticalLayout_166.addWidget(self.label116)
+        self.gridLayout16 = QGridLayout()
+        self.gridLayout16.setObjectName("gridLayout")
+        self.label_163 = QLabel(self.add_bank_acc)
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_163.setFont(font)
+        self.label_163.setObjectName("label_163")
+        self.gridLayout16.addWidget(self.label_163, 2, 0, 1, 1)
+        self.label_162 = QLabel(self.add_bank_acc)
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_162.setFont(font)
+        self.label_162.setObjectName("label_162")
+        self.gridLayout16.addWidget(self.label_162, 1, 0, 1, 1)
+        self.lineEdit16 = QLineEdit(self.add_bank_acc)
+        self.lineEdit16.setMinimumSize(QSize(0, 30))
+        self.lineEdit16.setObjectName("lineEdit16")
+        self.gridLayout16.addWidget(self.lineEdit16, 1, 1, 1, 1)
+        self.textEdit16 = QTextEdit(self.add_bank_acc)
+        self.textEdit16.setMaximumSize(QSize(16777215, 100))
+        font = QFont()
+        font.setPointSize(12)
+        self.textEdit16.setFont(font)
+        self.textEdit16.setObjectName("textEdit16")
+        self.gridLayout16.addWidget(self.textEdit16, 2, 1, 1, 1)
+        self.label16 = QLabel(self.add_bank_acc)
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label16.setFont(font)
+        self.label16.setObjectName("label16")
+        self.gridLayout16.addWidget(self.label16, 0, 0, 1, 1)
+        self.lineEdit_162 = QLineEdit(self.add_bank_acc)
+        self.lineEdit_162.setMinimumSize(QSize(0, 30))
+        font = QFont()
+        font.setPointSize(12)
+        self.lineEdit_162.setFont(font)
+        self.lineEdit_162.setObjectName("lineEdit_162")
+        self.gridLayout16.addWidget(self.lineEdit_162, 0, 1, 1, 1)
+        self.verticalLayout_166.addLayout(self.gridLayout16)
+        self.verticalLayout_1610.addLayout(self.verticalLayout_166)
+        self.pushButton16 = QPushButton(self.add_bank_acc)
+        self.pushButton16.setMinimumSize(QSize(0, 30))
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.pushButton16.setFont(font)
+        self.pushButton16.setObjectName("pushButton16")
+        self.pushButton16.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.pushButton16.clicked.connect(self.add_bank_account)
+        self.verticalLayout_1610.addWidget(self.pushButton16)
+        self.stackedWidget.addWidget(self.add_bank_acc)
 
         self.page_widgets = QWidget()
         self.page_widgets.setObjectName(u"page_widgets")
@@ -5478,6 +5937,7 @@ class Ui_MainWindow(object):
         self.label_143.setText(QCoreApplication.translate("MainWindow", " To"))
         self.label_144.setText(QCoreApplication.translate("MainWindow", "Choose Bank"))
         self.pushButton14.setText(QCoreApplication.translate("MainWindow", "Get Statement"))
+        self.pushButton141.setText(QCoreApplication.translate("MainWindow", "Add Bank Account"))
 
         self.label15.setText(QCoreApplication.translate("MainWindow", "Add Scheme"))
         self.lineEdit_153.setText(QCoreApplication.translate("MainWindow", "number of days"))
@@ -5487,6 +5947,30 @@ class Ui_MainWindow(object):
         self.label_154.setText(QCoreApplication.translate("MainWindow", "Reminder (in days)"))
         self.label_156.setText(QCoreApplication.translate("MainWindow", "Scheme id"))
         self.pushButton15.setText(QCoreApplication.translate("MainWindow", "Add scheme"))
+
+        self.label17.setText(QCoreApplication.translate("MainWindow", "Withdraw from Bank"))
+        self.label_172.setText(QCoreApplication.translate("MainWindow", "Date"))
+        self.label_173.setText(QCoreApplication.translate("MainWindow", "Amount"))
+        self.label_174.setText(QCoreApplication.translate("MainWindow", "Bank"))
+        self.label_175.setText(QCoreApplication.translate("MainWindow", "Description"))
+        self.pushButton17.setText(QCoreApplication.translate("MainWindow", "WithDraw"))
+        self.textEdit17.setHtml(QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n""body { background-color: rgba(66, 73, 90, 255);}"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p></body></html>"))
+
+        self.label116.setText(QCoreApplication.translate("MainWindow", "Add Bank Account"))
+        self.label_163.setText(QCoreApplication.translate("MainWindow", "Bank Details"))
+        self.label_162.setText(QCoreApplication.translate("MainWindow", "Bank name & Branch"))
+        self.label16.setText(QCoreApplication.translate("MainWindow", "Bank name (in application)"))
+        self.lineEdit_162.setText(QCoreApplication.translate("MainWindow", "This name would be displayed for further references"))
+        self.pushButton16.setText(QCoreApplication.translate("MainWindow", "Add Account"))
+        self.textEdit16.setHtml(QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n""body { background-color: rgba(66, 73, 90, 255);}"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p></body></html>"))
 
         self.label_credits.setText(QCoreApplication.translate("MainWindow", u"Registered by: Team Chitra Gupta", None))
         self.label_version.setText(QCoreApplication.translate("MainWindow", u"v1.0.0", None))

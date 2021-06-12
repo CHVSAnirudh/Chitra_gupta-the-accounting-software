@@ -18,6 +18,68 @@ from add_donor_confirmation import *
 from ok_popup import *
 
 class Ui_MainWindow(object):
+    def add_manual_transaction(self):
+        amount = self.lineEdit_192.text()
+        bank = self.comboBox_192.currentText()
+        description = self.textEdit19.toPlainText()
+        date = self.dateEdit19.date()
+        date = date.toPython()
+        date = date.strftime('%Y-%m-%d')
+        withdrawal = 0
+        deposit = 0
+        if self.radioButton_192.isChecked():
+            withdrawal =1
+        elif self.radioButton_193.isChecked():
+            deposit = 1
+        print(amount,bank,description,date,withdrawal,deposit)
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute("select balance from bank_statement where bank_name = '{0}'".format(bank))
+        r = mycursor.fetchall()
+        if len(r)!=0:
+            balance = r[-1][0]
+        else:
+            balance = 0
+        if withdrawal ==0 and deposit == 0:
+            msg = "Please select the transaction type."
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec()
+        elif not amount.isnumeric() or len(description)==0 or len(amount)==0:
+            msg = "Enter all the details properly"
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec()
+        if withdrawal == 1:
+            sql = "INSERT INTO bank_statement (bank_name,date,description,withdrawal,balance) VALUES (%s,%s,%s,%s,%s)"
+            val = (bank,date,description,amount,int(balance)-int(amount))
+            mycursor.execute(sql, val)
+            mydb.commit()
+            msg = "Database updated successfully. The amount has been withdrawn."
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec() 
+            self.stackedWidget.setCurrentIndex(15)
+        elif deposit==1:
+            sql = "INSERT INTO bank_statement (bank_name,date,description,deposits,balance) VALUES (%s,%s,%s,%s,%s)"
+            val = (bank,date,description,amount,int(balance)+int(amount))
+            mycursor.execute(sql, val)
+            mydb.commit()
+            msg = "Database updated successfully. The amount has been deposited."
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec() 
+            self.stackedWidget.setCurrentIndex(15)
+
     def manual_trasaction_page(self):
         self.stackedWidget.setCurrentIndex(20)
     def add_exp_cat(self):
@@ -4751,6 +4813,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_1412.addWidget(self.label_144)
         self.comboBox14 = QComboBox(self.bank_statement)
         self.comboBox14.setObjectName("comboBox14")
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
         mycursor = mydb.cursor()
         mycursor.execute("select * from banks")
         myresult = mycursor.fetchall()
@@ -5199,9 +5267,14 @@ class Ui_MainWindow(object):
         self.verticalLayout_1910.setObjectName("verticalLayout_1910")
         self.gridLayout_194 = QGridLayout()
         self.gridLayout_194.setObjectName("gridLayout_194")
+        self.gridLayout_194.setHorizontalSpacing(30)
+        self.gridLayout_194.setVerticalSpacing(40)
+        self.horizontalLayout_1910 = QHBoxLayout()
+        self.horizontalLayout_1910.setObjectName("horizontalLayout_1910")
         self.radioButton_192 = QRadioButton(self.manual_transaction)
         self.radioButton_192.setObjectName("radioButton_192")
-        self.gridLayout_194.addWidget(self.radioButton_192, 6, 0, 1, 1)
+        self.horizontalLayout_1910.addWidget(self.radioButton_192)
+        self.gridLayout_194.addLayout(self.horizontalLayout_1910, 6, 2, 1, 1)
         self.lineEdit_192 = QLineEdit(self.manual_transaction)
         self.lineEdit_192.setMaximumSize(QSize(16777215, 35))
         self.lineEdit_192.setObjectName("lineEdit_192")
@@ -5209,6 +5282,20 @@ class Ui_MainWindow(object):
         self.comboBox_192 = QComboBox(self.manual_transaction)
         self.comboBox_192.setMaximumSize(QSize(16777215, 40))
         self.comboBox_192.setObjectName("comboBox_192")
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from banks")
+        myresult = mycursor.fetchall()
+        i=0
+        for x in myresult:
+            self.comboBox_192.addItem("")
+            self.comboBox_192.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
+            i+=1
         self.gridLayout_194.addWidget(self.comboBox_192, 3, 1, 1, 2)
         self.label_192 = QLabel(self.manual_transaction)
         self.label_192.setMaximumSize(QSize(16777215, 50))
@@ -5242,6 +5329,8 @@ class Ui_MainWindow(object):
         self.dateEdit19 = QDateEdit(self.manual_transaction)
         self.dateEdit19.setMaximumSize(QSize(16777215, 40))
         self.dateEdit19.setObjectName("dateEdit19")
+        now = datetime.now()
+        self.dateEdit19.setDate(now)
         self.gridLayout_194.addWidget(self.dateEdit19, 1, 1, 1, 2)
         self.label19 = QLabel(self.manual_transaction)
         self.label19.setMaximumSize(QSize(16777215, 80))
@@ -5251,10 +5340,11 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.label19.setFont(font)
         self.label19.setObjectName("label19")
+        self.label19.setAlignment(Qt.AlignCenter)
         self.gridLayout_194.addWidget(self.label19, 0, 0, 1, 3)
         self.radioButton_193 = QRadioButton(self.manual_transaction)
         self.radioButton_193.setObjectName("radioButton_193")
-        self.gridLayout_194.addWidget(self.radioButton_193, 6, 2, 1, 1)
+        self.horizontalLayout_1910.addWidget(self.radioButton_193)
         self.label_193 = QLabel(self.manual_transaction)
         self.label_193.setMaximumSize(QSize(16777215, 50))
         font = QFont()
@@ -5266,6 +5356,20 @@ class Ui_MainWindow(object):
         self.gridLayout_194.addWidget(self.label_193, 3, 0, 1, 1)
         self.pushButton_192 = QPushButton(self.manual_transaction)
         self.pushButton_192.setObjectName("pushButton_192")
+        self.pushButton_192.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.pushButton_192.clicked.connect(self.add_manual_transaction)
         self.gridLayout_194.addWidget(self.pushButton_192, 7, 0, 1, 3)
         self.verticalLayout_1910.addLayout(self.gridLayout_194)
         self.stackedWidget.addWidget(self.manual_transaction)
@@ -6255,6 +6359,12 @@ class Ui_MainWindow(object):
         self.lineEdit_162.setText(QCoreApplication.translate("MainWindow", "This name would be displayed for further references"))
         self.pushButton16.setText(QCoreApplication.translate("MainWindow", "Add Account"))
         self.textEdit16.setHtml(QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n""body { background-color: rgba(66, 73, 90, 255);}"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p></body></html>"))
+
+        self.textEdit19.setHtml(QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n""body { background-color: rgba(66, 73, 90, 255);}"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"

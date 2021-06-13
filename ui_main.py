@@ -389,7 +389,8 @@ class Ui_MainWindow(object):
         val = (fnow,name,amount,int(balance)-amount,dep)
         mycursor.execute(sql, val)
         mydb.commit()
-        bank = self.comboBox_66.currentText()
+        bank = self.comboBox_666.currentText()
+        print(bank)
         mycursor.execute("select balance from bank_statement where bank_name = '{0}'".format(bank))
         r = mycursor.fetchall()
         if len(r)!=0:
@@ -449,8 +450,8 @@ class Ui_MainWindow(object):
             if self.buttoncash.isChecked():
                 status =1
             if status == 1:
-                self.comboBox_66 = QComboBox(self.cashbook)
-                self.comboBox_66.setObjectName("comboBox_66")
+                self.comboBox_666 = QComboBox(self.cashbook)
+                self.comboBox_666.setObjectName("comboBox_666")
                 mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
@@ -463,13 +464,13 @@ class Ui_MainWindow(object):
                 myresult = mycursor.fetchall()
                 i=0
                 for x in myresult:
-                    self.comboBox_66.addItem("")
-                    self.comboBox_66.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
+                    self.comboBox_666.addItem("")
+                    self.comboBox_666.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
                     i+=1
                 if self.horizontalLayout_611.count()==2:
                     pass
                 else:
-                    self.horizontalLayout_611.addWidget(self.comboBox_66)
+                    self.horizontalLayout_611.addWidget(self.comboBox_666)
                     self.pushButton_62 = QPushButton(self.cashbook)
                     self.pushButton_62.setObjectName("pushButton_62")
                     self.pushButton_62.setStyleSheet(u"QPushButton {\n"

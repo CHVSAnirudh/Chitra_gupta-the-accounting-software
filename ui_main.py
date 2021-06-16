@@ -1683,7 +1683,12 @@ class Ui_MainWindow(object):
             val = (username, passw,g,fname,lname,designation)
             mycursor.execute(sql, val)
             mydb.commit()
-            
+            msg = "Database updated succesfully. New account has been created."
+            self.dialog = QDialog()
+            self.ui = Ui_OK()
+            self.ui.setupUi(self.dialog,msg)
+            self.dialog.exec()
+            self.stackedWidget.setCurrentIndex(0)
     def dreports(self):
         self.stackedWidget.setCurrentIndex(10)
     

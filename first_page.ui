@@ -1623,8 +1623,8 @@ QPushButton:pressed {
                             <layout class="QVBoxLayout" name="verticalLayout_8">
                              <item>
                               <layout class="QGridLayout" name="gridLayout">
-                               <item row="1" column="1">
-                                <widget class="QLabel" name="label0">
+                               <item row="2" column="3">
+                                <widget class="QLabel" name="label_03">
                                  <property name="minimumSize">
                                   <size>
                                    <width>150</width>
@@ -1633,7 +1633,7 @@ QPushButton:pressed {
                                  </property>
                                  <property name="maximumSize">
                                   <size>
-                                   <width>200</width>
+                                   <width>250</width>
                                    <height>200</height>
                                   </size>
                                  </property>
@@ -1641,14 +1641,14 @@ QPushButton:pressed {
                                   <string/>
                                  </property>
                                  <property name="pixmap">
-                                  <pixmap resource="fp.qrc">:/newPrefix/icons/16x16/diya.jpg</pixmap>
+                                  <pixmap resource="files.qrc">:/16x16/icons/16x16/10741493-removebg-preview.png</pixmap>
                                  </property>
                                  <property name="scaledContents">
                                   <bool>true</bool>
                                  </property>
                                 </widget>
                                </item>
-                               <item row="2" column="1" colspan="4">
+                               <item row="3" column="1" colspan="4">
                                 <widget class="QLabel" name="label_06">
                                  <property name="text">
                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#010000;&quot;&gt;KARUNASRI SEVA SAMITHI &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#ff0000;&quot;&gt;KARUNYA SINDHU ASHRAM &lt;/span&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#010000;&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#ff0000;&quot;&gt; KARUNYA BHARATHI ASHRAM &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#010000;&quot;&gt;(Home for Orphan Boys)&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; color:#010000;&quot;&gt;Seva prakalp of V.H.P.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1669,8 +1669,8 @@ QPushButton:pressed {
                                  </property>
                                 </widget>
                                </item>
-                               <item row="1" column="3">
-                                <widget class="QLabel" name="label_03">
+                               <item row="1" column="1">
+                                <widget class="QLabel" name="label0">
                                  <property name="minimumSize">
                                   <size>
                                    <width>150</width>
@@ -1679,7 +1679,7 @@ QPushButton:pressed {
                                  </property>
                                  <property name="maximumSize">
                                   <size>
-                                   <width>250</width>
+                                   <width>200</width>
                                    <height>200</height>
                                   </size>
                                  </property>
@@ -1687,7 +1687,7 @@ QPushButton:pressed {
                                   <string/>
                                  </property>
                                  <property name="pixmap">
-                                  <pixmap resource="files.qrc">:/16x16/icons/16x16/10741493-removebg-preview.png</pixmap>
+                                  <pixmap resource="files.qrc">:/16x16/icons/16x16/favicon.jpg</pixmap>
                                  </property>
                                  <property name="scaledContents">
                                   <bool>true</bool>

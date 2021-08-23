@@ -2404,7 +2404,7 @@ class Ui_MainWindow(object):
         self.frame_icon_top_bar.setObjectName(u"frame_icon_top_bar")
         self.frame_icon_top_bar.setMaximumSize(QSize(30, 30))
         self.frame_icon_top_bar.setStyleSheet(u"background: transparent;\n"
-"background-image: url(:/16x16/icons/16x16/cil-terminal.png);\n"
+"background-image: url(:/16x16/icons/16x16/favicon.jpg);\n"
 "background-position: center;\n"
 "background-repeat: no-repeat;\n"
 "")

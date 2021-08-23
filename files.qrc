@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="16x16">
+    <file>icons/16x16/favicon.jpg</file>
+    <file>icons/16x16/chitragupta.jpeg</file>
     <file>icons/16x16/diya.jpg</file>
     <file>icons/16x16/10741493-removebg-preview.png</file>
     <file>icons/16x16/cil-arrow-bottom.png</file>

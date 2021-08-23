@@ -14,6 +14,7 @@ import sys
 import os
 from ok_popup import *
 import platform
+import files_rc
 from app_modules import *
 from main import *
 class Ui_login(object):
@@ -101,11 +102,14 @@ class Ui_login(object):
         font.setPointSize(80)
         font.setBold(False)
         font.setWeight(50)
-        self.label.setFont(font)
-        self.label.setStyleSheet("background-color:rgba(0,0,0,0,);\n"
-"color:rgba(0,125,236,255);")
+        #self.label.setFont(font)
+        #self.label.setStyleSheet("background-color:rgba(0,0,0,0,);\n"
+#"color:rgba(0,125,236,255);")
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
+        self.label.setText("")
+        self.label.setPixmap(QtGui.QPixmap(":/16x16/icons/16x16/chitragupta.jpeg"))
+        self.label.setScaledContents(True)
         self.lineEdit_3 = QtWidgets.QLineEdit(self.widget)
         self.lineEdit_3.setGeometry(QtCore.QRect(20, 210, 250, 30))
         self.lineEdit_3.setStyleSheet("background-color:rgba(0,0,0,0);\n"
@@ -197,7 +201,7 @@ class Ui_login(object):
         _translate = QtCore.QCoreApplication.translate
         login.setWindowTitle(_translate("login", "Login"))
         self.pushButton.setText(_translate("login", "Log In"))
-        self.label.setText(_translate("login", "👤"))
+        #self.label.setText(_translate("login", "👤"))
         self.lineEdit_3.setPlaceholderText(_translate("login", "User Name"))
         self.lineEdit_4.setPlaceholderText(_translate("login", "Password"))
         self.Masterlogin.setText(_translate("login", "Master login"))

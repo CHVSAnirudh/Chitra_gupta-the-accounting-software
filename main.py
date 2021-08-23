@@ -10,6 +10,7 @@ from login import *
 from intro import *
 import os
 import mysql.connector
+import time
 
 class MainWindow(QMainWindow):
     ltype = ''
@@ -23,6 +24,7 @@ class MainWindow(QMainWindow):
         ui = Ui_login()
         ui.setupUi(Form)
         Form.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
+        time.sleep(3)
         Form.exec() 
         print('System: ' + platform.system())
         print('Version: ' +platform.release())
@@ -244,6 +246,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     QtGui.QFontDatabase.addApplicationFont('fonts/segoeui.ttf')
     QtGui.QFontDatabase.addApplicationFont('fonts/segoeuib.ttf')
+    window1 = SplashScreen()
     window = MainWindow()
     sys.exit(app.exec_())
     

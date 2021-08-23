@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>icons/16x16/10741493-removebg-preview.png</file>
+    <file>icons/16x16/diya.jpg</file>
+  </qresource>
+</RCC>

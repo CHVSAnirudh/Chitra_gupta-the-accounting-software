@@ -1596,8 +1596,8 @@ QPushButton:pressed {
                         <rect>
                          <x>0</x>
                          <y>0</y>
-                         <width>1465</width>
-                         <height>2168</height>
+                         <width>1730</width>
+                         <height>2318</height>
                         </rect>
                        </property>
                        <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1606,11 +1606,11 @@ QPushButton:pressed {
                           <property name="minimumSize">
                            <size>
                             <width>0</width>
-                            <height>2150</height>
+                            <height>2300</height>
                            </size>
                           </property>
                           <property name="styleSheet">
-                           <string notr="true"/>
+                           <string notr="true">background-color: rgb(255, 255, 255);</string>
                           </property>
                           <property name="frameShape">
                            <enum>QFrame::StyledPanel</enum>
@@ -1624,7 +1624,7 @@ QPushButton:pressed {
                              <item>
                               <layout class="QGridLayout" name="gridLayout">
                                <item row="1" column="1">
-                                <widget class="QLabel" name="label">
+                                <widget class="QLabel" name="label0">
                                  <property name="minimumSize">
                                   <size>
                                    <width>150</width>
@@ -1641,7 +1641,7 @@ QPushButton:pressed {
                                   <string/>
                                  </property>
                                  <property name="pixmap">
-                                  <pixmap resource="files.qrc">:/16x16/icons/16x16/diya.jpg</pixmap>
+                                  <pixmap resource="fp.qrc">:/newPrefix/icons/16x16/diya.jpg</pixmap>
                                  </property>
                                  <property name="scaledContents">
                                   <bool>true</bool>
@@ -1649,28 +1649,28 @@ QPushButton:pressed {
                                 </widget>
                                </item>
                                <item row="2" column="1" colspan="4">
-                                <widget class="QLabel" name="label_6">
+                                <widget class="QLabel" name="label_06">
                                  <property name="text">
-                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;KARUNASRI SEVA SAMITHI &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ff0000;&quot;&gt;KARUNYA SINDHU ASHRAM&lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt; &amp;amp;&lt;/span&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ff0000;&quot;&gt; KARUNYA BHARATHI ASHRAM &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;(Home for Orphan Boys)&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Seva prakalp of V.H.P.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#010000;&quot;&gt;KARUNASRI SEVA SAMITHI &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#ff0000;&quot;&gt;KARUNYA SINDHU ASHRAM &lt;/span&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#010000;&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#ff0000;&quot;&gt; KARUNYA BHARATHI ASHRAM &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#010000;&quot;&gt;(Home for Orphan Boys)&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; color:#010000;&quot;&gt;Seva prakalp of V.H.P.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                  </property>
                                 </widget>
                                </item>
                                <item row="0" column="4">
-                                <widget class="QLabel" name="label_4">
+                                <widget class="QLabel" name="label_04">
                                  <property name="text">
-                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;SAMSKAR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#010000;&quot;&gt;SAMSKAR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                  </property>
                                 </widget>
                                </item>
                                <item row="0" column="1">
-                                <widget class="QLabel" name="label_5">
+                                <widget class="QLabel" name="label_05">
                                  <property name="text">
-                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;SEVA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#010000;&quot;&gt;SEVA&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                  </property>
                                 </widget>
                                </item>
                                <item row="1" column="3">
-                                <widget class="QLabel" name="label_3">
+                                <widget class="QLabel" name="label_03">
                                  <property name="minimumSize">
                                   <size>
                                    <width>150</width>
@@ -1697,25 +1697,25 @@ QPushButton:pressed {
                               </layout>
                              </item>
                              <item>
-                              <widget class="QLabel" name="label_7">
+                              <widget class="QLabel" name="label_07">
                                <property name="text">
-                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;No.17-1-474, Krishna Nagar Colony,Saidabad, Hyderabad-500 059 &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#010000;&quot;&gt;No.17-1-474, Krishna Nagar Colony,Saidabad, Hyderabad-500 059 &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                               </widget>
                              </item>
                              <item>
                               <layout class="QHBoxLayout" name="horizontalLayout_9">
                                <item>
-                                <widget class="QLabel" name="label_2">
+                                <widget class="QLabel" name="label_02">
                                  <property name="text">
-                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ff0000;&quot;&gt;Mob:&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; 9000889785 &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ff0000;&quot;&gt;Email:&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; karunasri1999@gmail.com &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#ff0000;&quot;&gt;Mob:&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;/&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;9000889785 &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#ff0000;&quot;&gt;Email:&lt;/span&gt;&lt;span style=&quot; font-size:14pt;&quot;/&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;karunasri1999@gmail.com &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                  </property>
                                 </widget>
                                </item>
                                <item>
-                                <widget class="QLabel" name="label_8">
+                                <widget class="QLabel" name="label_08">
                                  <property name="text">
-                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ff0000;&quot;&gt;Landline:&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; 040-24073204&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ff0000;&quot;&gt;Registration No.&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;7451/1999&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#ff0000;&quot;&gt;Landline:&lt;/span&gt;&lt;span style=&quot; font-size:16pt;&quot;/&gt;&lt;span style=&quot; font-size:16pt; color:#010000;&quot;&gt;040-24073204&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#ff0000;&quot;&gt;Registration No.&lt;/span&gt;&lt;span style=&quot; font-size:16pt; color:#010000;&quot;&gt;7451/1999&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                  </property>
                                 </widget>
                                </item>
@@ -1724,7 +1724,7 @@ QPushButton:pressed {
                              <item>
                               <widget class="QLabel" name="label_9">
                                <property name="text">
-                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ff0000;&quot;&gt;websites:&lt;/span&gt;&lt;a href=&quot;https://www.karunasri.org&quot;&gt;&lt;span style=&quot; font-size:14pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://www.karunasri.org&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt; / www.karunasri.org &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ff0000;&quot;&gt;PAN No.&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt; AAATK6724F&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#ff0000;&quot;&gt;websites:&lt;/span&gt;&lt;a href=&quot;https://www.karunasri.org&quot;&gt;&lt;span style=&quot; font-size:16pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://www.karunasri.org&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#010000;&quot;&gt;/ &lt;/span&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#020000;&quot;&gt;www.karunasri.org &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#ff0000;&quot;&gt;PAN No.&lt;/span&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#010000;&quot;&gt;AAATK6724F&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                                <property name="openExternalLinks">
                                 <bool>true</bool>
@@ -1732,14 +1732,14 @@ QPushButton:pressed {
                               </widget>
                              </item>
                              <item>
-                              <widget class="QLabel" name="label_10">
+                              <widget class="QLabel" name="label_010">
                                <property name="text">
-                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Karunasri Seva Samithi established Karunya Sindhu Ashram in the year 1999 to cater services to the students who are Orphan/Semi-Orphan &amp;amp; from BPL families. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;It is a Unit of V.H.P. Presently it takes care of all round development of the 50 inmate students providing them food, shelter, schooling, and giving them Samskaras etc., &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;We have 15 college going students &amp;amp; 35 school going students. Presently we have 1 doing M. A,1 in M.Sc, 2 in B.Tech, 4 in Degree course 3 in Diploma (Polytechnic),. and 4 in Jr.college. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;All the School going students are studying in school-Saraswathi Sishu Mandir and the Annual School fees is Rs 5.00 lacs and for college students it is about Rs 3.0 lacs. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Our Second Service Cum Skill development Centre - Karunya Bharathi is under construction at Kurma Basti, Keshavgiri,Chandrayangutta&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;Karunasri Seva Samithi established Karunya Sindhu Ashram in the year 1999 to cater services to the students who are Orphan/Semi-Orphan &amp;amp; from BPL families. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;It is a Unit of V.H.P. Presently it takes care of all round development of the 50 inmate students providing them food, shelter, schooling, and giving them Samskaras etc., &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;We have 15 college going students &amp;amp; 35 school going students. Presently we have 1 doing M. A,1 in M.Sc, 2 in B.Tech, 4 in Degree course 3 in Diploma (Polytechnic),. and 4 in Jr.college. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;All the School going students are studying in school-Saraswathi Sishu Mandir and the Annual School fees is Rs 5.00 lacs and for college students it is about Rs 3.0 lacs. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;Our Second Service Cum Skill development Centre - Karunya Bharathi is under construction at Kurma Basti, Keshavgiri,Chandrayangutta&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QLabel" name="label_11">
+                              <widget class="QLabel" name="label_011">
                                <property name="maximumSize">
                                 <size>
                                  <width>16777215</width>
@@ -1755,14 +1755,14 @@ QPushButton:pressed {
                               </widget>
                              </item>
                              <item>
-                              <widget class="QLabel" name="label_12">
+                              <widget class="QLabel" name="label_012">
                                <property name="text">
-                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Monthly Homayagnamu (Every first Sunday of the month) &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Library &amp;amp; reading room for students • Tuition classes to students &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Bhagavad Gita classes &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Educational Tours to Students &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Medical camps/Yoga classes &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Computer Training &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Water camps in Summer &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Personality Development classes on every Sunday &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Job oriented Training classes to inmate students &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Participation in Sports &amp;amp; Other Competitions &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Celebrate all important Hindu Festivals and Birth &amp;amp; Death Anniversaries of great personalities of India &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Karunya Sindhu Computer Training Centre &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Mana Samskruthi Tharagathulu &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• Karunya Sindhu Coaching Centre &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Monthly Homayagnamu (Every first Sunday of the month) &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Library &amp;amp; reading room for students • Tuition classes to students &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Bhagavad Gita classes &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Educational Tours to Students &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Medical camps/Yoga classes &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Computer Training &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Water camps in Summer &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Personality Development classes on every Sunday &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Job oriented Training classes to inmate students &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Participation in Sports &amp;amp; Other Competitions &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Celebrate all important Hindu Festivals and Birth &amp;amp; Death Anniversaries of great personalities of India &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Karunya Sindhu Computer Training Centre &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Mana Samskruthi Tharagathulu &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• Karunya Sindhu Coaching Centre &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QLabel" name="label_13">
+                              <widget class="QLabel" name="label_013">
                                <property name="maximumSize">
                                 <size>
                                  <width>16777215</width>
@@ -1778,14 +1778,14 @@ QPushButton:pressed {
                               </widget>
                              </item>
                              <item>
-                              <widget class="QLabel" name="label_14">
+                              <widget class="QLabel" name="label_014">
                                <property name="text">
-                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;(For details contact our office on phone or in person) &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Nitya Annadhana Nidhi&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;- For Birthday, Marriage Day celebrations &amp;amp; Anniversaries &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;-Rs 2000 per event &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Shaswitha Annadhana Nidhi &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;-These schemes are for those who celebrate occasions like Birth days, marriage days,other important days of joyful occasions on selected day of the year for ten years.&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;-Rs 10,000/- once &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Smruthi Nidhi&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;–In memory of beloved people who left abode &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;-Rs 2000/- event or Rs 10000/- once for one selected day of the year for ten years &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Vidyarthi Samraksha Nidhi&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;– To meet the general expenses of orphan students &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;- Any amount &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Vidyarthi PoshakaNidhi&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; – To meet yearly expenses of a student &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;–Rs 25000/- per year &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Vidyarthi Pathashala Rusumu Nidhi&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;-To meet the school/college fees of students. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Patron&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;–As may be approved by the Executive Committee of the organisation &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;General Donors&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;/&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;–Any amount desired by the Donor &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Ashraya Datha scheme &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;–Rs 500000/- &amp;amp; above.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;(For details contact our office on phone or in person) &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;Nitya Annadhana Nidhi&lt;/span&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;- For Birthday, Marriage Day celebrations &amp;amp; Anniversaries &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;-Rs 2000 per event &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;Shaswitha Annadhana Nidhi &lt;/span&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;-These schemes are for those who celebrate occasions like Birth days, marriage days,other important days of joyful occasions on selected day of the year for ten years.&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;-Rs 10,000/- once &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;Smruthi Nidhi&lt;/span&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;–In memory of beloved people who left abode &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;-Rs 2000/- event or Rs 10000/- once for one selected day of the year for ten years &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;Vidyarthi Samraksha Nidhi&lt;/span&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;– To meet the general expenses of orphan students &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;- Any amount &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;Vidyarthi PoshakaNidhi&lt;/span&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt; – To meet yearly expenses of a student &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;–Rs 25000/- per year &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;Vidyarthi Pathashala Rusumu Nidhi&lt;/span&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;-To meet the school/college fees of students. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;Patron&lt;/span&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;–As may be approved by the Executive Committee of the organisation &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;General Donors&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;–Any amount desired by the Donor &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;• &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;Ashraya Datha scheme &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;–Rs 500000/- &amp;amp; above.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QLabel" name="label_15">
+                              <widget class="QLabel" name="label_015">
                                <property name="maximumSize">
                                 <size>
                                  <width>16777215</width>
@@ -1801,9 +1801,9 @@ QPushButton:pressed {
                               </widget>
                              </item>
                              <item>
-                              <widget class="QLabel" name="label_16">
+                              <widget class="QLabel" name="label_016">
                                <property name="text">
-                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;DONATIONS CAN BE SENT TO OUR BANK DIRECTLY OR PAID AT OUR OFFICE&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline;&quot;&gt;Bank Details:&lt;/span&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;State Bank of India, P&amp;amp;T Colony, Hyderabad-500 060 &lt;/span&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;SB Account No. 62153473969 &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;IFSC Code: SBIN0020864, MICR Code:500002384 &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ff0000;&quot;&gt;COME &amp;amp; JOIN US TO ENJOY SERVING THE NEEDY ORPHANS &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:10pt; color:#ff0000;&quot;&gt;Executive Committee &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Karunasri Seva Samithi&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#010000;&quot;&gt;DONATIONS CAN BE SENT TO OUR BANK DIRECTLY OR PAID AT OUR OFFICE&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; text-decoration: underline; color:#010000;&quot;&gt;Bank Details:&lt;/span&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;State Bank of India, P&amp;amp;T Colony, Hyderabad-500 060 &lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;SB Account No. 62153473969 &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;IFSC Code: SBIN0020864, MICR Code:500002384 &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#ff0000;&quot;&gt;COME &amp;amp; JOIN US TO ENJOY SERVING THE NEEDY ORPHANS &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#ff0000;&quot;&gt;Executive Committee &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#010000;&quot;&gt;Karunasri Seva Samithi&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                               </widget>
                              </item>
@@ -2041,6 +2041,7 @@ QPushButton:pressed {
  </tabstops>
  <resources>
   <include location="files.qrc"/>
+  <include location="fp.qrc"/>
  </resources>
  <connections/>
 </ui>

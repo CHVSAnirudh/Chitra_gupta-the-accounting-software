@@ -4,6 +4,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtCore import (QCoreApplication, QPropertyAnimation, QDate, QDateTime, QMetaObject, QObject, QPoint, QRect, QSize, QTime, QUrl, Qt, QEvent)
 from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont, QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter, QPixmap, QRadialGradient)
 from PySide2.QtWidgets import *
+import login
 
 # GUI FILE
 from ui_splash_screen import Ui_SplashScreen
@@ -106,7 +107,9 @@ class SplashScreen(QMainWindow):
 
         # SET VALUE TO PROGRESS BAR
         # fix max value error if > than 100
-        if value >= 100: value = 1.000
+        if value >= 100: 
+            value = 1.000
+            #login.main()
         self.progressBarValue(value)
 
         # CLOSE SPLASH SCREE AND OPEN APP
@@ -117,7 +120,9 @@ class SplashScreen(QMainWindow):
             # SHOW MAIN WINDOW
             self.main = MainWindow()
             #self.main.show()
-
+            #QtWidgets.QApplication.close()
+            self.close()
+            login.main()
             # CLOSE SPLASH SCREEN
             self.close()
 
@@ -150,7 +155,11 @@ class SplashScreen(QMainWindow):
         # APPLY STYLESHEET WITH NEW VALUES
         self.ui.circularProgress.setStyleSheet(newStylesheet)
 
-
+def main():
+    app = QApplication(sys.argv)
+    window = SplashScreen()
+    sys.exit(app.exec_())
+    
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

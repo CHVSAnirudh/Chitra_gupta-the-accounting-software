@@ -11,7 +11,7 @@ from intro import *
 import os
 import mysql.connector
 import time
-
+import ui_functions
 class MainWindow(QMainWindow):
     ltype = ''
     uname = ''
@@ -43,13 +43,13 @@ class MainWindow(QMainWindow):
         ########################################################################
 
         ## REMOVE ==> STANDARD TITLE BAR
-        UIFunctions.removeTitleBar(True)
+        ui_functions.UIFunctions.removeTitleBar(True)
         ## ==> END ##
 
         ## SET ==> WINDOW TITLE
         self.setWindowTitle('Main Window - Python Base')
-        UIFunctions.labelTitle(self, 'CHITRA GUPTA - The Accounting Software')
-        UIFunctions.labelDescription(self, '')
+        ui_functions.UIFunctions.labelTitle(self, 'CHITRA GUPTA - The Accounting Software')
+        ui_functions.UIFunctions.labelDescription(self, '')
         ## ==> END ##
 
         ## WINDOW SIZE ==> DEFAULT SIZE
@@ -63,22 +63,22 @@ class MainWindow(QMainWindow):
         ########################################################################
 
         ## ==> TOGGLE MENU SIZE
-        self.ui.btn_toggle_menu.clicked.connect(lambda: UIFunctions.toggleMenu(self, 220, True))
+        self.ui.btn_toggle_menu.clicked.connect(lambda: ui_functions.UIFunctions.toggleMenu(self, 220, True))
         ## ==> END ##
 
         ## ==> ADD CUSTOM MENUS
         self.ui.stackedWidget.setMinimumWidth(20)
-        UIFunctions.addNewMenu(self, "HOME", "btn_home", "url(:/16x16/icons/16x16/cil-home.png)", True)
-        UIFunctions.addNewMenu(self, "DONATIONS", "btn_widgets", "url(:/16x16/icons/16x16/cil-window-restore.png)", True)
-        UIFunctions.addNewMenu(self, "EXPENDITURE", "expenditure", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
+        ui_functions.UIFunctions.addNewMenu(self, "HOME", "btn_home", "url(:/16x16/icons/16x16/cil-home.png)", True)
+        ui_functions.UIFunctions.addNewMenu(self, "DONATIONS", "btn_widgets", "url(:/16x16/icons/16x16/cil-window-restore.png)", True)
+        ui_functions.UIFunctions.addNewMenu(self, "EXPENDITURE", "expenditure", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
         if(ltype=='master'):
-            UIFunctions.addNewMenu(self, "New User", "new_user", "url(:/16x16/icons/16x16/cil-user-follow.png)", True)
-            UIFunctions.addNewMenu(self, "Expenditure Confirmation", "expenditure_confirm", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
-            UIFunctions.addNewMenu(self, "Donation Confirmation", "Donation_confirm", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
+            ui_functions.UIFunctions.addNewMenu(self, "New User", "new_user", "url(:/16x16/icons/16x16/cil-user-follow.png)", True)
+            ui_functions.UIFunctions.addNewMenu(self, "Expenditure Confirmation", "expenditure_confirm", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
+            ui_functions.UIFunctions.addNewMenu(self, "Donation Confirmation", "Donation_confirm", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
         ## ==> END ##
 
         # START MENU => SELECTION
-        UIFunctions.selectStandardMenu(self, "btn_home")
+        ui_functions.UIFunctions.selectStandardMenu(self, "btn_home")
         ## ==> END ##
 
         ## ==> START PAGE
@@ -87,15 +87,15 @@ class MainWindow(QMainWindow):
 
         ## USER ICON ==> SHOW HIDE
         str = myresult[0][3][0] + myresult[0][4][0] 
-        UIFunctions.userIcon(self, str.upper(), "", True)
+        ui_functions.UIFunctions.userIcon(self, str.upper(), "", True)
         ## ==> END ##
 
         ## ==> MOVE WINDOW / MAXIMIZE / RESTORE
         ########################################################################
         def moveWindow(event):
             # IF MAXIMIZED CHANGE TO NORMAL
-            if UIFunctions.returStatus() == 1:
-                UIFunctions.maximize_restore(self)
+            if ui_functions.UIFunctions.returStatus() == 1:
+                ui_functions.UIFunctions.maximize_restore(self)
 
             # MOVE WINDOW
             if event.buttons() == Qt.LeftButton:
@@ -109,7 +109,7 @@ class MainWindow(QMainWindow):
 
         ## ==> LOAD DEFINITIONS
         ########################################################################
-        UIFunctions.uiDefinitions(self)
+        ui_functions.UIFunctions.uiDefinitions(self)
         ## ==> END ##
 
         ########################################################################
@@ -243,15 +243,14 @@ def main():
     if not QApplication.instance():
         app = QApplication(sys.argv)
     else:
-        QApplication.instance().quit()
-        app = QApplication(sys.argv)
+        app = QApplication.instance()
     QtGui.QFontDatabase.addApplicationFont('fonts/segoeui.ttf')
     QtGui.QFontDatabase.addApplicationFont('fonts/segoeuib.ttf')
     #window1 = SplashScreen()
     #app.exec_()
     #app1 = QApplication(sys.argv)
-    #window = MainWindow()
-    sys.exit(app.exec_())
+    window = MainWindow()
+    #sys.exit(app.exec_())
 if __name__ == "__main__":
 #sys.exit(app.exec_())
     if not QApplication.instance():

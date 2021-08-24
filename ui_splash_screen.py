@@ -126,9 +126,9 @@ class Ui_SplashScreen(object):
 
     def retranslateUi(self, SplashScreen):
         SplashScreen.setWindowTitle(QCoreApplication.translate("SplashScreen", u"MainWindow", None))
-        self.labelTitle.setText(QCoreApplication.translate("SplashScreen", u"<html><head/><body><p><span style=\" font-weight:600; color:#9b9bff;\">CHITRA GUPTA</span> </p></body></html>", None))
+        self.labelTitle.setText(QCoreApplication.translate("SplashScreen", u"<html><head/><body><p><span style=\" font-size:19pt;\" font-weight:500; color:#9b9bff;\"><b>CHITRA GUPTA</b></span> </p></body></html>", None))
         self.labelPercentage.setText(QCoreApplication.translate("SplashScreen", u"<p><span style=\" font-size:68pt;\">0</span><span style=\" font-size:58pt; vertical-align:super;\">%</span></p>", None))
         self.labelLoadingInfo.setText(QCoreApplication.translate("SplashScreen", u"The Accounting Software", None))
-        self.labelCredits.setText(QCoreApplication.translate("SplashScreen", u"by: Thunder Buddies", None))
+        self.labelCredits.setText(QCoreApplication.translate("SplashScreen", u"by: Team Chitra Gupta", None))
     # retranslateUi
 

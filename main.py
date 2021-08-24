@@ -20,12 +20,11 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         ## PRINT ==> SYSTEM
-        Form = QtWidgets.QDialog()
-        ui = Ui_login()
-        ui.setupUi(Form)
-        Form.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
-        time.sleep(3)
-        Form.exec() 
+        #Form = QtWidgets.QDialog()
+        #ui = Ui_login()
+        #ui.setupUi(Form)
+        #Form.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
+        #Form.exec() 
         print('System: ' + platform.system())
         print('Version: ' +platform.release())
         mydb = mysql.connector.connect(
@@ -49,7 +48,7 @@ class MainWindow(QMainWindow):
 
         ## SET ==> WINDOW TITLE
         self.setWindowTitle('Main Window - Python Base')
-        UIFunctions.labelTitle(self, 'CHITRA GUPTA - The accounting software')
+        UIFunctions.labelTitle(self, 'CHITRA GUPTA - The Accounting Software')
         UIFunctions.labelDescription(self, '')
         ## ==> END ##
 
@@ -240,14 +239,33 @@ class MainWindow(QMainWindow):
     ########################################################################
     ## END ==> APP EVENTS
     ############################## ---/--/--- ##############################
-
-if __name__ == "__main__":
-#sys.exit(app.exec_())
-    app = QApplication(sys.argv)
+def main():
+    if not QApplication.instance():
+        app = QApplication(sys.argv)
+    else:
+        QApplication.instance().quit()
+        app = QApplication(sys.argv)
     QtGui.QFontDatabase.addApplicationFont('fonts/segoeui.ttf')
     QtGui.QFontDatabase.addApplicationFont('fonts/segoeuib.ttf')
-    window1 = SplashScreen()
+    #window1 = SplashScreen()
+    #app.exec_()
+    #app1 = QApplication(sys.argv)
+    #window = MainWindow()
+    sys.exit(app.exec_())
+if __name__ == "__main__":
+#sys.exit(app.exec_())
+    if not QApplication.instance():
+        app = QApplication(sys.argv)
+    else:
+        app = QApplication.instance()
+    #app = QApplication(sys.argv)
+    QtGui.QFontDatabase.addApplicationFont('fonts/segoeui.ttf')
+    QtGui.QFontDatabase.addApplicationFont('fonts/segoeuib.ttf')
+    #window1 = SplashScreen()
+    #app.exec_()
+    #app1 = QApplication(sys.argv)
     window = MainWindow()
     sys.exit(app.exec_())
+    
     
     

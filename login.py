@@ -17,6 +17,8 @@ import platform
 import files_rc
 from app_modules import *
 from main import *
+import time
+import main
 class Ui_login(object):
     Form = 0
     def login_func(self):
@@ -56,7 +58,10 @@ class Ui_login(object):
             val = (int(myresult[0][0]),myresult[0][3],myresult[0][4],myresult[0][5])
             mycursor.execute(sql, val)
             mydb.commit()
-            self.Form.close()
+            self.Form.close() 
+            os.chdir(os.path.dirname(os.path.abspath(__file__)))
+            os.system('python main.py')
+            #main.main()
             #QtWidgets.QApplication.quit()
             print(myresult)
     
@@ -208,11 +213,13 @@ class Ui_login(object):
         self.Masterlogin_2.setText(_translate("login", "Normal login"))
         self.pushButton_2.setText(_translate("login", "Forgot User Name or Password"))
 
-#if __name__ == "__main__":
- #   app = QtWidgets.QApplication([])
-  #  Form = QtWidgets.QWidget()
-   # ui = Ui_login()
-    #ui.setupUi(Form)
-    #Form.show()
-    #sys.exit(app.exec_())
+if __name__ == "__main__":
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    os.system('python intro.py')
+    app = QtWidgets.QApplication([])
+    Form = QtWidgets.QWidget()
+    ui = Ui_login()
+    ui.setupUi(Form)
+    Form.show()
+    sys.exit(app.exec_())
 

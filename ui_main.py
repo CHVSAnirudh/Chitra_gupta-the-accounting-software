@@ -208,7 +208,7 @@ class Ui_MainWindow(object):
 
         mycursor.execute("SELECT * FROM chitra_gupta.all_donors where donor_id = {0}".format(info[1]))
         myresult = mycursor.fetchall()
-        self.lineEdit_217.setText(QCoreApplication.translate("MainWindow", myresult[0][2]))
+        #self.lineEdit_217.setText(QCoreApplication.translate("MainWindow", myresult[0][2]))
         self.lineEdit_216.setText(QCoreApplication.translate("MainWindow", myresult[0][1]))
         self.lineEdit_213.setText(QCoreApplication.translate("MainWindow", myresult[0][4]))
         self.stackedWidget.setCurrentIndex(4)
@@ -1796,7 +1796,7 @@ class Ui_MainWindow(object):
         background-color: rgb(255, 0, 0);
     }
 ''')
-        elif('@' not in email):
+        elif('@' not in email and email != 'NA'):
             self.lineEdit_13.setStyleSheet('''
     QLineEdit {
         border: 2px solid rgb(63, 63, 63);
@@ -1938,7 +1938,7 @@ class Ui_MainWindow(object):
             self.stackedWidget.setCurrentIndex(3)
         else:
             self.stackedWidget.setCurrentIndex(4)
-            self.lineEdit_217.setText(QCoreApplication.translate("MainWindow", myresult[0][2]))
+            #self.lineEdit_217.setText(QCoreApplication.translate("MainWindow", myresult[0][2]))
             self.lineEdit_216.setText(QCoreApplication.translate("MainWindow", myresult[0][1]))
             self.lineEdit_213.setText(QCoreApplication.translate("MainWindow", myresult[0][4]))
             mycursor = mydb.cursor()
@@ -2858,6 +2858,11 @@ class Ui_MainWindow(object):
         self.label31.setAlignment(Qt.AlignHCenter|Qt.AlignTop)
         self.label31.setObjectName("label31")
         self.verticalLayout_12.addWidget(self.label31)
+        font1 = QFont()
+        font1.setFamily("Segoe UI")
+        font1.setPointSize(13)
+        font1.setBold(True)
+        font1.setWeight(75)
         self.gridLayout_3 = QGridLayout()
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.commandLinkButton_312 = QCommandLinkButton(self.expenditure_opening)
@@ -2869,13 +2874,14 @@ class Ui_MainWindow(object):
 "}\n"
 "QCommandLinkButton:hover {	\n"
 "	color: rgb(210, 210, 210);\n"
-"	background-color: rgb(44, 49, 60);\n"
+"	background-color: rgb(50, 53, 65);\n"
 "}\n"
 "QCommandLinkButton:pressed {	\n"
 "	color: rgb(210, 210, 210);\n"
 "	background-color: rgb(52, 58, 71);\n"
 "}")
         #self.commandLinkButton_312.clicked.connect(self.new_donation_button)
+        self.commandLinkButton_312.setFont(font1)
         self.commandLinkButton_312.clicked.connect(self.update_stud_butn)
         icon312 = QIcon()
         icon312.addFile(u":/16x16/icons/16x16/cil-credit-card.png", QSize(), QIcon.Normal, QIcon.Off)
@@ -2884,6 +2890,7 @@ class Ui_MainWindow(object):
 
         self.commandLinkButton_315 = QCommandLinkButton(self.expenditure_opening)
         self.commandLinkButton_315.setObjectName("commandLinkButton_315")
+        self.commandLinkButton_315.setFont(font1)
         self.commandLinkButton_315.setStyleSheet(u"QCommandLinkButton {	\n"
 "	color: rgb(85, 170, 255);\n"
 "	border-radius: 5px;\n"
@@ -2891,7 +2898,7 @@ class Ui_MainWindow(object):
 "}\n"
 "QCommandLinkButton:hover {	\n"
 "	color: rgb(210, 210, 210);\n"
-"	background-color: rgb(44, 49, 60);\n"
+"	background-color: rgb(50, 53, 65);\n"
 "}\n"
 "QCommandLinkButton:pressed {	\n"
 "	color: rgb(210, 210, 210);\n"
@@ -2917,6 +2924,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addWidget(self.lcdNumber_313, 4, 1, 1, 1)
         self.commandLinkButton_313 = QCommandLinkButton(self.expenditure_opening)
         self.commandLinkButton_313.setObjectName("commandLinkButton_313")
+        self.commandLinkButton_313.setFont(font1)
         self.commandLinkButton_313.setStyleSheet(u"QCommandLinkButton {	\n"
 "	color: rgb(85, 170, 255);\n"
 "	border-radius: 5px;\n"
@@ -2924,7 +2932,7 @@ class Ui_MainWindow(object):
 "}\n"
 "QCommandLinkButton:hover {	\n"
 "	color: rgb(210, 210, 210);\n"
-"	background-color: rgb(44, 49, 60);\n"
+"	background-color: rgb(50, 53, 65);\n"
 "}\n"
 "QCommandLinkButton:pressed {	\n"
 "	color: rgb(210, 210, 210);\n"
@@ -2941,6 +2949,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addWidget(self.lcdNumber_312, 3, 1, 1, 1)
         self.commandLinkButton_314 = QCommandLinkButton(self.expenditure_opening)
         self.commandLinkButton_314.setObjectName("commandLinkButton_314")
+        self.commandLinkButton_314.setFont(font1)
         self.commandLinkButton_314.setStyleSheet(u"QCommandLinkButton {	\n"
 "	color: rgb(85, 170, 255);\n"
 "	border-radius: 5px;\n"
@@ -2948,7 +2957,7 @@ class Ui_MainWindow(object):
 "}\n"
 "QCommandLinkButton:hover {	\n"
 "	color: rgb(210, 210, 210);\n"
-"	background-color: rgb(44, 49, 60);\n"
+"	background-color: rgb(50, 53, 65);\n"
 "}\n"
 "QCommandLinkButton:pressed {	\n"
 "	color: rgb(210, 210, 210);\n"
@@ -2962,6 +2971,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addWidget(self.commandLinkButton_314, 0, 1, 1, 1)
         self.commandLinkButton_316 = QCommandLinkButton(self.expenditure_opening)
         self.commandLinkButton_316.setObjectName("commandLinkButton_314")
+        self.commandLinkButton_316.setFont(font1)
         self.commandLinkButton_316.setStyleSheet(u"QCommandLinkButton {	\n"
 "	color: rgb(85, 170, 255);\n"
 "	border-radius: 5px;\n"
@@ -2969,7 +2979,7 @@ class Ui_MainWindow(object):
 "}\n"
 "QCommandLinkButton:hover {	\n"
 "	color: rgb(210, 210, 210);\n"
-"	background-color: rgb(44, 49, 60);\n"
+"	background-color: rgb(50, 53, 65);\n"
 "}\n"
 "QCommandLinkButton:pressed {	\n"
 "	color: rgb(210, 210, 210);\n"
@@ -3231,7 +3241,7 @@ class Ui_MainWindow(object):
         self.label_214 = QLabel(self.new_donation)
         self.label_214.setObjectName("label_214")
         self.label_214.setFont(font7)
-        self.gridLayout_3.addWidget(self.label_214, 1, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.label_214, 0, 0, 1, 1)
         self.label_217 = QLabel(self.new_donation)
         self.label_217.setObjectName("label_217")
         self.label_217.setFont(font7)
@@ -3239,15 +3249,15 @@ class Ui_MainWindow(object):
         self.label_212 = QLabel(self.new_donation)
         self.label_212.setObjectName("label_212")
         self.label_212.setFont(font7)
-        self.gridLayout_3.addWidget(self.label_212, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.label_212, 1, 0, 1, 1)
         self.lineEdit_212 = QLineEdit(self.new_donation)
         self.lineEdit_212.setObjectName("lineEdit_212")
         self.lineEdit_212.setFont(font7)
-        self.gridLayout_3.addWidget(self.lineEdit_212, 0, 1, 1, 1)
-        self.lineEdit_217 = QLineEdit(self.new_donation)
-        self.lineEdit_217.setObjectName("lineEdit_217")
-        self.lineEdit_217.setFont(font7)
-        self.gridLayout_3.addWidget(self.lineEdit_217, 1, 2, 1, 1)
+        self.gridLayout_3.addWidget(self.lineEdit_212, 1, 1, 1, 1)
+        #self.lineEdit_217 = QLineEdit(self.new_donation)
+        #self.lineEdit_217.setObjectName("lineEdit_217")
+        #self.lineEdit_217.setFont(font7)
+        #self.gridLayout_3.addWidget(self.lineEdit_217, 0, 2, 1, 1)
         self.label_213 = QLabel(self.new_donation)
         self.label_213.setObjectName("label_213")
         self.label_213.setFont(font7)
@@ -3259,7 +3269,7 @@ class Ui_MainWindow(object):
         self.lineEdit_216 = QLineEdit(self.new_donation)
         self.lineEdit_216.setObjectName("lineEdit_216")
         self.lineEdit_216.setFont(font7)
-        self.gridLayout_3.addWidget(self.lineEdit_216, 1, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.lineEdit_216, 0, 1, 1, 1)
         self.horizontalLayout_13 = QHBoxLayout()
         self.horizontalLayout_13.setObjectName("horizontalLayout_13")
         self.label_215 = QLabel(self.new_donation)
@@ -3268,17 +3278,18 @@ class Ui_MainWindow(object):
         self.label_215.setFont(font7)
         self.horizontalLayout_13.addWidget(self.label_215)
         self.dateEdit2 = QDateEdit(self.new_donation)
-        self.dateEdit2.setMinimumSize(QSize(100, 0))
+        self.dateEdit2.setMinimumSize(QSize(100, 40))
         self.dateEdit2.setObjectName("dateEdit2")
         now = datetime.now()
         self.dateEdit2.setDate(now)
         #self.dateEdit.currentDateTime()
         self.horizontalLayout_13.addWidget(self.dateEdit2)
         self.gridLayout_3.addLayout(self.horizontalLayout_13, 2, 2, 1, 2)
-        self.dateTimeEdit = QDateTimeEdit(self.new_donation)
+        self.dateTimeEdit = QDateEdit(self.new_donation)
         self.dateTimeEdit.setObjectName("dateTimeEdit")
-        self.dateTimeEdit.setDateTime(now)
+        self.dateTimeEdit.setDate(now)
         #self.dateTimeEdit.setTime(now)
+        self.dateTimeEdit.setMinimumSize(QSize(100, 40))
         self.gridLayout_3.addWidget(self.dateTimeEdit, 2, 1, 1, 1)
         self.label_218 = QLabel(self.new_donation)
         self.label_218.setObjectName("label_218")
@@ -3338,12 +3349,12 @@ class Ui_MainWindow(object):
         self.label_2112.setObjectName("label_2112")
         self.label_2112.setFont(font7)
         #self.label_2112.setAlignment(Qt.AlignCenter)
-        self.gridLayout_3.addWidget(self.label_2112, 0, 2, 1, 1)
+        self.gridLayout_3.addWidget(self.label_2112, 1, 2, 1, 1)
         self.lineEdit_213 = QLineEdit(self.new_donation)
         self.lineEdit_213.setObjectName("lineEdit_213")
         self.lineEdit_213.setMinimumSize(QSize(150, 0))
         self.lineEdit_213.setFont(font7)
-        self.gridLayout_3.addWidget(self.lineEdit_213, 0, 3, 1, 1)
+        self.gridLayout_3.addWidget(self.lineEdit_213, 1, 3, 1, 1)
         self.verticalLayout_12.addLayout(self.gridLayout_3)
         self.verticalLayout_10.addLayout(self.verticalLayout_12)
         self.pushButton_212 = QPushButton(self.new_donation)
@@ -3717,7 +3728,7 @@ class Ui_MainWindow(object):
         self.lineEdit_74.setMinimumSize(QSize(100, 30))
         self.gridLayout_73.addWidget(self.lineEdit_74, 6, 1, 1, 2)
         self.lineEdit7 = QLineEdit(self.update_stud)
-        self.lineEdit7.setObjectName("lineEdit")
+        self.lineEdit7.setObjectName("lineEdit7")
         self.lineEdit7.setMinimumSize(QSize(100, 30))
         self.gridLayout_73.addWidget(self.lineEdit7, 2, 1, 1, 1)
         self.label_72 = QLabel(self.update_stud)
@@ -5441,11 +5452,16 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        
+        font = QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
         self.gridLayout.setContentsMargins(-1, -1, -1, 0)
         self.lineEdit = QLineEdit(self.frame_content_wid_1)
         self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setMinimumSize(QSize(0, 30))
+        self.lineEdit.setMinimumSize(QSize(0, 40))
+        self.lineEdit.setFont(font)
         self.lineEdit.setStyleSheet(u"QLineEdit {\n"
 "	background-color: rgb(27, 29, 35);\n"
 "	border-radius: 5px;\n"
@@ -5463,7 +5479,7 @@ class Ui_MainWindow(object):
 
         self.pushButton = QPushButton(self.frame_content_wid_1)
         self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setMinimumSize(QSize(150, 30))
+        self.pushButton.setMinimumSize(QSize(150, 40))
         font8 = QFont()
         font8.setFamily(u"Segoe UI")
         font8.setPointSize(14)
@@ -5651,6 +5667,11 @@ class Ui_MainWindow(object):
 
   #      self.gridLayout_2.addWidget(self.horizontalScrollBar, 1, 3, 1, 1)
 
+        font1 = QFont()
+        font1.setFamily("Segoe UI")
+        font1.setPointSize(13)
+        font1.setBold(True)
+        font1.setWeight(75)
         self.new_donation_btn = QCommandLinkButton(self.frame_2)
         self.new_donation_btn.setObjectName(u"new_donation_btn")
         self.new_donation_btn.setStyleSheet(u"QCommandLinkButton {	\n"
@@ -5666,6 +5687,7 @@ class Ui_MainWindow(object):
 "	color: rgb(210, 210, 210);\n"
 "	background-color: rgb(52, 58, 71);\n"
 "}")
+        self.new_donation_btn.setFont(font1)
         self.new_donation_btn.clicked.connect(self.new_donation_button)
         icon4 = QIcon()
         icon4.addFile(u":/16x16/icons/16x16/cil-envelope-letter.png", QSize(), QIcon.Normal, QIcon.Off)
@@ -5691,6 +5713,7 @@ class Ui_MainWindow(object):
         icon5 = QIcon()
         icon5.addFile(u":/16x16/icons/16x16/cil-user-follow.png", QSize(), QIcon.Normal, QIcon.Off)
         self.new_donor.setIcon(icon5)
+        self.new_donor.setFont(font1)
         self.new_donor.clicked.connect(self.new_donor_button)
         self.gridLayout_2.addWidget(self.new_donor, 1, 1, 1, 1)
 
@@ -5712,6 +5735,7 @@ class Ui_MainWindow(object):
         icon5 = QIcon()
         icon5.addFile(u":/16x16/icons/16x16/cil-user-follow.png", QSize(), QIcon.Normal, QIcon.Off)
         self.remainders.setIcon(icon5)
+        self.remainders.setFont(font1)
         self.remainders.clicked.connect(self.donation_remainder_button)
         self.gridLayout_2.addWidget(self.remainders, 1, 4, 1, 1)
 
@@ -5731,6 +5755,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(52, 58, 71);\n"
 "}")
         self.reports.clicked.connect(self.dreports)
+        self.reports.setFont(font1)
         icon6 = QIcon()
         icon6.addFile(u":/16x16/icons/16x16/cil-chart-line.png", QSize(), QIcon.Normal, QIcon.Off)
         self.reports.setIcon(icon6)
@@ -5753,6 +5778,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(52, 58, 71);\n"
 "}")
         self.adds.clicked.connect(self.add_category)
+        self.adds.setFont(font1)
         icon6 = QIcon()
         icon6.addFile(u":/16x16/icons/16x16/cil-chart-line.png", QSize(), QIcon.Normal, QIcon.Off)
         self.adds.setIcon(icon6)
@@ -6109,14 +6135,14 @@ class Ui_MainWindow(object):
         self.label_016.setText(QCoreApplication.translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#010000;\">DONATIONS CAN BE SENT TO OUR BANK DIRECTLY OR PAID AT OUR OFFICE</span></p><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; text-decoration: underline; color:#010000;\">Bank Details:</span><span style=\" font-size:14pt; color:#010000;\"><br/></span></p><p align=\"center\"><span style=\" font-size:14pt; color:#010000;\">State Bank of India, P&amp;T Colony, Hyderabad-500 060 <br/></span></p><p align=\"center\"><span style=\" font-size:14pt; color:#010000;\">SB Account No. 62153473969 </span></p><p align=\"center\"><span style=\" font-size:14pt; color:#010000;\">IFSC Code: SBIN0020864, MICR Code:500002384 </span></p><p align=\"center\"><span style=\" font-size:14pt;\"><br/></span></p><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#ff0000;\">COME &amp; JOIN US TO ENJOY SERVING THE NEEDY ORPHANS </span></p><p align=\"right\"><span style=\" font-size:14pt;\"><br/></span></p><p align=\"right\"><span style=\" font-size:14pt; color:#ff0000;\">Executive Committee </span></p><p align=\"right\"><span style=\" font-size:14pt; color:#010000;\">Karunasri Seva Samithi</span></p></body></html>"))
         
         
-        self.lineEdit_2.setText(QCoreApplication.translate("MainWindow", "First name"))
+        self.lineEdit_2.setPlaceholderText(QCoreApplication.translate("MainWindow", "First name"))
         self.label_5.setText(QCoreApplication.translate("MainWindow", "Adhaar Id"))
         self.label_0.setText(QCoreApplication.translate("MainWindow", "Pan Id"))
         self.label_3.setText(QCoreApplication.translate("MainWindow", "Address"))
         self.label_4.setText(QCoreApplication.translate("MainWindow", "Phone number"))
         self.label_14.setText(QCoreApplication.translate("MainWindow", "Email Id:"))
-        self.lineEdit_3.setText(QCoreApplication.translate("MainWindow", "Last name"))
-        self.lineEdit_13.setText(QCoreApplication.translate("MainWindow", "email"))
+        self.lineEdit_3.setPlaceholderText(QCoreApplication.translate("MainWindow", "Last name"))
+        #self.lineEdit_13.setPlaceholderText(QCoreApplication.translate("MainWindow", "email"))
         self.label_2.setText(QCoreApplication.translate("MainWindow", "Name"))
         #self.comboBox_12.setItemText(0, QCoreApplication.translate("MainWindow", "Adhaar Id"))
         #self.comboBox_12.setItemText(1, QCoreApplication.translate("MainWindow", "Pan Card"))
@@ -6133,22 +6159,22 @@ class Ui_MainWindow(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n""body { background-color: rgba(66, 73, 90, 255);}"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">Description</span></p></body></html>"))
-        self.label_214.setText(QCoreApplication.translate("MainWindow", "Name of Sponsor"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">Reference</span></p></body></html>"))
+        self.label_214.setText(QCoreApplication.translate("MainWindow", "Name of Donor"))
         self.label_217.setText(QCoreApplication.translate("MainWindow", "Annadhanam Master registration number"))
-        self.label_212.setText(QCoreApplication.translate("MainWindow", "Donation In Name"))
-        self.lineEdit_212.setText(QCoreApplication.translate("MainWindow", "Name"))
-        self.lineEdit_217.setText(QCoreApplication.translate("MainWindow", "Last Name"))
+        self.label_212.setText(QCoreApplication.translate("MainWindow", "Donation in whose name"))
+        self.lineEdit_212.setPlaceholderText(QCoreApplication.translate("MainWindow", "Name"))
+        #self.lineEdit_217.setText(QCoreApplication.translate("MainWindow", "Last Name"))
         self.label_213.setText(QCoreApplication.translate("MainWindow", "Date Of Donation"))
-        self.lineEdit_216.setText(QCoreApplication.translate("MainWindow", "First Name "))
-        self.label_215.setText(QCoreApplication.translate("MainWindow", "Donation Date"))
+        self.lineEdit_216.setPlaceholderText(QCoreApplication.translate("MainWindow", " Name "))
+        self.label_215.setText(QCoreApplication.translate("MainWindow", "Date of Arrangement"))
         self.label_218.setText(QCoreApplication.translate("MainWindow", "Book number & receipt number"))
-        self.label_216.setText(QCoreApplication.translate("MainWindow", "Amount recieved in mode"))
+        self.label_216.setText(QCoreApplication.translate("MainWindow", "Mode of Donation"))
         self.comboBox_2.setItemText(0, QCoreApplication.translate("MainWindow", "Cash"))
         self.comboBox_2.setItemText(1, QCoreApplication.translate("MainWindow", "Cheque"))
         self.comboBox_2.setItemText(2, QCoreApplication.translate("MainWindow", "Direct remittance to bank"))
         self.label_219.setText(QCoreApplication.translate("MainWindow", "Ocassion"))
-        self.lineEdit_2115.setText(QCoreApplication.translate("MainWindow", "Amount"))
+        self.lineEdit_2115.setPlaceholderText(QCoreApplication.translate("MainWindow", "Amount"))
         self.comboBox_3.setItemText(0, QCoreApplication.translate("MainWindow", "B.D"))
         self.comboBox_3.setItemText(1, QCoreApplication.translate("MainWindow", "M.D"))
         self.comboBox_3.setItemText(2, QCoreApplication.translate("MainWindow", "S.D"))
@@ -6159,7 +6185,7 @@ class Ui_MainWindow(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n""body { background-color: rgba(66, 73, 90, 255);}"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Description &amp; Remarks</p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Sponsors</p></body></html>"))
         self.label_2110.setText(QCoreApplication.translate("MainWindow", "Category"))
         #self.comboBox_4.setItemText(0, QCoreApplication.translate("MainWindow", "Nitya Annadhana Nidhi"))
         #self.comboBox_4.setItemText(1, QCoreApplication.translate("MainWindow", "Shaswitha Annadhana Nidhi"))
@@ -6216,7 +6242,7 @@ class Ui_MainWindow(object):
         self.label_42.setText(QCoreApplication.translate("MainWindow", "Name"))
         self.lineEdit_43.setText(QCoreApplication.translate("MainWindow", "Last name"))
         self.label4.setText(QCoreApplication.translate("MainWindow", "Student id"))
-        self.lineEdit_42.setText(QCoreApplication.translate("MainWindow", "First name"))
+        self.lineEdit_42.setPlaceholderText(QCoreApplication.translate("MainWindow", "First name"))
         self.label_46.setText(QCoreApplication.translate("MainWindow", "Date of birth"))
         self.label_44.setText(QCoreApplication.translate("MainWindow", "Do you want to proceed?"))
         self.textEdit4.setHtml(QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -6227,15 +6253,15 @@ class Ui_MainWindow(object):
         self.label_48.setText(QCoreApplication.translate("MainWindow", "Student Details"))
         self.pushButton_42.setText(QCoreApplication.translate("MainWindow", "SAVE"))
 
-        self.lineEdit_57.setText(QCoreApplication.translate("MainWindow", "Enter master id"))
+        self.lineEdit_57.setPlaceholderText(QCoreApplication.translate("MainWindow", "Enter master id"))
         self.label_55.setText(QCoreApplication.translate("MainWindow", "CODE"))
         self.label_54.setText(QCoreApplication.translate("MainWindow", "In cash/ Cheque No."))
-        self.lineEdit_52.setText(QCoreApplication.translate("MainWindow", "Paid To"))
+        self.lineEdit_52.setPlaceholderText(QCoreApplication.translate("MainWindow", "Paid To"))
         self.label.setText(QCoreApplication.translate("MainWindow", "Amount "))
         self.label_516.setText(QCoreApplication.translate("MainWindow", "DEBIT VOUCHER"))
         self.label_52.setText(QCoreApplication.translate("MainWindow", "Name"))
         self.label_56.setText(QCoreApplication.translate("MainWindow", "          Dated        "))
-        self.lineEdit_53.setText(QCoreApplication.translate("MainWindow", "Amount in Rs"))
+        self.lineEdit_53.setPlaceholderText(QCoreApplication.translate("MainWindow", "Amount in Rs"))
         self.label_57.setText(QCoreApplication.translate("MainWindow", "bank, towards"))
         self.radioButton_52.setText(QCoreApplication.translate("MainWindow", "Checked by master"))
         self.label_58.setText(QCoreApplication.translate("MainWindow", "Voucher number"))
@@ -6254,16 +6280,16 @@ class Ui_MainWindow(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p></body></html>"))
         self.label_74.setText(QCoreApplication.translate("MainWindow", "Anual Fee"))
-        self.lineEdit_72.setText(QCoreApplication.translate("MainWindow", "First name"))
+        self.lineEdit_72.setPlaceholderText(QCoreApplication.translate("MainWindow", "First name"))
         self.pushButton7.setText(QCoreApplication.translate("MainWindow", "Get details"))
         self.pushButton78.setText(QCoreApplication.translate("MainWindow", "Update details"))
         self.label_716.setText(QCoreApplication.translate("MainWindow", "Update/Get Student Details"))
-        self.lineEdit_73.setText(QCoreApplication.translate("MainWindow", "Last name"))
+        self.lineEdit_73.setPlaceholderText(QCoreApplication.translate("MainWindow", "Last name"))
         self.label_75.setText(QCoreApplication.translate("MainWindow", "School/College Name"))
         self.label_710.setText(QCoreApplication.translate("MainWindow", "Fee Paid"))
         self.label_72.setText(QCoreApplication.translate("MainWindow", "Name"))
         self.label_713.setText(QCoreApplication.translate("MainWindow", "Academic Year"))
-        self.lineEdit_73.setText(QCoreApplication.translate("MainWindow", "Last name"))
+        self.lineEdit_73.setPlaceholderText(QCoreApplication.translate("MainWindow", "Last name"))
 
 
         self.label9.setText(QCoreApplication.translate("MainWindow", "Analysis Of Donations"))
@@ -6306,14 +6332,14 @@ class Ui_MainWindow(object):
         self.radioButton8.setText(QCoreApplication.translate("MainWindow", "Normal User"))
         self.label_810.setText(QCoreApplication.translate("MainWindow", "Username"))
         self.label_812.setText(QCoreApplication.translate("MainWindow", "Confirm Password"))
-        self.lineEdit8.setText(QCoreApplication.translate("MainWindow", "First Name"))
+        self.lineEdit8.setPlaceholderText(QCoreApplication.translate("MainWindow", "First Name"))
         self.label_89.setText(QCoreApplication.translate("MainWindow", "Last Name"))
-        self.lineEdit_84.setText(QCoreApplication.translate("MainWindow", "Password"))
+        self.lineEdit_84.setPlaceholderText(QCoreApplication.translate("MainWindow", "Password"))
         self.label_88.setText(QCoreApplication.translate("MainWindow", "First Name"))
         self.label_811.setText(QCoreApplication.translate("MainWindow", "Password"))
-        self.lineEdit_83.setText(QCoreApplication.translate("MainWindow", "Username"))
-        self.lineEdit_86.setText(QCoreApplication.translate("MainWindow", "Re-enter Password"))
-        self.lineEdit_82.setText(QCoreApplication.translate("MainWindow", "Last Name"))
+        self.lineEdit_83.setPlaceholderText(QCoreApplication.translate("MainWindow", "Username"))
+        self.lineEdit_86.setPlaceholderText(QCoreApplication.translate("MainWindow", "Re-enter Password"))
+        self.lineEdit_82.setPlaceholderText(QCoreApplication.translate("MainWindow", "Last Name"))
         self.pushButton_82.setText(QCoreApplication.translate("MainWindow", "Add User"))
 
         self.label10.setText(QCoreApplication.translate("MainWindow", "Analysis Of Expenditure"))
@@ -6345,9 +6371,9 @@ class Ui_MainWindow(object):
         self.pushButton142.setText(QCoreApplication.translate("MainWindow", "Add Manual Transaction"))
 
         self.label15.setText(QCoreApplication.translate("MainWindow", "Add Scheme"))
-        self.lineEdit_153.setText(QCoreApplication.translate("MainWindow", "number of days"))
+        self.lineEdit_153.setPlaceholderText(QCoreApplication.translate("MainWindow", "number of days"))
         self.label_152.setText(QCoreApplication.translate("MainWindow", "Scheme Name:"))
-        self.lineEdit_152.setText(QCoreApplication.translate("MainWindow", "in years"))
+        self.lineEdit_152.setPlaceholderText(QCoreApplication.translate("MainWindow", "in years"))
         self.label_153.setText(QCoreApplication.translate("MainWindow", "Validity"))
         self.label_154.setText(QCoreApplication.translate("MainWindow", "Reminder (in days)"))
         self.label_156.setText(QCoreApplication.translate("MainWindow", "Scheme id"))
@@ -6383,7 +6409,7 @@ class Ui_MainWindow(object):
         self.label_163.setText(QCoreApplication.translate("MainWindow", "Bank Details"))
         self.label_162.setText(QCoreApplication.translate("MainWindow", "Bank name & Branch"))
         self.label16.setText(QCoreApplication.translate("MainWindow", "Bank name (in application)"))
-        self.lineEdit_162.setText(QCoreApplication.translate("MainWindow", "This name would be displayed for further references"))
+        self.lineEdit_162.setPlaceholderText(QCoreApplication.translate("MainWindow", "This name would be displayed for further references"))
         self.pushButton16.setText(QCoreApplication.translate("MainWindow", "Add Account"))
         self.textEdit16.setHtml(QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"

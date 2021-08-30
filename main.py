@@ -158,40 +158,40 @@ class MainWindow(QMainWindow):
         # PAGE HOME
         if btnWidget.objectName() == "btn_home":
             self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
-            UIFunctions.resetStyle(self, "btn_home")
-            UIFunctions.labelPage(self, "Home")
-            btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
+            ui_functions.UIFunctions.resetStyle(self, "btn_home")
+            ui_functions.UIFunctions.labelPage(self, "Home")
+            btnWidget.setStyleSheet(ui_functions.UIFunctions.selectMenu(btnWidget.styleSheet()))
 
         # PAGE WIDGETS
         if btnWidget.objectName() == "btn_widgets":
             self.ui.stackedWidget.setCurrentWidget(self.ui.page_widgets)
-            UIFunctions.resetStyle(self, "btn_widgets")
-            UIFunctions.labelPage(self, "DONATIONS")
-            btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
+            ui_functions.UIFunctions.resetStyle(self, "btn_widgets")
+            ui_functions.UIFunctions.labelPage(self, "DONATIONS")
+            btnWidget.setStyleSheet(ui_functions.UIFunctions.selectMenu(btnWidget.styleSheet()))
         
         if btnWidget.objectName() == "expenditure":
             self.ui.stackedWidget.setCurrentWidget(self.ui.expenditure_opening)
-            UIFunctions.resetStyle(self, "expenditure")
-            UIFunctions.labelPage(self, "EXPENDITURE")
-            btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
+            ui_functions.UIFunctions.resetStyle(self, "expenditure")
+            ui_functions.UIFunctions.labelPage(self, "EXPENDITURE")
+            btnWidget.setStyleSheet(ui_functions.UIFunctions.selectMenu(btnWidget.styleSheet()))
         
         if btnWidget.objectName() == "new_user":
             self.ui.stackedWidget.setCurrentWidget(self.ui.new_user)
-            UIFunctions.resetStyle(self, "new_user")
-            UIFunctions.labelPage(self, "NEW USER")
-            btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
+            ui_functions.UIFunctions.resetStyle(self, "new_user")
+            ui_functions.UIFunctions.labelPage(self, "NEW USER")
+            btnWidget.setStyleSheet(ui_functions.UIFunctions.selectMenu(btnWidget.styleSheet()))
 
         if btnWidget.objectName() == "expenditure_confirm":
             self.ui.stackedWidget.setCurrentWidget(self.ui.exp_confirmation_page)
-            UIFunctions.resetStyle(self, "exp_confirmation_page")
-            UIFunctions.labelPage(self, "confirma")
-            btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
+            ui_functions.UIFunctions.resetStyle(self, "exp_confirmation_page")
+            ui_functions.UIFunctions.labelPage(self, "confirma")
+            btnWidget.setStyleSheet(ui_functions.UIFunctions.selectMenu(btnWidget.styleSheet()))
         
         if btnWidget.objectName() == "Donation_confirm":
             self.ui.stackedWidget.setCurrentWidget(self.ui.donation_confirmation_page)
-            UIFunctions.resetStyle(self, "donation_confirmation_page")
-            UIFunctions.labelPage(self, "donation_confirmation_page")
-            btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
+            ui_functions.UIFunctions.resetStyle(self, "donation_confirmation_page")
+            ui_functions.UIFunctions.labelPage(self, "donation_confirmation_page")
+            btnWidget.setStyleSheet(ui_functions.UIFunctions.selectMenu(btnWidget.styleSheet()))
         
         
         

@@ -84,10 +84,6 @@ class Ui_MainWindow(object):
         mycursor = mydb.cursor()
         mycursor.execute("SELECT master_registration_number,date_of_donation,donation_in_name,amount,schemes.name FROM all_donations LEFT JOIN schemes ON all_donations.category = schemes.idschemes where date_of_donation between '{0}' and '{1}' order by master_registration_number".format(ffromd,ftod))
         data = mycursor.fetchall()
-        #temp = ['Master registration number','date','name','amount','category']
-        #data.insert(0,temp)
-        for i in range(50):
-            data.append(["0","435","45","453","435"])
         folderpath = QtWidgets.QFileDialog.getExistingDirectory(None,'Select Folder')
         print(folderpath)
         fileName = str(folderpath) + '/' + str(fromd) + ' to ' + str(tod) + '_donation.pdf'
@@ -144,13 +140,8 @@ class Ui_MainWindow(object):
 
 
         title_background = colors.fidblue
-        hour = 8
-        minute = 0
-        hour_list = []
 
-        data_actividades = [
-            {'Master registration number','date','name','amount','category'},
-        ]
+        data_actividades = [('Master registration number','date','name','amount','category')]
 
         i = 0
         table_group= []
@@ -159,7 +150,7 @@ class Ui_MainWindow(object):
         for i in range(len(data)):
             data_actividades.append(data[i])
 
-            table_actividades = Table(data_actividades, colWidths=100, rowHeights=30, repeatRows=1)
+            table_actividades = Table(data_actividades, rowHeights=30, repeatRows=1)
             tblStyle = TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), title_background),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -181,8 +172,7 @@ class Ui_MainWindow(object):
             if ((count >= 20) or (i== size) ):
                 count = 0
                 table_group.append(table_actividades)
-                data_actividades = [
-                    {'Master registration number','date','name','amount','category'},]
+                data_actividades = [('Master registration number','date','name','amount','category')]
             width = 150
             height = 150
             count += 1

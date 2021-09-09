@@ -15,8 +15,193 @@ from viewdonations import Ui_Forma
 import sys
 from add_donor_confirmation import *
 from ok_popup import *
+from reportlab.pdfgen.canvas import Canvas
+from datetime import datetime, timedelta
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter, landscape
+from reportlab.platypus import BaseDocTemplate, Frame, Paragraph, PageBreak, \
+    PageTemplate, Spacer, FrameBreak, NextPageTemplate, Image
+from reportlab.lib.pagesizes import letter,A4
+from reportlab.lib.units import inch, cm
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER,TA_LEFT,TA_RIGHT
+
 
 class Ui_MainWindow(object):
+    def add_banks_in_donation(self):
+        c = self.comboBox_2.currentIndex()
+        font7 = QFont()
+        font7.setFamily("Segoe UI")
+        font7.setPointSize(14)
+        font7.setBold(True)
+        font7.setWeight(75)
+        print("func activated")
+        if c!=0:
+            if self.gridLayout_3.count()>=25:
+                pass
+            else:
+                self.comboBox_4 = QComboBox(self.new_donation)
+                self.comboBox_4.setMaximumSize(QSize(16777215, 40))
+                self.comboBox_4.setObjectName("comboBox_192")
+                self.comboBox_4.setFont(font7)
+                mydb = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="anirudh123",
+                database = "chitra_gupta"
+                )
+                mycursor = mydb.cursor()
+                mycursor.execute("select * from banks")
+                myresult = mycursor.fetchall()
+                i=0
+                for x in myresult:
+                    self.comboBox_4.addItem("")
+                    self.comboBox_4.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
+                    i+=1
+                #self.gridLayout_194.addWidget(self.comboBox_192, 3, 1, 1, 2)
+                self.gridLayout_3.addWidget(self.comboBox_4, 5, 5, 1, 1)
+        else:
+            print("cash")
+            if self.gridLayout_3.count()>=25:
+                item = self.gridLayout_3.takeAt(24)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+    def generate_donation_pdf(self):
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database = "chitra_gupta"
+        )
+        fromd = self.dateEdit9.date()
+        fromd = fromd.toPython()
+        ffromd = fromd.strftime('%Y-%m-%d')
+        tod = self.dateEdit_92.date()
+        tod = tod.toPython()
+        ftod = tod.strftime('%Y-%m-%d')
+        mycursor = mydb.cursor()
+        mycursor.execute("SELECT master_registration_number,date_of_donation,donation_in_name,amount,schemes.name FROM all_donations LEFT JOIN schemes ON all_donations.category = schemes.idschemes where date_of_donation between '{0}' and '{1}' order by master_registration_number".format(ffromd,ftod))
+        data = mycursor.fetchall()
+        #temp = ['Master registration number','date','name','amount','category']
+        #data.insert(0,temp)
+        for i in range(50):
+            data.append(["0","435","45","453","435"])
+        folderpath = QtWidgets.QFileDialog.getExistingDirectory(None,'Select Folder')
+        print(folderpath)
+        fileName = str(folderpath) + '/' + str(fromd) + ' to ' + str(tod) + '_donation.pdf'
+        tid = str(fromd) + ' to ' + str(tod) + ' Full donation report\n'
+        canvas = Canvas(fileName, pagesize=landscape(letter))
+        doc = BaseDocTemplate(fileName)
+        contents =[]
+        width,height = A4
+
+        left_header_frame = Frame(
+            0.2*inch, 
+            height-1.2*inch, 
+            2*inch, 
+            1*inch
+            )
+
+        right_header_frame = Frame(
+            2.2*inch, 
+            height-1.2*inch, 
+            width-2.5*inch, 
+            1*inch,id='normal'
+            )
+
+        frame_table= Frame(
+            0.2*inch, 
+            0.7*inch, 
+            (width-0.6*inch)+0.17*inch, 
+            height-2*inch,
+            leftPadding = 0, 
+            topPadding=0, 
+            showBoundary = 1,
+            id='col'
+            )
+
+        laterpages = PageTemplate(id='laterpages',frames=[left_header_frame, right_header_frame,frame_table],)
+
+        styleSheet = getSampleStyleSheet()
+        style_title = styleSheet['Heading1']
+        style_title.fontSize = 20 
+        style_title.fontName = 'Helvetica-Bold'
+        style_title.alignment=TA_CENTER
+
+        style_data = styleSheet['Normal']
+        style_data.fontSize = 16 
+        style_data.fontName = 'Helvetica'
+        style_data.alignment=TA_CENTER
+
+        style_date = styleSheet['Normal']
+        style_date.fontSize = 14
+        style_date.fontName = 'Helvetica'
+        style_date.alignment=TA_CENTER
+
+        canvas.setTitle(tid)
+
+
+        title_background = colors.fidblue
+        hour = 8
+        minute = 0
+        hour_list = []
+
+        data_actividades = [
+            {'Master registration number','date','name','amount','category'},
+        ]
+
+        i = 0
+        table_group= []
+        count = 0
+        size = len(data)
+        for i in range(len(data)):
+            data_actividades.append(data[i])
+
+            table_actividades = Table(data_actividades, colWidths=100, rowHeights=30, repeatRows=1)
+            tblStyle = TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), title_background),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ])
+
+            rowNumb = len(data_actividades)
+            for row in range(1, rowNumb):
+                if row % 2 == 0:
+                    table_background = colors.lightblue
+                else:
+                    table_background = colors.aliceblue
+
+                tblStyle.add('BACKGROUND', (0, row), (-1, row), table_background)
+
+            table_actividades.setStyle(tblStyle)
+
+            if ((count >= 20) or (i== size) ):
+                count = 0
+                table_group.append(table_actividades)
+                data_actividades = [
+                    {'Master registration number','date','name','amount','category'},]
+            width = 150
+            height = 150
+            count += 1
+            if i > size:
+
+                break
+
+        contents.append(NextPageTemplate('laterpages'))
+
+        for table in table_group:
+            contents.append(FrameBreak())
+            contents.append(Paragraph(tid, style_title))
+            contents.append(FrameBreak()) 
+            contents.append(table)
+            contents.append(FrameBreak())
+
+        doc.addPageTemplates([laterpages,])
+        doc.build(contents)
+
     def add_manual_transaction(self):
         amount = self.lineEdit_192.text()
         bank = self.comboBox_192.currentText()
@@ -1744,6 +1929,11 @@ class Ui_MainWindow(object):
         myresult = mycursor.fetchall()
         for x in myresult:
             self.comboBox_4.addItem(str(x[1]))
+        mycursor.execute("select * from all_donations ORDER BY id_donations DESC LIMIT 1")
+        result = mycursor.fetchall()
+        reg = str(result[0][5]+1)
+        print(result)
+        self.lineEdit_214.setText(reg)
         self.stackedWidget.setCurrentIndex(4)
     
     def new_donor_save(self):
@@ -3319,6 +3509,7 @@ class Ui_MainWindow(object):
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
         self.comboBox_3.setFont(font7)
+        self.comboBox_2.currentIndexChanged.connect(self.add_banks_in_donation)
         self.gridLayout_3.addWidget(self.comboBox_3, 6, 1, 1, 1)
         self.textEdit_212 = QTextEdit(self.new_donation)
         self.textEdit_212.setMaximumSize(QSize(16777215, 150))
@@ -3502,8 +3693,14 @@ class Ui_MainWindow(object):
         self.lineEdit_54.setObjectName("lineEdit_54")
         self.lineEdit_54.setMinimumSize(QSize(0, 30))
         self.gridLayout_53.addWidget(self.lineEdit_54, 8, 1, 1, 1)
+        font = QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
         self.label_55 = QLabel(self.deb_voucher)
         self.label_55.setObjectName("label_55")
+        self.label_55.setFont(font)
         self.gridLayout_53.addWidget(self.label_55, 7, 0, 1, 1)
         self.dateEdit5 = QDateEdit(self.deb_voucher)
         self.dateEdit5.setObjectName("dateEdit5")
@@ -3511,6 +3708,7 @@ class Ui_MainWindow(object):
         self.gridLayout_53.addWidget(self.dateEdit5, 3, 3, 1, 1)
         self.label_54 = QLabel(self.deb_voucher)
         self.label_54.setObjectName("label_4")
+        self.label_54.setFont(font)
         self.gridLayout_53.addWidget(self.label_54, 8, 0, 1, 1)
         self.lineEdit_56 = QLineEdit(self.deb_voucher)
         self.lineEdit_56.setObjectName("lineEdit_56")
@@ -3536,7 +3734,7 @@ class Ui_MainWindow(object):
         self.label_516.setMaximumSize(QSize(16777215, 50))
         font = QFont()
         font.setFamily("Segoe UI")
-        font.setPointSize(18)
+        font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.label_516.setFont(font)
@@ -3549,13 +3747,8 @@ class Ui_MainWindow(object):
         self.label_516.setObjectName("label_516")
         self.gridLayout_53.addWidget(self.label_516, 1, 0, 1, 4)
         self.label_52 = QLabel(self.deb_voucher)
-        font = QFont()
-        font.setFamily("Segoe UI")
-        font.setPointSize(14)
-        font.setBold(True)
-        font.setWeight(75)
         self.label_52.setFont(font)
-        self.label_52.setObjectName("label_2")
+        self.label_52.setObjectName("label_52")
         self.gridLayout_53.addWidget(self.label_52, 5, 0, 1, 1)
         self.lineEdit_55 = QLineEdit(self.deb_voucher)
         self.lineEdit_55.setObjectName("lineEdit_55")
@@ -3563,6 +3756,7 @@ class Ui_MainWindow(object):
         self.gridLayout_53.addWidget(self.lineEdit_55, 9, 1, 1, 1)
         self.label_56 = QLabel(self.deb_voucher)
         self.label_56.setObjectName("label_56")
+        self.label_56.setFont(font)
         self.gridLayout_53.addWidget(self.label_56, 8, 2, 1, 1)
         self.lineEdit_53 = QLineEdit(self.deb_voucher)
         self.lineEdit_53.setObjectName("lineEdit_53")
@@ -3570,6 +3764,7 @@ class Ui_MainWindow(object):
         self.gridLayout_53.addWidget(self.lineEdit_53, 6, 1, 1, 1)
         self.label_57 = QLabel(self.deb_voucher)
         self.label_57.setObjectName("label_57")
+        self.label_57.setFont(font)
         self.gridLayout_53.addWidget(self.label_57, 9, 0, 1, 1)
         self.dateEdit_52 = QDateEdit(self.deb_voucher)
         self.dateEdit_52.setObjectName("dateEdit_52")
@@ -3578,21 +3773,26 @@ class Ui_MainWindow(object):
         self.comboBox_52 = QComboBox(self.deb_voucher)
         self.comboBox_52.setObjectName("comboBox_52")
         self.comboBox_52.setMinimumSize(QSize(0, 30))
+        self.comboBox_52.setFont(font)
         self.gridLayout_53.addWidget(self.comboBox_52, 7, 1, 1, 1)
         self.radioButton_52 = QRadioButton(self.deb_voucher)
         self.radioButton_52.setObjectName("radioButton_52")
         self.gridLayout_53.addWidget(self.radioButton_52, 10, 2, 1, 1)
         self.label_58 = QLabel(self.deb_voucher)
         self.label_58.setObjectName("label_58")
+        self.label_58.setFont(font)
         self.gridLayout_53.addWidget(self.label_58, 2, 0, 1, 1)
         self.label_59 = QLabel(self.deb_voucher)
         self.label_59.setObjectName("label_59")
+        self.label_59.setFont(font)
         self.gridLayout_53.addWidget(self.label_59, 10, 0, 1, 1)
         self.label_53 = QLabel(self.deb_voucher)
         self.label_53.setObjectName("label_53")
+        self.label_53.setFont(font)
         self.gridLayout_53.addWidget(self.label_53, 3, 2, 1, 1)
         self.label_510 = QLabel(self.deb_voucher)
         self.label_510.setObjectName("label_510")
+        self.label_510.setFont(font)
         self.gridLayout_53.addWidget(self.label_510, 9, 2, 1, 1)
         self.dateEdit_53 = QDateEdit(self.deb_voucher)
         self.dateEdit_53.setObjectName("dateEdit_53")
@@ -3742,6 +3942,7 @@ class Ui_MainWindow(object):
         self.gridLayout_73.addWidget(self.label_72, 5, 0, 1, 1)
         self.label_713 = QLabel(self.update_stud)
         self.label_713.setObjectName("label_713")
+        self.label_713.setFont(font)
         self.gridLayout_73.addWidget(self.label_713, 8, 2, 1, 1)
         self.lineEdit_79 = QLineEdit(self.update_stud)
         self.lineEdit_79.setObjectName("lineEdit_79")
@@ -3750,6 +3951,7 @@ class Ui_MainWindow(object):
         self.pushButton78 = QPushButton(self.update_stud)
         self.pushButton78.setObjectName("pushButton78")
         self.pushButton78.setMinimumSize(QSize(100, 30))
+        self.pushButton78.setFont(font)
         self.pushButton78.setStyleSheet(u"QPushButton {\n"
 "	border: 2px solid rgb(52, 59, 72);\n"
 "	border-radius: 5px;	\n"
@@ -3822,27 +4024,33 @@ class Ui_MainWindow(object):
         self.horizontalLayout_69.setObjectName("horizontalLayout_69")
         self.label_62 = QLabel(self.frame_content_wid_61)
         self.label_62.setObjectName("label_62")
+        self.label_62.setFont(font)
         self.horizontalLayout_69.addWidget(self.label_62)
         self.dateEdit_62 = QDateEdit(self.frame_content_wid_61)
         self.dateEdit_62.setObjectName("dateEdit_62")
         self.horizontalLayout_69.addWidget(self.dateEdit_62)
         self.label_63 = QLabel(self.frame_content_wid_61)
         self.label_63.setObjectName("label_63")
+        self.label_63.setFont(font)
         self.horizontalLayout_69.addWidget(self.label_63)
         self.dateEdit = QDateEdit(self.frame_content_wid_61)
         self.dateEdit.setObjectName("dateEdit")
+        self.dateEdit.setMinimumSize(QSize(0, 30))
         self.horizontalLayout_69.addWidget(self.dateEdit)
         self.comboBox6 = QComboBox(self.frame_content_wid_61)
         self.comboBox6.setObjectName("comboBox6")
         self.comboBox6.addItem("Petty Cashbook")
         self.comboBox6.addItem("Main Cashbook")
+        self.comboBox6.setFont(font)
         self.comboBox6.currentIndexChanged.connect(self.cashbookselection)
         now = datetime.now()
         self.dateEdit_62.setDate(now)
+        self.dateEdit_62.setMinimumSize(QSize(0, 30))
         self.dateEdit.setDate(now)
         self.horizontalLayout_69.addWidget(self.comboBox6)
         self.pushButton6 = QPushButton(self.frame_content_wid_61)
         self.pushButton6.setObjectName("pushButton6")
+        self.pushButton6.setFont(font)
         self.pushButton6.setStyleSheet(u"QPushButton {\n"
 "	border: 2px solid rgb(52, 59, 72);\n"
 "	border-radius: 5px;	\n"
@@ -3856,6 +4064,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
+        self.pushButton6.setFont(font)
         self.pushButton6.clicked.connect(self.get_cashbook_details)
         self.horizontalLayout_69.addWidget(self.pushButton6)
         self.verticalLayout_67.addWidget(self.frame_content_wid_61)
@@ -3880,9 +4089,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_611 = QVBoxLayout(self.frame_62)
         self.verticalLayout_611.setObjectName("verticalLayout_611")
         self.label_64 = QLabel(self.frame_62)
-        font = QFont()
-        font.setPointSize(14)
-        font.setBold(True)
         self.label_64.setFont(font)
         self.label_64.setObjectName("label_64")
         self.verticalLayout_611.addWidget(self.label_64)
@@ -4121,6 +4327,7 @@ class Ui_MainWindow(object):
         self.gridLayout_93.setVerticalSpacing(40)
         self.pushButton_92 = QPushButton(self.d_analysis)
         self.pushButton_92.setObjectName("pushButton_92")
+        self.pushButton_92.setMinimumSize(QSize(16777215, 30))
         self.pushButton_92.clicked.connect(self.alldonations)
         self.pushButton_92.setStyleSheet(u"QPushButton {\n"
 "	border: 2px solid rgb(52, 59, 72);\n"
@@ -4138,6 +4345,7 @@ class Ui_MainWindow(object):
         self.gridLayout_93.addWidget(self.pushButton_92, 1, 1, 1, 1)
         self.dateEdit9 = QDateEdit(self.d_analysis)
         self.dateEdit9.setObjectName("dateEdit9")
+        self.dateEdit9.setMinimumSize(QSize(0, 30))
         now = datetime.now()
         self.dateEdit9.setDate(now)
         self.gridLayout_93.addWidget(self.dateEdit9, 0, 1, 1, 1)
@@ -4145,6 +4353,7 @@ class Ui_MainWindow(object):
         self.dateEdit_92.setObjectName("dateEdit_92")
         now = datetime.now()
         self.dateEdit_92.setDate(now)
+        self.dateEdit_92.setMinimumSize(QSize(0, 30))
         self.gridLayout_93.addWidget(self.dateEdit_92, 0, 3, 1, 1)
         self.label_92 = QLabel(self.d_analysis)
         self.label_92.setObjectName("label_92")
@@ -4155,6 +4364,7 @@ class Ui_MainWindow(object):
         self.pushButton_93 = QPushButton(self.d_analysis)
         self.pushButton_93.setObjectName("pushButton_93")
         self.pushButton_93.clicked.connect(self.donation_analysis)
+        self.pushButton_93.setMinimumSize(QSize(16777215, 30))
         self.pushButton_93.setStyleSheet(u"QPushButton {\n"
 "	border: 2px solid rgb(52, 59, 72);\n"
 "	border-radius: 5px;	\n"
@@ -4169,6 +4379,24 @@ class Ui_MainWindow(object):
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
         self.gridLayout_93.addWidget(self.pushButton_93, 1, 2, 1, 1)
+        self.pushButton_94 = QPushButton(self.d_analysis)
+        self.pushButton_94.setObjectName("pushButton_93")
+        self.pushButton_94.clicked.connect(self.generate_donation_pdf)
+        self.pushButton_94.setMinimumSize(QSize(16777215, 30))
+        self.pushButton_94.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.gridLayout_93.addWidget(self.pushButton_94, 1, 3, 1, 1)
         self.verticalLayout_912.addLayout(self.gridLayout_93)
         self.verticalLayout_910.addLayout(self.verticalLayout_912)
         self.label_94 = QLabel(self.d_analysis)
@@ -4223,6 +4451,10 @@ class Ui_MainWindow(object):
         self.gridLayout_103.setObjectName("gridLayout_103")
         self.gridLayout_103.setHorizontalSpacing(30)
         self.gridLayout_103.setVerticalSpacing(40)
+        font = QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
         self.pushButton_102 = QPushButton(self.exp_analysis)
         self.pushButton_102.setObjectName("pushButton_102")
         self.pushButton_102.setStyleSheet(u"QPushButton {\n"
@@ -4238,6 +4470,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
+        self.pushButton_102.setFont(font)
         self.pushButton_102.clicked.connect(self.get_exp_butn)
         self.gridLayout_103.addWidget(self.pushButton_102, 1, 1, 1, 1)
         self.dateEdit102 = QDateEdit(self.exp_analysis)
@@ -4248,12 +4481,15 @@ class Ui_MainWindow(object):
         self.dateEdit_102 = QDateEdit(self.exp_analysis)
         self.dateEdit_102.setObjectName("dateEdit_102")
         self.dateEdit_102.setDate(now)
+        #self.dateEdit_102.setMinimumSize(QSize(0, 30))
         self.gridLayout_103.addWidget(self.dateEdit_102, 0, 3, 1, 1)
         self.label_102 = QLabel(self.exp_analysis)
         self.label_102.setObjectName("label_102")
+        self.label_102.setFont(font)
         self.gridLayout_103.addWidget(self.label_102, 0, 0, 1, 1)
         self.label_103 = QLabel(self.exp_analysis)
         self.label_103.setObjectName("label_103")
+        self.label_103.setFont(font)
         self.gridLayout_103.addWidget(self.label_103, 0, 2, 1, 1)
         self.pushButton_103 = QPushButton(self.exp_analysis)
         self.pushButton_103.setObjectName("pushButton_103")
@@ -4270,6 +4506,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
+        self.pushButton_103.setFont(font)
         self.pushButton_103.clicked.connect(self.exp_analysisbutton)
         self.gridLayout_103.addWidget(self.pushButton_103, 1, 2, 1, 1)
         self.verticalLayout_1012.addLayout(self.gridLayout_103)
@@ -4298,6 +4535,7 @@ class Ui_MainWindow(object):
         self.label_105 = QLabel(self.exp_analysis)
         self.label_105.setMaximumSize(QSize(16777215, 20))
         self.label_105.setObjectName("label_105")
+        self.label_105.setFont(font)
         self.horizontalLayout_1013.addWidget(self.label_105)
         self.lcdNumber10 = QLCDNumber(self.exp_analysis)
         self.lcdNumber10.setObjectName("lcdNumber10")
@@ -4322,6 +4560,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
+        self.pushButton_104.setFont(font)
         self.horizontalLayout_1015.addWidget(self.pushButton_104)
         self.pushButton_105 = QPushButton(self.exp_analysis)
         self.pushButton_105.setObjectName("pushButton_105")
@@ -4338,6 +4577,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
+        self.pushButton_105.setFont(font)
         self.pushButton_105.clicked.connect(self.update_stud_details)
         self.horizontalLayout_1015.addWidget(self.pushButton_105)
         self.verticalLayout_1010.addLayout(self.horizontalLayout_1015)
@@ -4818,6 +5058,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_149.addWidget(self.label_142)
         self.dateEdit14 = QDateEdit(self.bank_statement)
         self.dateEdit14.setObjectName("dateEdit14")
+        self.dateEdit14.setMinimumSize(QSize(0, 30))
         self.horizontalLayout_149.addWidget(self.dateEdit14)
         self.label_143 =QLabel(self.bank_statement)
         font = QFont()
@@ -4829,6 +5070,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_149.addWidget(self.label_143)
         self.dateEdit_142 =QDateEdit(self.bank_statement)
         self.dateEdit_142.setObjectName("dateEdit_142")
+        self.dateEdit_142.setMinimumSize(QSize(0, 30))
         self.horizontalLayout_149.addWidget(self.dateEdit_142)
         self.verticalLayout_146.addLayout(self.horizontalLayout_149)
         self.verticalLayout_1410.addLayout(self.verticalLayout_146)
@@ -4836,9 +5078,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_1412.setObjectName("horizontalLayout_1412")
         self.label_144 = QLabel(self.bank_statement)
         self.label_144.setObjectName("label_144")
+        self.label_144.setFont(font)
         self.horizontalLayout_1412.addWidget(self.label_144)
         self.comboBox14 = QComboBox(self.bank_statement)
         self.comboBox14.setObjectName("comboBox14")
+        self.comboBox14.setFont(font)
         mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -4870,6 +5114,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
+        self.pushButton14.setFont(font)
         self.pushButton14.clicked.connect(self.get_statement)
         self.verticalLayout_1410.addWidget(self.pushButton14)
         self.tableWidget14 = QTableWidget(self.bank_statement)
@@ -4891,6 +5136,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
+        self.pushButton141.setFont(font)
         self.pushButton141.clicked.connect(self.add_bank)
         self.verticalLayout_1410.addWidget(self.tableWidget14)
         self.verticalLayout_1410.addWidget(self.pushButton141)
@@ -4909,6 +5155,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
+        self.pushButton142.setFont(font)
         self.pushButton142.clicked.connect(self.manual_trasaction_page)
         self.verticalLayout_1410.addWidget(self.pushButton142)
         self.stackedWidget.addWidget(self.bank_statement)
@@ -4938,6 +5185,7 @@ class Ui_MainWindow(object):
         self.lineEdit_153.setMinimumSize(QSize(0, 30))
         font = QFont()
         font.setPointSize(14)
+        font.setBold(True)
         self.lineEdit_153.setFont(font)
         self.lineEdit_153.setObjectName("lineEdit_153")
         self.gridLayout15.addWidget(self.lineEdit_153, 3, 1, 1, 1)
@@ -4965,6 +5213,7 @@ class Ui_MainWindow(object):
         self.lineEdit_152.setMinimumSize(QSize(0, 30))
         font = QFont()
         font.setPointSize(14)
+        font.setBold(True)
         self.lineEdit_152.setFont(font)
         self.lineEdit_152.setObjectName("lineEdit_152")
         self.gridLayout15.addWidget(self.lineEdit_152, 2, 1, 1, 1)
@@ -4972,6 +5221,7 @@ class Ui_MainWindow(object):
         self.lineEdit_156.setMinimumSize(QSize(0, 30))
         font = QFont()
         font.setPointSize(14)
+        font.setBold(True)
         self.lineEdit_156.setFont(font)
         self.lineEdit_156.setObjectName("lineEdit_152")
         self.gridLayout15.addWidget(self.lineEdit_156, 0, 1, 1, 1)
@@ -5009,6 +5259,7 @@ class Ui_MainWindow(object):
         self.pushButton15.clicked.connect(self.add__scheme)
         font = QFont()
         font.setPointSize(14)
+        font.setBold(True)
         self.pushButton15.setFont(font)
         self.pushButton15.setObjectName("pushButton15")
         self.gridLayout15.addWidget(self.pushButton15, 4, 1, 1, 1)
@@ -5089,7 +5340,8 @@ class Ui_MainWindow(object):
         now = datetime.now()
         self.dateEdit17.setDate(now)
         font = QFont()
-        font.setPointSize(11)
+        font.setPointSize(14)
+        font.setBold(True)
         self.dateEdit17.setFont(font)
         self.dateEdit17.setObjectName("dateEdit17")
         self.gridLayout17.addWidget(self.dateEdit17, 0, 1, 1, 1)
@@ -5105,6 +5357,7 @@ class Ui_MainWindow(object):
         self.textEdit17.setMaximumSize(QSize(16777215, 100))
         font = QFont()
         font.setPointSize(14)
+        font.setBold(True)
         self.textEdit17.setFont(font)
         self.textEdit17.setObjectName("textEdit17")
         self.gridLayout17.addWidget(self.textEdit17, 3, 1, 1, 1)
@@ -5178,6 +5431,7 @@ class Ui_MainWindow(object):
         self.textEdit16.setMaximumSize(QSize(16777215, 100))
         font = QFont()
         font.setPointSize(14)
+        font.setBold(True)
         self.textEdit16.setFont(font)
         self.textEdit16.setObjectName("textEdit16")
         self.gridLayout16.addWidget(self.textEdit16, 2, 1, 1, 1)
@@ -5193,6 +5447,7 @@ class Ui_MainWindow(object):
         self.lineEdit_162.setMinimumSize(QSize(0, 30))
         font = QFont()
         font.setPointSize(14)
+        font.setBold(True)
         self.lineEdit_162.setFont(font)
         self.lineEdit_162.setObjectName("lineEdit_162")
         self.gridLayout16.addWidget(self.lineEdit_162, 0, 1, 1, 1)
@@ -6195,7 +6450,7 @@ class Ui_MainWindow(object):
         #self.comboBox_4.setItemText(5, QCoreApplication.translate("MainWindow", "Vidyarthi Samraksha Nidhi"))
         #self.comboBox_4.setItemText(6, QCoreApplication.translate("MainWindow", "Patron"))
         #self.comboBox_4.setItemText(7, QCoreApplication.translate("MainWindow", "General Donors"))
-        self.label_2111.setText(QCoreApplication.translate("MainWindow", "Donation to student"))
+        self.label_2111.setText(QCoreApplication.translate("MainWindow", "Donation for student"))
         self.label_2112.setText(QCoreApplication.translate("MainWindow", "Phone number"))
         self.pushButton_212.setText(QCoreApplication.translate("MainWindow", u"Confirm Donation", None))
         
@@ -6297,6 +6552,7 @@ class Ui_MainWindow(object):
         self.label_92.setText(QCoreApplication.translate("MainWindow", "From Date"))
         self.label_93.setText(QCoreApplication.translate("MainWindow", "To Date"))
         self.pushButton_93.setText(QCoreApplication.translate("MainWindow", "Get Analysis"))
+        self.pushButton_94.setText(QCoreApplication.translate("MainWindow", "Generate PDF"))
         self.label_94.setText(QCoreApplication.translate("MainWindow", "Donations From Various Schemes"))
         self.label_95.setText(QCoreApplication.translate("MainWindow", "Total amount recieved by donations"))
        # self.commandLinkButton.setDescription(QCoreApplication.translate("MainWindow", u"Open External Link", None))

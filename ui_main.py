@@ -822,16 +822,58 @@ class Ui_MainWindow(object):
             mycursor.execute("select * from main_cashbook ORDER BY transaction_id DESC LIMIT 1")
             myresult = mycursor.fetchall()
             if len(myresult)==0:
-                sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-                val = (x[2],x[4], x[5], x[6],x[11],int(x[13]),int(x[13]))
-                mycursor.execute(sql, val)
-                mydb.commit()
+                if x[-1] == "":    
+                    sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                    val = (x[2],x[4], x[5], x[6],x[11],int(x[13]),int(x[13]))
+                    mycursor.execute(sql, val)
+                    mydb.commit()
+                else:
+                    sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance,deposited) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+                    val = (x[2],x[4], x[5], x[6],x[11],int(x[13]),int(x[13]),1)
+                    mycursor.execute(sql, val)
+                    mydb.commit()
+                    bank = x[-1]
+                    name = "Deposition of donations with master registration numbers "
+                    name += str(x[5])
+                    mycursor.execute("select balance from bank_statement where bank_name = '{0}'".format(bank))
+                    r = mycursor.fetchall()
+                    if len(r)!=0:
+                        balance = r[-1][0]
+                    else:
+                        balance =0
+                    sql = "INSERT INTO bank_statement (bank_name,date,description,deposits,balance) VALUES (%s,%s,%s,%s,%s)"
+                    val = (bank,x[2],name,int(x[13]),int(balance)+int(x[13]))
+                    mycursor.execute(sql, val)
+                    mydb.commit()
+
             else:
-                balance = myresult[0][8]
-                sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-                val = (x[2],x[4], x[5], x[6],x[11],int(x[13]),int(balance)+int(x[13]))
-                mycursor.execute(sql, val)
-                mydb.commit()
+                if x[-1] == "":
+                    balance = myresult[0][8]
+                    sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                    val = (x[2],x[4], x[5], x[6],x[11],int(x[13]),int(balance)+int(x[13]))
+                    mycursor.execute(sql, val)
+                    mydb.commit()
+                else:
+                    balance = myresult[0][8]
+                    sql = "INSERT INTO main_cashbook (date,name,master_registration_number,reciept_number,category,debit,balance,deposited) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+                    val = (x[2],x[4], x[5], x[6],x[11],int(x[13]),int(balance)+int(x[13]),1)
+                    mycursor.execute(sql, val)
+                    mydb.commit()
+                    bank = x[-1]
+                    name = "Deposition of donations with master registration numbers "
+                    name += str(x[5])
+                    mycursor.execute("select balance from bank_statement where bank_name = '{0}'".format(bank))
+                    r = mycursor.fetchall()
+                    if len(r)!=0:
+                        balance = r[-1][0]
+                    else:
+                        balance =0
+                    sql = "INSERT INTO bank_statement (bank_name,date,description,deposits,balance) VALUES (%s,%s,%s,%s,%s)"
+                    val = (bank,x[2],name,int(x[13]),int(balance)+int(x[13]))
+                    mycursor.execute(sql, val)
+                    mydb.commit()
+                   
+
         msg = "Updated successfully"
         self.dialog = QDialog()
         self.ui = Ui_OK()
@@ -2628,7 +2670,7 @@ class Ui_MainWindow(object):
         amount = self.lineEdit_2115.text()
         bank_deposit = ''
         if payment_mode == "Direct remittance to bank" or payment_mode == "Cheque":
-            bank_deposit = str(self.comboBox_2.currentText())
+            bank_deposit = str(self.comboBox_44.currentText())
         
         print(donation_date)
         donation_date = donation_date.toPython()
@@ -2890,6 +2932,11 @@ class Ui_MainWindow(object):
             myresult = mycursor.fetchall()
             for x in myresult:
                 self.comboBox_4.addItem(str(x[1]))
+            mycursor.execute("select * from all_donations ORDER BY id_donations DESC LIMIT 1")
+            result = mycursor.fetchall()
+            reg = str(result[0][5]+1)
+            print(result)
+            self.lineEdit_214.setText(reg)
             
         
             

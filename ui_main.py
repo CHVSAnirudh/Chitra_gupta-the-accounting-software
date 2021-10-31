@@ -2897,7 +2897,154 @@ class Ui_MainWindow(object):
             </html>"""
             f.write(message)
             f.close()
+            mycursor.execute("select * from all_donors where donor_id = (select id_donor from all_donations where master_registration_number = {})".format(master_registration))
+            ans = mycursor.fetchall()
             #formatted = jinja2.Template(message).render(products=helloworld)
+            webbrowser.open_new_tab(fileName)
+            import webbrowser
+            import inflect
+            folderpath = QtWidgets.QFileDialog.getExistingDirectory(None,'Select Folder')
+            print(folderpath)
+            fileName = str(folderpath) + '/' + 'reciept {}.html'.format(str(master_registration))
+            f = open(fileName,'w',encoding='utf-8')
+            date='31-10-21'
+            receipt_no=20
+            name = ans[0][1] + ans[0][2]
+            mobile_no= phone
+            pan_no=ans[0][7]
+            aadhar_no=ans[0][6]
+            address=ans[0][3]
+            mail_id=ans[0][5]
+            p = inflect.engine()
+            
+            amount_in_words = p.number_to_words(amount) 
+            cheque_no = payment_description 
+            drawn_bank= bank_deposit
+            towards= remarks
+
+            message = f"""<html>
+            <head>
+
+            <style type="text/css">
+            <!--
+            body {{ font-family: Arial; font-size: 22.1px }}
+            .pos {{ position: absolute; z-index: 0; left: 0px; top: 0px }}
+            -->
+            </style>
+            </head>
+            <body>
+            <nobr><nowrap>
+            <div class="pos" id="_0:0" style="top:0">
+            <img name="_1100:850" src="page_001.jpeg" height="1100" width="850" border="0" usemap="#Map"></div>
+            <div class="pos" id="_78:210" style="top:210;left:78">
+            <span id="_16.3" style=" font-family:Arial; font-size:16.3px; color:#000000">
+            SEVA</span>
+            </div>
+            <div class="pos" id="_209:205" style="top:205;left:209">
+            <span id="_32.0" style=" font-family:Arial; font-size:32.0px; color:#000000">
+            KARUNASRI SEVA SAMITHI</span>
+            </div>
+            <div class="pos" id="_678:201" style="top:201;left:678">
+            <span id="_16.3" style=" font-family:Arial; font-size:16.3px; color:#000000">
+            SAMSKAR</span>
+            </div>
+            <div class="pos" id="_197:251" style="top:251;left:197">
+            <span id="_13.6" style=" font-family:Arial; font-size:13.6px; color:#000000">
+            H.No. 17-1-474, Krishna Nagar Colony, Saidabad, Hyderabad - 500 059</span>
+            </div>
+            <div class="pos" id="_144:287" style="top:287;left:144">
+            <span id="_13.6" style=" font-family:Arial; font-size:13.6px; color:#000000">
+            Soceity Regd. No.7451/1999, PAN No. AAATK6724F, Phone: 040-24073204, 9000889785</span>
+            </div>
+            <div class="pos" id="_149:304" style="top:304;left:149">
+            <span id="_13.6" style=" font-family:Arial; font-size:13.6px; color:#000000">
+            Email.ID: karunasri1999@gmail.com, Website:https://karunasri.org & www.karunasri.org</span>
+            </div>
+            <div class="pos" id="_390:332" style="top:332;left:390">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            <U>R</U><U>E</U><U>C</U><U>E</U><U>I</U><U>P</U><U>T</U></span>
+            </div>
+            <div class="pos" id="_71:351" style="top:351;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Receipt No:{receipt_no}</span>
+            </div>
+            <div class="pos" id="_579:351" style="top:351;left:579">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Date:{date}</span>
+            </div>
+            <div class="pos" id="_71:378" style="top:378;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Received with thanks from sri/Smt/M/s.{name}</span>
+            </div>
+            <div class="pos" id="_71:406" style="top:406;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Mobile{mobile_no} </span>
+            </div>
+            <div class="pos" id="_319:406" style="top:406;left:319">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            PAN No:{pan_no}                           &ensp;&ensp;&ensp;        Aadhar:{aadhar_no}</span>
+            </div>
+            <div class="pos" id="_71:433" style="top:433;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Address:{address}</span>
+            </div>
+            <div class="pos" id="_71:461" style="top:461;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            <U> </U> <U>E</U> mail Id: {mail_id}       A sum of Rs:{amount}                  </span>
+            </div>
+            <div class="pos" id="_71:497" style="top:497;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Rupees in words:{amount_in_words}                         </span>
+            </div>
+            <div class="pos" id="_71:534" style="top:534;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            by Cash/Cheque No:{cheque_no}              </span>
+            </div>
+            <div class="pos" id="_71:570" style="top:570;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            drawn on: {drawn_bank}   Bank, </span>
+            </div>
+            <div class="pos" id="_71:607" style="top:607;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Towards:  {towards}</span>
+            </div>
+            <div class="pos" id="_71:671" style="top:671;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            1). Corpus Funds:</span>
+            </div>
+            <div class="pos" id="_224:675" style="top:675;left:224">
+            <span id="_12.2" style="font-weight:bold; font-family:Times New Roman; font-size:12.2px; color:#000000">
+            Income Tax exemption under Section 80G IT ACT 1961 received vide director of Income Tax (Exemption) </span>
+            </div>
+            <div class="pos" id="_242:690" style="top:690;left:242">
+            <span id="_12.2" style="font-weight:bold; font-family:Times New Roman; font-size:12.2px; color:#000000">
+            Ltr.LF.No.DI(E)HYD/806/90/(05)07-08 dated 29-10-2007 & CBDT Circular No.7 dated 27-10-2010.</span>
+            </div>
+            <div class="pos" id="_71:699" style="top:699;left:71">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            2). Others :</span>
+            </div>
+            <div class="pos" id="_392:705" style="top:705;left:392">
+            <span id="_12.2" style="font-weight:bold; font-family:Times New Roman; font-size:12.2px; color:#000000">
+            and as amended by the Finance ACT 2020.</span>
+            </div>
+            <div class="pos" id="_87:795" style="top:795;left:87">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Signature of Donor</span>
+            </div>
+            <div class="pos" id="_386:795" style="top:795;left:386">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Receipient</span>
+            </div>
+            <div class="pos" id="_603:795" style="top:795;left:603">
+            <span id="_16.3" style=" font-family:Times New Roman; font-size:16.3px; color:#000000">
+            Treasurer/General Secretary</span>
+            </div>
+            </nowrap></nobr>
+            </body>
+            </html>"""
+            f.write(message)
+            f.close()
             webbrowser.open_new_tab(fileName)
             self.stackedWidget.setCurrentIndex(0)
             

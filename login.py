@@ -8,6 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import PyQt5
 from PySide2.QtWidgets import QWidget
 import mysql.connector
 import sys
@@ -21,8 +22,15 @@ import time
 import main as M
 import intro
 import ui_functions
+from forgot_pass import Ui_Form
 class Ui_login(object):
     Form = 0
+    def change(self):
+        #app = QtWidgets.QApplication([])
+        self.dialog = QDialog()
+        ui = Ui_Form()
+        ui.setupUi(self.dialog)
+        self.dialog.exec()
     def login_func(self):
         username = self.lineEdit_3.text()
         password = self.lineEdit_4.text()
@@ -200,6 +208,7 @@ class Ui_login(object):
 "\n"
 "}")
         self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_2.clicked.connect(self.change)
 
         self.retranslateUi(login)
         QtCore.QMetaObject.connectSlotsByName(login)

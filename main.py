@@ -71,6 +71,7 @@ class MainWindow(QMainWindow):
         ui_functions.UIFunctions.addNewMenu(self, "HOME", "btn_home", "url(:/16x16/icons/16x16/cil-home.png)", True)
         ui_functions.UIFunctions.addNewMenu(self, "DONATIONS", "btn_widgets", "url(:/16x16/icons/16x16/cil-window-restore.png)", True)
         ui_functions.UIFunctions.addNewMenu(self, "EXPENDITURE", "expenditure", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
+        ui_functions.UIFunctions.addNewMenu(self, "ABOUT US", "credits", "url(:/16x16/icons/16x16/cil-mood-good.png)", False)
         if(ltype=='master'):
             ui_functions.UIFunctions.addNewMenu(self, "New User", "new_user", "url(:/16x16/icons/16x16/cil-user-follow.png)", True)
             ui_functions.UIFunctions.addNewMenu(self, "Expenditure Confirmation", "expenditure_confirm", "url(:/16x16/icons/16x16/cil-equalizer.png)", True)
@@ -191,6 +192,12 @@ class MainWindow(QMainWindow):
             self.ui.stackedWidget.setCurrentWidget(self.ui.donation_confirmation_page)
             ui_functions.UIFunctions.resetStyle(self, "donation_confirmation_page")
             ui_functions.UIFunctions.labelPage(self, "donation_confirmation_page")
+            btnWidget.setStyleSheet(ui_functions.UIFunctions.selectMenu(btnWidget.styleSheet()))
+
+        if btnWidget.objectName() == "credits":
+            self.ui.stackedWidget.setCurrentWidget(self.ui.credits)
+            ui_functions.UIFunctions.resetStyle(self, "credits")
+            ui_functions.UIFunctions.labelPage(self, "About Us")
             btnWidget.setStyleSheet(ui_functions.UIFunctions.selectMenu(btnWidget.styleSheet()))
         
         

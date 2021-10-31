@@ -7279,10 +7279,57 @@ class Ui_MainWindow(object):
 
         self.stackedWidget.addWidget(self.page_widgets)
 
+
+
         self.verticalLayout_9.addWidget(self.stackedWidget)
 
 
         self.verticalLayout_4.addWidget(self.frame_content)
+
+        self.donor_donations = QWidget()
+        self.donor_donations.setObjectName("donor_donations")
+        self.verticalLayout_2210 = QVBoxLayout(self.donor_donations)
+        self.verticalLayout_2210.setObjectName("verticalLayout_2210")
+        self.verticalLayout_2212 = QVBoxLayout()
+        self.verticalLayout_2212.setObjectName("verticalLayout_2212")
+        self.label22 = QLabel(self.donor_donations)
+        self.label22.setMaximumSize(QSize(16777215, 30))
+        font = QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(18)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label22.setFont(font)
+        self.label22.setAlignment(Qt.AlignCenter)
+        self.label22.setObjectName("label22")
+        self.label22.setText(QCoreApplication.translate("MainWindow", "All Donations"))
+        self.verticalLayout_2212.addWidget(self.label22)
+        self.verticalLayout_2210.addLayout(self.verticalLayout_2212)
+        self.widget22 = QWidget(self.donor_donations)
+        self.widget22.setMinimumSize(QSize(0, 350))
+        self.widget22.setObjectName("widget12")
+        self.verticalLayout_221212 = QVBoxLayout(self.widget22)
+        self.verticalLayout_221212.setObjectName("verticalLayout_221212")
+        self.verticalLayout_2210.addWidget(self.widget22)
+        self.horizontalLayout_2213 = QHBoxLayout()
+        self.horizontalLayout_2213.setSizeConstraint(QLayout.SetMinimumSize)
+        self.horizontalLayout_2213.setObjectName("horizontalLayout_2213")
+        self.verticalLayout_2210.addLayout(self.horizontalLayout_2213)
+        self.stackedWidget.addWidget(self.donor_donations)
+    
+        self.credits = QWidget()
+        self.credits.setObjectName("credits")
+        self.verticalLayout_10 = QVBoxLayout(self.credits)
+        self.verticalLayout_10.setObjectName("verticalLayout_10")
+        self.verticalLayout_6 = QVBoxLayout()
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.textEditcredits = QTextEdit(self.credits)
+        self.textEditcredits.setObjectName("textEditcredits")
+        self.verticalLayout_6.addWidget(self.textEditcredits)
+        self.verticalLayout_10.addLayout(self.verticalLayout_6)
+        self.stackedWidget.addWidget(self.credits)
+        
+        
 
         self.frame_grip = QFrame(self.frame_content_right)
         self.frame_grip.setObjectName(u"frame_grip")
@@ -7363,6 +7410,8 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.tableWidget, self.new_donor)
         QWidget.setTabOrder(self.tableWidget, self.reports)
 
+
+
         self.retranslateUi(MainWindow)
 
         self.stackedWidget.setCurrentIndex(1)
@@ -7370,36 +7419,7 @@ class Ui_MainWindow(object):
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
-        self.donor_donations = QWidget()
-        self.donor_donations.setObjectName("donor_donations")
-        self.verticalLayout_2210 = QVBoxLayout(self.donor_donations)
-        self.verticalLayout_2210.setObjectName("verticalLayout_2210")
-        self.verticalLayout_2212 = QVBoxLayout()
-        self.verticalLayout_2212.setObjectName("verticalLayout_2212")
-        self.label22 = QLabel(self.donor_donations)
-        self.label22.setMaximumSize(QSize(16777215, 30))
-        font = QFont()
-        font.setFamily("Segoe UI")
-        font.setPointSize(18)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label22.setFont(font)
-        self.label22.setAlignment(Qt.AlignCenter)
-        self.label22.setObjectName("label22")
-        self.label22.setText(QCoreApplication.translate("MainWindow", "All Donations"))
-        self.verticalLayout_2212.addWidget(self.label22)
-        self.verticalLayout_2210.addLayout(self.verticalLayout_2212)
-        self.widget22 = QWidget(self.donor_donations)
-        self.widget22.setMinimumSize(QSize(0, 350))
-        self.widget22.setObjectName("widget12")
-        self.verticalLayout_221212 = QVBoxLayout(self.widget22)
-        self.verticalLayout_221212.setObjectName("verticalLayout_221212")
-        self.verticalLayout_2210.addWidget(self.widget22)
-        self.horizontalLayout_2213 = QHBoxLayout()
-        self.horizontalLayout_2213.setSizeConstraint(QLayout.SetMinimumSize)
-        self.horizontalLayout_2213.setObjectName("horizontalLayout_2213")
-        self.verticalLayout_2210.addLayout(self.horizontalLayout_2213)
-        self.stackedWidget.addWidget(self.donor_donations)
+        
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
@@ -7437,7 +7457,34 @@ class Ui_MainWindow(object):
         self.label_014.setText(QCoreApplication.translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; color:#010000;\">(For details contact our office on phone or in person) </span></p><p><span style=\" font-size:14pt; color:#010000;\">• </span><span style=\" font-size:14pt; font-weight:600; color:#010000;\">Nitya Annadhana Nidhi</span><span style=\" font-size:14pt; color:#010000;\">- For Birthday, Marriage Day celebrations &amp; Anniversaries </span></p><p align=\"right\"><span style=\" font-size:14pt; color:#010000;\">-Rs 2000 per event </span></p><p><span style=\" font-size:14pt; color:#010000;\">• </span><span style=\" font-size:14pt; font-weight:600; color:#010000;\">Shaswitha Annadhana Nidhi </span><span style=\" font-size:14pt; color:#010000;\">-These schemes are for those who celebrate occasions like Birth days, marriage days,other important days of joyful occasions on selected day of the year for ten years.</span></p><p align=\"right\"><span style=\" font-size:14pt; color:#010000;\">-Rs 10,000/- once </span></p><p><span style=\" font-size:14pt; color:#010000;\">• </span><span style=\" font-size:14pt; font-weight:600; color:#010000;\">Smruthi Nidhi</span><span style=\" font-size:14pt; color:#010000;\">–In memory of beloved people who left abode </span></p><p align=\"right\"><span style=\" font-size:14pt; color:#010000;\">-Rs 2000/- event or Rs 10000/- once for one selected day of the year for ten years </span></p><p><span style=\" font-size:14pt; color:#010000;\">• </span><span style=\" font-size:14pt; font-weight:600; color:#010000;\">Vidyarthi Samraksha Nidhi</span><span style=\" font-size:14pt; color:#010000;\">– To meet the general expenses of orphan students </span></p><p align=\"right\"><span style=\" font-size:14pt; color:#010000;\">- Any amount </span></p><p><span style=\" font-size:14pt; color:#010000;\">• </span><span style=\" font-size:14pt; font-weight:600; color:#010000;\">Vidyarthi PoshakaNidhi</span><span style=\" font-size:14pt; color:#010000;\"> – To meet yearly expenses of a student </span></p><p align=\"right\"><span style=\" font-size:14pt; color:#010000;\">–Rs 25000/- per year </span></p><p><span style=\" font-size:14pt; color:#010000;\">• </span><span style=\" font-size:14pt; font-weight:600; color:#010000;\">Vidyarthi Pathashala Rusumu Nidhi</span><span style=\" font-size:14pt; color:#010000;\">-To meet the school/college fees of students. </span></p><p><span style=\" font-size:14pt; color:#010000;\">• </span><span style=\" font-size:14pt; font-weight:600; color:#010000;\">Patron</span><span style=\" font-size:14pt; color:#010000;\">–As may be approved by the Executive Committee of the organisation </span></p><p><span style=\" font-size:14pt; color:#010000;\">• </span><span style=\" font-size:14pt; font-weight:600; color:#010000;\">General Donors</span></p><p align=\"right\"><span style=\" font-size:14pt; color:#010000;\">–Any amount desired by the Donor </span></p><p><span style=\" font-size:14pt; color:#010000;\">• </span><span style=\" font-size:14pt; font-weight:600; color:#010000;\">Ashraya Datha scheme </span></p><p align=\"right\"><span style=\" font-size:14pt; color:#010000;\">–Rs 500000/- &amp; above.</span></p></body></html>"))
         self.label_015.setText(QCoreApplication.translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">DONATIONS IN CASH AND KIND ARE WELCOME </span></p><p><span style=\" font-size:12pt; font-weight:600;\">(Donations are exempted under 80G of the IT Act 1961)</span></p></body></html>"))
         self.label_016.setText(QCoreApplication.translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#010000;\">DONATIONS CAN BE SENT TO OUR BANK DIRECTLY OR PAID AT OUR OFFICE</span></p><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; text-decoration: underline; color:#010000;\">Bank Details:</span><span style=\" font-size:14pt; color:#010000;\"><br/></span></p><p align=\"center\"><span style=\" font-size:14pt; color:#010000;\">State Bank of India, P&amp;T Colony, Hyderabad-500 060 <br/></span></p><p align=\"center\"><span style=\" font-size:14pt; color:#010000;\">SB Account No. 62153473969 </span></p><p align=\"center\"><span style=\" font-size:14pt; color:#010000;\">IFSC Code: SBIN0020864, MICR Code:500002384 </span></p><p align=\"center\"><span style=\" font-size:14pt;\"><br/></span></p><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#ff0000;\">COME &amp; JOIN US TO ENJOY SERVING THE NEEDY ORPHANS </span></p><p align=\"right\"><span style=\" font-size:14pt;\"><br/></span></p><p align=\"right\"><span style=\" font-size:14pt; color:#ff0000;\">Executive Committee </span></p><p align=\"right\"><span style=\" font-size:14pt; color:#010000;\">Karunasri Seva Samithi</span></p></body></html>"))
-        
+        self.textEditcredits.setHtml(QCoreApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n""body { background-color: rgba(255, 255, 255, 255);}"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; font-weight:600; text-decoration: underline; color:#ff0000;\">CHITRAGUPTA -ACCOUNTING SOFTWARE</span><span style=\" font-size:8pt;\"> </span></p>\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;color:#000000;\">(FOR KARUNASRI SEVA SAMITHI)</span><span style=\" font-size:12pt;\"> </span></p>\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:20pt; font-weight:600; text-decoration: underline; color:#ff0000;\">TEAM</span><span style=\" font-size:8pt;\"> </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:16pt; font-weight:600; color:#ff0000;\">Development Team</span><span style=\" font-size:16pt; color:#ff0000;\">:</span><span style=\" font-size:8pt;\"> </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">  </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">1.  </span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">Sri CH V S Anirudh</span><span style=\" font-size:12pt;color:#000000;\">, III BE (IT), Vasavi College of Engineering, Hyderabad. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">2. </span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">Sri. Kaushal Attaluri,</span><span style=\" font-size:12pt;color:#000000;\"> III BE (IT), Vasavi College of Engineering, Hyderabad. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">3. </span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">Sri. T K Subramanyam,</span><span style=\" font-size:12pt;color:#000000;\"> III BE (IT), Vasavi College of Engineering, Hyderabad. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">4. </span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">Sri. J Vinay Shankar,</span><span style=\" font-size:12pt;color:#000000;\"> III BE (IT), Vasavi College of Engineering, Hyderabad. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">5. S</span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">ri. K V Sidhartha,</span><span style=\" font-size:12pt;color:#000000;\"> III BE (IT), Vasavi College of Engineering, Hyderabad. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">6. </span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">Sri. G Sai Jishnu,</span><span style=\" font-size:12pt;color:#000000;\"> IV BTech (CSE), N N R G College of Engineering, Hyderabad.  </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-style:italic;\"> </span><span style=\" font-size:12pt;color:#000000;\"> </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:16pt; font-weight:600; color:#ff0000;\">Support Team:</span><span style=\" font-size:8pt;\"> </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:16pt; font-weight:600; color:#ff0000;\"> </span><span style=\" font-size:8pt;\"> </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">1. </span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">Sri Edla Krishna</span><span style=\" font-size:12pt;color:#000000;\">, MA: Contents Support, Karunya Sindhu Ashram, Hyderabad. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">2. </span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">Sri D Sohan</span><span style=\" font-size:12pt;color:#000000;\"> : Artist, Karunya Sindhu Ashram, Hyderabad. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:16pt; font-weight:600; color:#ff0000;\"> </span><span style=\" font-size:8pt;\"> </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:16pt; font-weight:600; color:#ff0000;\">Domain Experts &amp; Guides:</span><span style=\" font-size:8pt;\"> </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:16pt; font-weight:600; color:#ff0000;\"> </span><span style=\" font-size:8pt;\"> </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">1</span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">. Dr CH N A B Sankar</span><span style=\" font-size:12pt;color:#000000;\">, Scientist \'F\', CAIR, DRDO. </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\"> </span><span style=\" font-size:12pt; font-style:italic;color:#000000;\">Initiation, Conceptualization and Technical Guidance</span><span style=\" font-size:12pt;color:#000000;\"> </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">2.  </span><span style=\" font-size:12pt; font-weight:600;color:#000000;\">CMA Rajapeta Satyanarayana</span><span style=\" font-size:12pt;color:#000000;\">, M. Com, FCMA </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;color:#000000;\">General Manager (Finance &amp; Accts)-Retd., Lubrizol India Pvt. Ltd. Mumbai </span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-style:italic;color:#000000;\">Contents Development Guide.</span><span style=\" font-size:12pt;\"> </span></p></body></html>"))
         
         self.lineEdit_2.setPlaceholderText(QCoreApplication.translate("MainWindow", "First name"))
         self.label_5.setText(QCoreApplication.translate("MainWindow", "Adhaar Id"))
@@ -7667,9 +7714,9 @@ class Ui_MainWindow(object):
         self.pushButton_134.setText(QCoreApplication.translate("MainWindow", "Edit"))
         self.pushButton_132.setText(QCoreApplication.translate("MainWindow", "Confirm"))
 
-        self.label12.setText(QCoreApplication.translate("MainWindow", "Donation Remainders"))
+        self.label12.setText(QCoreApplication.translate("MainWindow", "Donation Reminders"))
         
-        self.pushButton_122.setText(QCoreApplication.translate("MainWindow", "Remainded"))
+        self.pushButton_122.setText(QCoreApplication.translate("MainWindow", "Reminded"))
         self.pushButton_123.setText(QCoreApplication.translate("MainWindow", "Mailing List"))
 
         self.label14.setText(QCoreApplication.translate("MainWindow", "Bank Statement "))
@@ -7734,5 +7781,5 @@ class Ui_MainWindow(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p></body></html>"))
 
         self.label_credits.setText(QCoreApplication.translate("MainWindow", u"Registered by: Team Chitra Gupta", None))
-        self.label_version.setText(QCoreApplication.translate("MainWindow", u"v1.0.0", None))
+        self.label_version.setText(QCoreApplication.translate("MainWindow", u"v1.1.0", None))
     # retranslateUi

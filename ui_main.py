@@ -26,9 +26,366 @@ from reportlab.lib.pagesizes import letter,A4
 from reportlab.lib.units import inch, cm
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER,TA_LEFT,TA_RIGHT
-
+import webbrowser
 
 class Ui_MainWindow(object):
+    def get_donar_donations(self):
+        self.stackedWidget.setCurrentIndex(22)
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database="chitra_gupta"
+        )
+        print(mydb)
+        mycursor = mydb.cursor()
+        phn = self.lineEdit.text()
+        mycursor.execute("select * from all_donations a where a.id_donor=(select donor_id from all_donors where phone={})".format(phn))
+        myresult = mycursor.fetchall()
+        c=0
+        if len(myresult)!=0:
+            c = len(myresult[0])
+        r = len(myresult)
+        self.tableWidget13 = QTableWidget()
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(10)
+        sizePolicy.setVerticalStretch(10)
+        sizePolicy.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
+        self.tableWidget13.setSizePolicy(sizePolicy)
+        self.tableWidget13.setMinimumSize(QSize(0, 0))
+        self.tableWidget13.setRowCount(r)
+        self.tableWidget13.setColumnCount(c+1)
+        self.tableWidget13.setObjectName("tableWidget13")
+        self.tableWidget13.setStyleSheet("QTableWidget {    \n"
+"    background-color: rgb(39, 44, 54);\n"
+"    padding: 10px;\n"
+"    border-radius: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item{\n"
+"    border-color: rgb(44, 49, 60);\n"
+"    padding-left: 5px;\n"
+"    padding-right: 5px;\n"
+"    gridline-color: rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::item:selected{\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}\n"
+"QScrollBar:horizontal {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    height: 14px;\n"
+"    margin: 0px 21px 0 21px;\n"
+"    border-radius: 0px;\n"
+"}\n"
+" QScrollBar:vertical {\n"
+"    border: none;\n"
+"    background: rgb(52, 59, 72);\n"
+"    width: 14px;\n"
+"    margin: 21px 0 21px 0;\n"
+"    border-radius: 0px;\n"
+" }\n"
+"QHeaderView::section{\n"
+"    Background-color: rgb(39, 44, 54);\n"
+"    max-width: 30px;\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"    border-style: none;\n"
+"    border-bottom: 1px solid rgb(44, 49, 60);\n"
+"    border-right: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"QTableWidget::horizontalHeader {    \n"
+"    background-color: rgb(81, 255, 0);\n"
+"}\n"
+"QHeaderView::section:horizontal\n"
+"{\n"
+"    border: 1px solid rgb(32, 34, 42);\n"
+"    background-color: rgb(27, 29, 35);\n"
+"    padding: 3px;\n"
+"    border-top-left-radius: 7px;\n"
+"    border-top-right-radius: 7px;\n"
+"}\n"
+"QHeaderView::section:vertical\n"
+"{\n"
+"    border: 1px solid rgb(44, 49, 60);\n"
+"}\n"
+"")     
+        
+        self.tableWidget13.setRowCount(0)
+        index = 0
+        columns = ["id_donation", "donation_in_name","phone","email"," date_of_donation","donation_date","Ocassion","remarks"]
+        self.tableWidget.setHorizontalHeaderLabels(columns)
+        #rb = [QRadioButton() for x in range(r)]
+        #for i in range(r):
+        #    self.tableWidget.setCellWidget(index, i+1,rb[i] )
+        for row_number, row_data in enumerate(myresult):
+         #print(row_number)
+         self.tableWidget13.insertRow(row_number)
+         for column_number, data in enumerate(row_data):
+                    #print(column_number)
+           #item_checked = QTableWidgetItem()
+           #item_checked.setCheckState(Qt.Unchecked)
+           #item_checked.setFlags(Qt.ItemIsUserCheckable |Qt.ItemIsEnabled)
+                    #item_checked.setCheckable(True)
+           #self.tableWidget13.setItem(row_number,0, item_checked) 
+           self.tableWidget13.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        if self.verticalLayout_221212.count() !=0: 
+            self.verticalLayout_221212.itemAt(0).widget().deleteLater()
+        self.verticalLayout_221212.addWidget(self.tableWidget13)
+    def get_exp_pdf(self):
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database="chitra_gupta"
+        )
+        fdate = self.dateEdit102.date()
+        fdate = fdate.toPython()
+        fdate = fdate.strftime('%Y-%m-%d')
+        tdate = self.dateEdit_102.date()
+        tdate = tdate.toPython()
+        tdate = tdate.strftime('%Y-%m-%d')
+        mycursor = mydb.cursor()
+        mycursor.execute("SELECT voucherdate,voucherid,type,towards,amount FROM  pettycashbook where voucherdate between '{0}' and '{1}'".format(fdate,tdate))
+        data = mycursor.fetchall()
+        mycursor.execute("select code_name from type_expenditure")
+        schemes = mycursor.fetchall()
+        schemes = [x[0] for x in schemes]
+        print(schemes)
+        #print(data)
+        folderpath = QtWidgets.QFileDialog.getExistingDirectory(None,'Select Folder')
+        print(folderpath)
+        fileName = str(folderpath) + '/' + str(fdate) + ' to ' + str(tdate) + '_expenditure.pdf'
+        tid = str(fdate) + ' to ' + str(tdate) + ' Full Expenditure report\n'
+        canvas = Canvas(fileName, pagesize=landscape(letter))
+        doc = BaseDocTemplate(fileName)
+        contents =[]
+        width,height = A4
+
+        left_header_frame = Frame(
+            0.2*inch, 
+            height-1.2*inch, 
+            2*inch, 
+            1*inch
+            )
+
+        right_header_frame = Frame(
+            2.2*inch, 
+            height-1.2*inch, 
+            width-2.5*inch, 
+            1*inch,id='normal'
+            )
+
+        frame_table= Frame(
+            0.2*inch, 
+            0.7*inch, 
+            (width-0.6*inch)+0.17*inch, 
+            height-2*inch,
+            leftPadding = 0, 
+            topPadding=0, 
+            showBoundary = 1,
+            id='col'
+            )
+
+        laterpages = PageTemplate(id='laterpages',frames=[left_header_frame, right_header_frame,frame_table],)
+
+        styleSheet = getSampleStyleSheet()
+        style_title = styleSheet['Heading1']
+        style_title.fontSize = 20 
+        style_title.fontName = 'Helvetica-Bold'
+        style_title.alignment=TA_CENTER
+
+        style_data = styleSheet['Normal']
+        style_data.fontSize = 16 
+        style_data.fontName = 'Helvetica'
+        style_data.alignment=TA_CENTER
+
+        style_date = styleSheet['Normal']
+        style_date.fontSize = 14
+        style_date.fontName = 'Helvetica'
+        style_date.alignment=TA_CENTER
+
+        canvas.setTitle(tid)
+
+
+        title_background = colors.fidblue
+        data_actividades = [('Date','Voucher Number','Expeniture','Particulars','amount')]
+        i = 0
+        table_group= []
+        count = 0
+        size = len(data)
+        for i in range(len(data)):
+            data_actividades.append(data[i])
+            i+=1
+            table_actividades = Table(data_actividades, rowHeights=30, repeatRows=1)
+            tblStyle = TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), title_background),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black)
+            ])
+
+            rowNumb = len(data_actividades)
+            for row in range(1, rowNumb):
+                if row % 2 == 0:
+                    table_background = colors.lightblue
+                else:
+                    table_background = colors.aliceblue
+
+                tblStyle.add('BACKGROUND', (0, row), (-1, row), table_background)
+
+            table_actividades.setStyle(tblStyle)
+
+            if ((count >= 20) or (i== size) ):
+                count = 0
+                table_group.append(table_actividades)
+                data_actividades = [('Date','Voucher Number','Expeniture','Particulars','amount')]
+            width = 150
+            height = 150
+            count += 1
+            if i > size:
+
+                break
+
+        contents.append(NextPageTemplate('laterpages'))
+
+        for table in table_group:
+            contents.append(FrameBreak())
+            contents.append(Paragraph(tid, style_title))
+            contents.append(FrameBreak()) 
+            contents.append(table)
+            contents.append(FrameBreak())
+
+        for z in range(1,len(schemes)+1):
+            mycursor.execute("SELECT voucherdate,voucherid,type,towards,amount FROM pettycashbook where voucherdate between '{0}' and '{1}' and type = '{2}'".format(fdate,tdate,str(schemes[z-1])))
+            print(str(schemes[z-1]))
+            data = mycursor.fetchall()
+            print(data)
+            count = 0
+            table_group.clear()
+            i = 0
+            size = len(data)
+            for i in range(len(data)):
+                data_actividades.append(data[i])
+                i+=1
+                table_actividades = Table(data_actividades, rowHeights=30, repeatRows=1)
+                tblStyle = TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), title_background),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black)
+                ])
+
+                rowNumb = len(data_actividades)
+                for row in range(1, rowNumb):
+                    if row % 2 == 0:
+                        table_background = colors.lightblue
+                    else:
+                        table_background = colors.aliceblue
+
+                    tblStyle.add('BACKGROUND', (0, row), (-1, row), table_background)
+
+                table_actividades.setStyle(tblStyle)
+
+                if ((count >= 20) or (i== size) ):
+                    count = 0
+                    table_group.append(table_actividades)
+                    data_actividades = [('Date','Voucher Number','Expeniture','Particulars','amount')]
+                width = 150
+                height = 150
+                count += 1
+                if i > size:
+
+                    break
+            
+            tid = str(fdate) + ' to ' + str(tdate) + ' {}\n'.format(schemes[z-1])
+
+            contents.append(NextPageTemplate('laterpages'))
+            for table in table_group:
+                contents.append(FrameBreak())
+                contents.append(Paragraph(tid, style_title))
+                contents.append(FrameBreak()) 
+                contents.append(table)
+                contents.append(FrameBreak())
+
+
+        doc.addPageTemplates([laterpages,])
+        doc.build(contents)
+    def mailing_list(self):
+        folderpath = QtWidgets.QFileDialog.getExistingDirectory(None,'Select Folder')
+        print(folderpath)
+        fileName = str(folderpath) + '/' + 'mailing list.pdf'
+        mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="anirudh123",
+        database="chitra_gupta"
+        )
+        print(mydb)
+        mycursor = mydb.cursor()
+        mycursor.execute("select f_name,l_name,address,phone,email from all_donors a natural join all_donations b where a.donor_id=b.id_donor and curdate() > remind_date and reminded =0 ")
+        l = mycursor.fetchall()
+        # importing modules
+        from reportlab.pdfgen import canvas
+        from reportlab.pdfbase.ttfonts import TTFont
+        from reportlab.pdfbase import pdfmetrics
+        from reportlab.lib import colors
+        
+        # initializing variables with values
+        documentTitle = 'mailing list'
+        title = 'Karunya Sindhu Orphanage'
+        subTitle = 'Mailing list'
+        textLines = [
+        ]
+        
+        # creating a pdf object
+        pdf = canvas.Canvas(fileName)
+        
+        # setting the title of the document
+        pdf.setTitle(documentTitle)
+        
+        # registering a external font in python
+
+        
+        # creating the title by setting it's font
+        # and putting it on the canvas
+        #pdf.setFont('abc', 36)
+        pdf.drawCentredString(300, 770, title)
+        
+        # creating the subtitle by setting it's font,
+        # colour and putting it on the canvas
+        pdf.setFillColorRGB(0, 0, 255)
+        pdf.setFont("Courier-Bold", 24)
+        pdf.drawCentredString(290, 720, subTitle)
+        
+        # drawing a line
+        pdf.line(30, 710, 550, 710)
+        
+        # creating a multiline text using
+        # textline and for loop
+        text = pdf.beginText(40, 680)
+        text.setFont("Courier", 18)
+        text.setFillColor(colors.black)
+        for x in l:
+            textLines.append("To,")
+            for z in x:
+                textLines.append(str(z))
+            textLines.append("\n\n")
+            for line in textLines:
+                text.textLine(line)
+            textLines.clear()
+            pdf.line(30, 710, 550, 710)
+
+        pdf.drawText(text)
+        
+        # drawing a image at the
+        # specified (x.y) position
+        #pdf.drawInlineImage(image, 130, 400)
+        
+        # saving the pdf
+        pdf.save()
+        webbrowser.open_new_tab(fileName)
+
     def add_banks_in_donation(self):
         c = self.comboBox_2.currentIndex()
         font7 = QFont()
@@ -41,26 +398,26 @@ class Ui_MainWindow(object):
             if self.gridLayout_3.count()>=25:
                 pass
             else:
-                self.comboBox_4 = QComboBox(self.new_donation)
-                self.comboBox_4.setMaximumSize(QSize(16777215, 40))
-                self.comboBox_4.setObjectName("comboBox_192")
-                self.comboBox_4.setFont(font7)
+                self.comboBox_44 = QComboBox(self.new_donation)
+                self.comboBox_44.setMaximumSize(QSize(16777215, 40))
+                self.comboBox_44.setObjectName("comboBox_192")
+                self.comboBox_44.setFont(font7)
                 mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
                 password="anirudh123",
-                database = "chitra_gupta"
+                database="chitra_gupta"
                 )
                 mycursor = mydb.cursor()
                 mycursor.execute("select * from banks")
                 myresult = mycursor.fetchall()
                 i=0
                 for x in myresult:
-                    self.comboBox_4.addItem("")
-                    self.comboBox_4.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
+                    self.comboBox_44.addItem("")
+                    self.comboBox_44.setItemText(i, QCoreApplication.translate("MainWindow", x[1]))
                     i+=1
                 #self.gridLayout_194.addWidget(self.comboBox_192, 3, 1, 1, 2)
-                self.gridLayout_3.addWidget(self.comboBox_4, 5, 5, 1, 1)
+                self.gridLayout_3.addWidget(self.comboBox_44, 5, 5, 1, 1)
         else:
             print("cash")
             if self.gridLayout_3.count()>=25:
@@ -73,7 +430,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         fromd = self.dateEdit9.date()
         fromd = fromd.toPython()
@@ -84,6 +441,11 @@ class Ui_MainWindow(object):
         mycursor = mydb.cursor()
         mycursor.execute("SELECT master_registration_number,date_of_donation,donation_in_name,amount,schemes.name FROM all_donations LEFT JOIN schemes ON all_donations.category = schemes.idschemes where date_of_donation between '{0}' and '{1}' order by master_registration_number".format(ffromd,ftod))
         data = mycursor.fetchall()
+        mycursor.execute("select * from schemes")
+        schemes = mycursor.fetchall()
+        schemes = [x[1] for x in schemes]
+        print(schemes)
+        print(data)
         folderpath = QtWidgets.QFileDialog.getExistingDirectory(None,'Select Folder')
         print(folderpath)
         fileName = str(folderpath) + '/' + str(fromd) + ' to ' + str(tod) + '_donation.pdf'
@@ -149,7 +511,7 @@ class Ui_MainWindow(object):
         size = len(data)
         for i in range(len(data)):
             data_actividades.append(data[i])
-
+            i+=1
             table_actividades = Table(data_actividades, rowHeights=30, repeatRows=1)
             tblStyle = TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), title_background),
@@ -188,6 +550,57 @@ class Ui_MainWindow(object):
             contents.append(FrameBreak()) 
             contents.append(table)
             contents.append(FrameBreak())
+        
+        for z in range(1,len(schemes)+1):
+            mycursor.execute("SELECT master_registration_number,date_of_donation,donation_in_name,amount from all_donations where date_of_donation between '{0}' and '{1}' and category = {2} order by master_registration_number ".format(ffromd,ftod,z))
+            data = mycursor.fetchall()
+            count = 0
+            table_group.clear()
+            i = 0
+            size = len(data)
+            for i in range(len(data)):
+                data_actividades.append(data[i])
+                i+=1
+                table_actividades = Table(data_actividades, rowHeights=30, repeatRows=1)
+                tblStyle = TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), title_background),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black)
+                ])
+
+                rowNumb = len(data_actividades)
+                for row in range(1, rowNumb):
+                    if row % 2 == 0:
+                        table_background = colors.lightblue
+                    else:
+                        table_background = colors.aliceblue
+
+                    tblStyle.add('BACKGROUND', (0, row), (-1, row), table_background)
+
+                table_actividades.setStyle(tblStyle)
+
+                if ((count >= 20) or (i== size) ):
+                    count = 0
+                    table_group.append(table_actividades)
+                    data_actividades = [('Master registration number','date','name','amount','category')]
+                width = 150
+                height = 150
+                count += 1
+                if i > size:
+
+                    break
+            print()
+            tid = str(fromd) + ' to ' + str(tod) + ' {}\n'.format(schemes[z-1])
+
+            contents.append(NextPageTemplate('laterpages'))
+            for table in table_group:
+                contents.append(FrameBreak())
+                contents.append(Paragraph(tid, style_title))
+                contents.append(FrameBreak()) 
+                contents.append(table)
+                contents.append(FrameBreak())
+
 
         doc.addPageTemplates([laterpages,])
         doc.build(contents)
@@ -210,7 +623,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         mycursor.execute("select balance from bank_statement where bank_name = '{0}'".format(bank))
@@ -264,7 +677,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         sql = "INSERT INTO type_expenditure (code,code_name) VALUES (%s,%s)"
@@ -282,7 +695,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         mycursor.execute("select * from log ORDER BY loginid DESC LIMIT 1")
@@ -313,7 +726,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -343,7 +756,7 @@ class Ui_MainWindow(object):
             host="localhost",
             user="root",
             password="anirudh123",
-            database = "chitra_gupta"
+            database="chitra_gupta"
                 )
 
         print(mydb)
@@ -393,7 +806,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -434,7 +847,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         sql = "INSERT INTO banks (bank_name,bank_details,description) VALUES (%s, %s,%s)"
@@ -452,7 +865,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         mycursor.execute("select * from log ORDER BY loginid DESC LIMIT 1")
@@ -477,7 +890,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         mycursor.execute("select balance from bank_statement where bank_name = '{0}'".format(bank))
@@ -531,7 +944,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         for i in range(r):
@@ -616,7 +1029,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         if book == "Main Cashbook":
@@ -630,7 +1043,7 @@ class Ui_MainWindow(object):
                 host="localhost",
                 user="root",
                 password="anirudh123",
-                database = "chitra_gupta"
+                database="chitra_gupta"
                 )
                 print(mydb)
                 mycursor = mydb.cursor()
@@ -953,7 +1366,7 @@ class Ui_MainWindow(object):
             host="localhost",
             user="root",
             password="anirudh123",
-            database = "chitra_gupta"
+            database="chitra_gupta"
             )
             mycursor = mydb.cursor()
             sql = "INSERT schemes (idschemes,name,validity,remainder) VALUES (%s, %s,%s,%s)"
@@ -971,7 +1384,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         mycursor.execute("select * from log ORDER BY loginid DESC LIMIT 1")
@@ -999,7 +1412,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1092,7 +1505,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         
@@ -1102,7 +1515,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1150,7 +1563,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1184,7 +1597,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1198,7 +1611,195 @@ class Ui_MainWindow(object):
                 id_d = int(temp.text())
                 mycursor.execute("update all_donations set reminded = 1 where id_donations = {0}".format(id_d))
                 mydb.commit()
+                mycursor.execute("select f_name,l_name,donation_date from all_donors a natural join   all_donations b where a.donor_id=b.id_donor and b.id_donations = {}".format(id_d))
+                l = mycursor.fetchall()
                 self.tableWidget12.removeRow(i)
+                import webbrowser
+                folderpath = QtWidgets.QFileDialog.getExistingDirectory(None,'Select Folder')
+                print(folderpath)
+                fileName = str(folderpath) + '/' + '{}.html'.format(str(id_d))
+                f = open(fileName,'w',encoding='utf-8')
+                name = l[0][0]+l[0][1]
+                date = str(datetime.now())
+                prevdate= str(l[0][2])               
+                message = f"""<html>
+
+                <head>
+                <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+                <meta name=Generator content="Microsoft Word 15 (filtered)">
+                <style>
+                <!--
+                /* Font Definitions */
+                @font-face
+                    {{font-family:SimSun;
+                    panose-1:2 1 6 0 3 1 1 1 1 1;}}
+                @font-face
+                    {{font-family:Gautami;
+                    panose-1:2 0 5 0 0 0 0 0 0 0;}}
+                @font-face
+                    {{font-family:"Cambria Math";
+                    panose-1:2 4 5 3 5 4 6 3 2 4;}}
+                @font-face
+                    {{font-family:Calibri;
+                    panose-1:2 15 5 2 2 2 4 3 2 4;}}
+                @font-face
+                    {{font-family:"Arial Unicode MS";
+                    panose-1:2 11 6 4 2 2 2 2 2 4;}}
+                @font-face
+                    {{font-family:Peddana;}}
+                @font-face
+                    {{font-family:"\@SimSun";
+                    panose-1:2 1 6 0 3 1 1 1 1 1;}}
+                @font-face
+                    {{font-family:"\@Arial Unicode MS";
+                    panose-1:2 11 6 4 2 2 2 2 2 4;}}
+                /* Style Definitions */
+                p.MsoNormal, li.MsoNormal, div.MsoNormal
+                    {{margin-top:0in;
+                    margin-right:0in;
+                    margin-bottom:10.0pt;
+                    margin-left:0in;
+                    line-height:115%;
+                    font-size:11.0pt;
+                    font-family:"Calibri",sans-serif;}}
+                .MsoChpDefault
+                    {{font-family:"Calibri",sans-serif;}}
+                .MsoPapDefault
+                    {{margin-bottom:10.0pt;
+                    line-height:115%;}}
+                @page WordSection1
+                    {{size:8.5in 11.0in;
+                    margin:.9in 1.0in 1.0in .6in;}}
+                div.WordSection1
+                    {{page:WordSection1;}}
+                -->
+                </style>
+
+                </head>
+
+                <body lang=EN-US style='word-wrap:break-word'>
+
+                <div class=WordSection1>
+
+                <p class=MsoNormal><span lang=TE style='font-size:12.0pt;line-height:115%;
+                font-family:Peddana'>సేవ </span><span style='font-size:12.0pt;line-height:115%;
+                font-family:Peddana'>                                                                                                 <span
+                lang=TE>సంస్కారము   </span>                                                                                                           </span></p>
+
+                <div style='border:none;border-bottom:solid windowtext 1.0pt;padding:0in 0in 1.0pt 0in'>
+
+                <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+                line-height:normal;border:none;padding:0in'><span lang=TE style='font-size:
+                16.0pt;font-family:Peddana'>కరుణశ్రీ సేవ సమితి</span></p>
+
+                <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+                line-height:normal;border:none;padding:0in'><span lang=TE style='font-size:
+                12.0pt;font-family:Peddana'>రిజిస్టర్డ్ నం : </span><span style='font-size:
+                12.0pt;font-family:Peddana'>7451/1999</span></p>
+
+                <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+                line-height:normal;border:none;padding:0in'><span lang=TE style='font-size:
+                12.0pt;font-family:Peddana'>కారుణ్య సింధు (అరక్షిత బాలుర ఆశ్రమము )</span></p>
+
+                <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+                line-height:normal;border:none;padding:0in'><span lang=TE style='font-size:
+                12.0pt;font-family:Peddana'>విశ్వహిందూ పరిషత్ సేవ ప్రకల్పము</span></p>
+
+                <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+                line-height:normal;border:none;padding:0in'><span style='font-size:12.0pt;
+                font-family:Peddana'>17-1-474, <span lang=TE>కృష్ణానగర్ కాలనీ</span>, <span
+                lang=TE>సైదాబాద్</span>, <span lang=TE>హైదరాబాద్ -</span>500 059, <span
+                lang=TE>దూరవాణి: </span>040-24073204, 9000889785</span></p>
+
+                </div>
+
+                <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span lang=TE
+                style='font-size:12.0pt;font-family:Peddana'>ఆచార్య కడారి సత్యమూర్తి </span><span
+                style='font-size:12.0pt;font-family:Peddana'>                        <span
+                lang=TE>పుప్పాల వెంకటేశ్వర రావు  </span>            <span lang=TE>రాజాపేట
+                సత్యనారాయణ </span></span></p>
+
+                <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+                style='font-size:12.0pt;font-family:Peddana'>         <span lang=TE>అధ్యక్షులు &emsp; &emsp; &emsp;&emsp;     
+                </span>                                     <span lang=TE> కార్యదర్శి  &nbsp; &emsp; &emsp; &emsp;   &emsp; &emsp; &emsp;</span>                         <span
+                lang=TE>    కోశాధికారి &emsp; &emsp;</span></span></p>
+
+                <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+                style='font-size:14.0pt;font-family:Peddana'>     9849320610 &nbsp; &emsp;                             
+                7386247393   &emsp; &emsp; &emsp;&emsp; &emsp;                      8555800196 &emsp; &emsp;&emsp;</span></p>
+
+                <p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+                margin-left:4.0in;text-indent:.5in'><span lang=TE style='font-size:12.0pt;
+                line-height:115%;font-family:Peddana'>తేదీ:</span><span style='font-size:12.0pt;
+                line-height:115%;font-family:Peddana'>{date}</span></p>
+
+                <p class=MsoNormal><span lang=TE style='font-size:12.0pt;line-height:115%;
+                font-family:Peddana'> శ్రీమతి / శ్రీ </span><span style='font-size:12.0pt;
+                line-height:115%;font-family:Peddana'>M /S
+                {name}     <span lang=TE>గారికి  సప్రేమ
+                నమస్కారములు</span>.<span lang=TE>    </span></span></p>
+
+                <p class=MsoNormal><span lang=TE style='font-size:12.0pt;line-height:115%;
+                font-family:Peddana'>మీరు సహృదయముతో మా ఆశ్రమ బాలల సంరక్షణార్థం మీ ఆత్మీయుల జన్మదిన/స్మృతిదిన
+                జ్ఞాపకార్థం గత సంవత్సరము తేదీ  </span><span style='font-size:12.0pt;line-height:
+                115%;font-family:Peddana'>{prevdate}<span lang=TE> నాడు అన్నదాన కార్యక్రమము
+                ఏర్పాటు చేసినారు. ధన్యవాదములు</span>, <span lang=TE>ఈ సంవత్సరము కూడా మీ తరపున
+                అన్నదానము చేయుటకు సమ్మతి తెలియచేయగలరని ప్రార్థిస్తున్నాము. </span></span></p>
+
+                <p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+                margin-left:1.0in;text-indent:.5in;line-height:normal'><span lang=TE
+                style='font-size:12.0pt;font-family:Peddana'>ఒక రోజు భోజనము  రూ. 2,000/-</span></p>
+
+                <p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+                margin-left:1.0in;text-indent:.5in;line-height:normal'><span lang=TE
+                style='font-size:12.0pt;font-family:Peddana'>శాశ్వత అన్నదాన నిధి  రూ. 10,000/-</span></p>
+
+                <p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+                margin-left:.5in;text-indent:.5in;line-height:normal'><span lang=TE
+                style='font-size:12.0pt;font-family:Peddana'>( సంవత్సరములో మీరు ఎంచుకున్న ఒక్క
+                రోజు 10 సంవత్సరాల వరకు )</span></p>
+
+                <p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+                margin-left:1.0in;text-indent:.5in;line-height:normal'><span lang=TE
+                style='font-size:12.0pt;font-family:Peddana'> విద్యార్ధి సంరక్షణ  నిధి  రూ. 25</span><span
+                style='font-size:12.0pt;font-family:Peddana'>,<span lang=TE>000/-</span></span></p>
+
+                <p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+                margin-left:1.0in;text-indent:.5in;line-height:normal'><span lang=TE
+                style='font-size:12.0pt;font-family:Peddana'>చెక్కులు /డి.డి.లు &quot; </span><span
+                style='font-size:12.0pt;font-family:Peddana'>Karunasri Seva Samithi <span
+                lang=TE> &quot; పేరున వ్రాయవలెను... </span></span></p>
+
+                <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+                style='font-size:12.0pt;font-family:Peddana'>&nbsp;</span></p>
+
+                <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+                style='font-size:12.0pt;font-family:Peddana'>                                                    
+                <span lang=TE>ధన్యవాదములతో.</span></span></p>
+
+                <p class=MsoNormal><span style='font-size:12.0pt;line-height:115%;font-family:
+                Peddana'>                                                                                                                                    <span
+                lang=TE>ఇట్లు</span></span></p>
+
+                <p class=MsoNormal><span style='font-size:12.0pt;line-height:115%;font-family:
+                Peddana'>                                                                                                       <span
+                lang=TE>కరుణశ్రీ సేవ సమితి</span></span></p>
+
+                <p class=MsoNormal><span style='font-size:12.0pt;line-height:115%;font-family:
+                Peddana'>&nbsp;</span></p>
+
+                <p class=MsoNormal><span lang=TE style='font-size:12.0pt;line-height:115%;
+                font-family:"Arial Unicode MS",sans-serif'>&nbsp;</span></p>
+
+                </div>
+
+                </body>
+
+                </html>"""
+                f.write(message)
+                f.close()
+                #formatted = jinja2.Template(message).render(products=helloworld)
+                webbrowser.open_new_tab(fileName)
         self.stackedWidget.setCurrentIndex(0)
 
     def donation_remainder_button(self):
@@ -1207,7 +1808,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1309,7 +1910,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1353,7 +1954,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1414,7 +2015,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1526,7 +2127,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1609,7 +2210,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1639,7 +2240,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1664,7 +2265,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         fromd = self.dateEdit9.date()
@@ -1775,7 +2376,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         fromd = self.dateEdit9.date()
@@ -1818,6 +2419,8 @@ class Ui_MainWindow(object):
         designation = self.lineEdit_85.text()
         rpassw = self.lineEdit_86.text()
         lname = self.lineEdit_82.text()
+        reset_pass = self.lineEdit_87.text()
+        
         g = ''
         if self.radioButton8.isChecked():
             g = 'normal'
@@ -1827,7 +2430,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1853,8 +2456,8 @@ class Ui_MainWindow(object):
             self.dialog.exec()
         else:
             mycursor = mydb.cursor()
-            sql = "INSERT INTO login (username, password,login_type,fname,lname,designation) VALUES (%s, %s,%s,%s,%s,%s)"
-            val = (username, passw,g,fname,lname,designation)
+            sql = "INSERT INTO login (username, password,login_type,fname,lname,designation,reset_pass) VALUES (%s, %s,%s,%s,%s,%s,%s)"
+            val = (username, passw,g,fname,lname,designation,reset_pass)
             mycursor.execute(sql, val)
             mydb.commit()
             msg = "Database updated succesfully. New account has been created."
@@ -1878,7 +2481,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -1910,7 +2513,7 @@ class Ui_MainWindow(object):
             host="localhost",
             user="root",
             password="anirudh123",
-            database = "chitra_gupta"
+            database="chitra_gupta"
                 )
 
         print(mydb)
@@ -1989,7 +2592,7 @@ class Ui_MainWindow(object):
             host="localhost",
             user="root",
             password="anirudh123",
-            database = "chitra_gupta"
+            database="chitra_gupta"
                 )
 
             print(mydb)
@@ -2023,17 +2626,21 @@ class Ui_MainWindow(object):
         formatted_dod = date_of_donation.strftime('%Y-%m-%d %H:%M:%S')
         donation_date = self.dateEdit2.date()
         amount = self.lineEdit_2115.text()
+        bank_deposit = ''
+        if payment_mode == "Direct remittance to bank" or payment_mode == "Cheque":
+            bank_deposit = str(self.comboBox_2.currentText())
+        
         print(donation_date)
         donation_date = donation_date.toPython()
         formatted_dd = donation_date.strftime('%Y-%m-%d')
         today = donation_date
         print(phone,donation_in_name,master_registration,payment_mode,payment_description,occasion)
-        print(remarks,category,student,book_number,date_of_donation,donation_date)
+        print(remarks,category,student,book_number,date_of_donation,donation_date,bank_deposit)
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
             password="anirudh123",
-            database = "chitra_gupta"
+            database="chitra_gupta"
                 )
         print(mydb)
         mycursor = mydb.cursor()
@@ -2077,14 +2684,14 @@ class Ui_MainWindow(object):
             update = mycursor.fetchall()
             l = len(update)
             if l==0:
-                sql = "INSERT INTO all_donations (id_donor, date_of_donation,donation_date,donation_in_name,master_registration_number,reciept_number,payment_mode,payment_description,Ocassion,remarks,category,id_student,amount,remind_date,date_show) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-                val = (int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end,formatted_dd)
+                sql = "INSERT INTO all_donations (id_donor, date_of_donation,donation_date,donation_in_name,master_registration_number,reciept_number,payment_mode,payment_description,Ocassion,remarks,category,id_student,amount,remind_date,date_show,bank_deposit) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                val = (int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end,formatted_dd,bank_deposit)
                 mycursor.execute(sql, val)
                 mydb.commit()
                 mycursor.execute("update all_donors set number_of_times_donated = number_of_times_donated+1 where donor_id = {0}".format(donor_id))
                 mydb.commit()
             elif l>0:
-                sql = "Update all_donations set id_donor = {0}, date_of_donation = '{1}',donation_date = '{2}',donation_in_name = '{3}',reciept_number = {5},payment_mode = '{6}',payment_description = '{7}',Ocassion = '{8}',remarks ='{9}',category = {10},id_student = {11},amount = '{12}',remind_date = '{13}',date_show = '{14}' where master_registration_number = {4}".format(int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end,formatted_dd)
+                sql = "Update all_donations set id_donor = {0}, date_of_donation = '{1}',donation_date = '{2}',donation_in_name = '{3}',reciept_number = {5},payment_mode = '{6}',payment_description = '{7}',Ocassion = '{8}',remarks ='{9}',category = {10},id_student = {11},amount = '{12}',remind_date = '{13}',date_show = '{14}',bank_deposit = '{15}' where master_registration_number = {4}".format(int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end,formatted_dd,bank_deposit)
                 #val = (int(donor_id),formatted_dod,formatted_dd,donation_in_name, master_registration, book_number,payment_mode,payment_description, occasion,remarks,int(catid),student,int(amount),formatted_end)
                 mycursor.execute(sql)
                 mydb.commit()
@@ -2093,6 +2700,163 @@ class Ui_MainWindow(object):
             self.ui = Ui_OK()
             self.ui.setupUi(self.dialog,msg)
             self.dialog.exec()
+            import webbrowser
+            folderpath = QtWidgets.QFileDialog.getExistingDirectory(None,'Select Folder')
+            print(folderpath)
+            fileName = str(folderpath) + '/' + '{}.html'.format(str(master_registration))
+            f = open(fileName,'w',encoding='utf-8')
+            #import jinja2
+            marker = str(date_of_donation)
+            name = donation_in_name
+            amount = amount
+            if payment_mode == 'Cheque': 
+                chenum = payment_description
+                chedate = str(date_of_donation)
+                chers = amount
+            else:
+                chers = amount
+                chenum = ''
+                chedate = ''
+            reciptnum = master_registration
+
+            message = f"""<html>
+
+            <head>
+            <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+
+            <meta name=Generator content="Microsoft Word 15 (filtered)">
+            <style>
+            <!--
+            /* Font Definitions */
+            @font-face
+                {{font-family:SimSun;
+                panose-1:2 1 6 0 3 1 1 1 1 1;}}
+            @font-face
+                {{font-family:Gautami;
+                panose-1:2 0 5 0 0 0 0 0 0 0;}}
+            @font-face
+                {{font-family:"Cambria Math";
+                panose-1:2 4 5 3 5 4 6 3 2 4;}}
+            @font-face
+                {{font-family:Peddana;}}
+            @font-face
+                {{font-family:"\@SimSun";
+                panose-1:2 1 6 0 3 1 1 1 1 1;}}
+            /* Style Definitions */
+            p.MsoNormal, li.MsoNormal, div.MsoNormal
+                {{margin-top:0in;
+                margin-right:0in;
+                margin-bottom:10.0pt;
+                margin-left:0in;
+                line-height:115%;
+                font-size:11.0pt;
+                font-family:"Calibri",sans-serif;}}
+            .MsoChpDefault
+                {{font-family:"Calibri",sans-serif;}}
+            .MsoPapDefault
+                {{margin-bottom:10.0pt;
+                line-height:115%;}}
+            @page WordSection1
+                {{size:8.5in 11.0in;
+                margin:1.0in 1.0in 1.0in 1.0in;}}
+            div.WordSection1
+                {{page:WordSection1;}}
+            -->
+            </style>
+
+            </head>
+
+            <body lang=EN-US style='word-wrap:break-word'>
+
+            <div class=WordSection1>
+
+            <p class=MsoNormal><span lang=TE style='font-family:Peddana'>సేవ</span><span
+            style='font-family:Peddana'>                                                                                                                  
+            <span lang=TE> సంస్కారము   </span></span></p>
+
+            <div style='border:none;border-bottom:solid windowtext 1.0pt;padding:0in 0in 1.0pt 0in'>
+
+            <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+            line-height:normal;border:none;padding:0in'><span lang=TE style='font-size:
+            26.0pt;font-family:Peddana'>కరుణశ్రీ సేవ సమితి</span></p>
+
+            <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+            line-height:normal;border:none;padding:0in'><span lang=TE style='font-family:
+            Peddana'>రిజిస్టర్డ్ నం : </span><span style='font-family:Peddana'>7451/1999</span></p>
+
+            <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+            line-height:normal;border:none;padding:0in'><span lang=TE style='font-family:
+            Peddana'>కారుణ్య సింధు (అరక్షిత బాలుర ఆశ్రమము )</span></p>
+
+            <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+            line-height:normal;border:none;padding:0in'><span lang=TE style='font-family:
+            Peddana'>విశ్వహిందూ పరిషత్ సేవ ప్రకల్పము</span></p>
+
+            <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+            line-height:normal;border:none;padding:0in'><span style='font-family:Peddana'>17-1-474,
+            <span lang=TE>కృష్ణానగర్ కాలనీ</span>, <span lang=TE>సైదాబాద్</span>, <span
+            lang=TE>హైదరాబాద్ -</span>500 059, <span lang=TE>చరవాణి: </span>040-24073204,
+            9000889785</span></p>
+
+            </div>
+
+            <p class=MsoNormal style='margin-bottom:0in'><span lang=TE style='font-family:
+            Peddana'>ఆచార్య కడారి సత్యమూర్తి </span><span style='font-family:Peddana'>                              <span
+            lang=TE>పుప్పాల వెంకటేశ్వర రావు  </span>              <span lang=TE>రాజాపేట
+            సత్యనారాయణ </span></span></p>
+
+            <p class=MsoNormal style='margin-bottom:0in'><span style='font-family:Peddana'>        
+            <span lang=TE>అధ్యక్షులు      </span>                                        <span
+            lang=TE> కార్యదర్శి     </span>                           <span lang=TE>    కోశాధికారి 
+            </span></span></p>
+
+            <p class=MsoNormal style='margin-left:4.0in;text-indent:.5in'><span lang=TE
+            style='font-family:Peddana'>తేదీ:</span><span style='font-family:Peddana'> {marker} </span></p>
+
+            <p class=MsoNormal><span lang=TE style='font-family:Peddana'> శ్రీమతి / శ్రీ </span><span
+            style='font-family:Peddana'>M /S {name}  
+            <span lang=TE>గారికి  సప్రేమ నమస్కారములు</span>.<span lang=TE>    </span></span></p>
+
+            <p class=MsoNormal><span lang=TE style='font-family:Peddana'>మీరు సహృదయముతో మా
+            ఆశ్రమ బాలల సంరక్షణార్థం చెల్లించిన విరాళము రూ.</span><span style='font-family:
+            Peddana'> {amount} <span lang=TE> </span></span></p>
+
+            <p class=MsoNormal><span lang=TE style='font-family:Peddana'>చెక్కు  నెంబర్ </span><span
+            style='font-family:Peddana'> {chenum} <span lang=TE> తేదీ</span> {chedate} .<span
+            lang=TE>    నగద</span>. <span lang=TE>  రూ </span> {chers} </span></p>
+
+            <p class=MsoNormal><span lang=TE style='font-family:Peddana'>స్వీకరించబడినది.
+            అందులకు మా హృదయకపూర్వక కృతజ్ఞతాభివందనాలు</span><span style='font-family:Peddana'>,
+            <span lang=TE>మీకు</span>,<span lang=TE>మీ కుటుంబ సభ్యులకు సంపూర్ణ
+            ఆయురారోగ్యాలను</span>, <span lang=TE>సకల సుఖసంతోషాలను ప్రసాదించాలని</span>, <span
+            lang=TE>మీ అభీష్టాలను నెరవేర్చాలని</span>, <span lang=TE>కార్యవర్గ సభ్యులము</span>,
+            <span lang=TE>ఆశ్రమ బాలురు పరమేశ్వరుని ప్రార్థిస్తున్నాము. </span></span></p>
+
+            <p class=MsoNormal><span lang=TE style='font-family:Peddana'> మీరు చెల్లించిన
+            విరాళములకై మా సంస్థ యొక్క రశీదు నెంబర్</span><span style='font-family:Peddana'> {reciptnum} <span
+            lang=TE> తేదీ </span> {chedate} <span
+            lang=TE> రూ</span> {amount}.<span lang=TE>
+            పంపుచున్నాము. </span></span></p>
+
+            <p class=MsoNormal><span lang=TE style='font-family:Peddana'>ఈ బాలలకు మీ
+            ప్రేమను ఆశీస్సులను అందజేస్తూ మున్ముందు కూడా ఈ సంస్థకు చేయూత ఇవ్వగలరని
+            కోరుతున్నాము. </span></p>
+
+            <p class=MsoNormal align=right style='text-align:right'><span style='font-family:
+            Peddana'>&nbsp;</span></p>
+
+            <p class=MsoNormal align=right style='text-align:right'><span lang=TE
+            style='font-family:Peddana'>ఇట్లు</span></p>
+
+            </div>
+
+            </body>
+
+            </html>"""
+            f.write(message)
+            f.close()
+            #formatted = jinja2.Template(message).render(products=helloworld)
+            webbrowser.open_new_tab(fileName)
             self.stackedWidget.setCurrentIndex(0)
             
     def get_donar_details(self):
@@ -2100,7 +2864,7 @@ class Ui_MainWindow(object):
             host="localhost",
             user="root",
             password="anirudh123",
-            database = "chitra_gupta"
+            database="chitra_gupta"
                 )
 
         print(mydb)
@@ -2127,6 +2891,8 @@ class Ui_MainWindow(object):
             for x in myresult:
                 self.comboBox_4.addItem(str(x[1]))
             
+        
+            
     def new_stud_add(self):
         fname = self.lineEdit_42.text()
         lname = self.lineEdit_43.text()
@@ -2146,7 +2912,7 @@ class Ui_MainWindow(object):
             host="localhost",
             user="root",
             password="anirudh123",
-            database = "chitra_gupta"
+            database="chitra_gupta"
                 )
 
             print(mydb)
@@ -3211,7 +3977,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -4229,6 +4995,13 @@ class Ui_MainWindow(object):
         self.radioButton_82 = QRadioButton(self.new_user)
         self.radioButton_82.setObjectName("radioButton_82")
         self.horizontalLayout_811.addWidget(self.radioButton_82)
+        self.label_814 = QLabel(self.new_user)
+        self.label_814.setObjectName("label_813")
+        self.gridLayout_83.addWidget(self.label_814, 4, 4, 1, 1)
+        self.lineEdit_87 = QLineEdit(self.new_user)
+        self.lineEdit_87.setObjectName("lineEdit_87")
+        self.lineEdit_87.setMinimumSize(QSize(0, 30))
+        self.gridLayout_83.addWidget(self.lineEdit_87, 4, 5, 1, 1)
         self.radioButton8 = QRadioButton(self.new_user)
         self.radioButton8.setObjectName("radioButton8")
         self.horizontalLayout_811.addWidget(self.radioButton8)
@@ -4289,7 +5062,7 @@ class Ui_MainWindow(object):
 "	background-color: rgb(35, 40, 49);\n"
 "	border: 2px solid rgb(43, 50, 61);\n"
 "}")
-        self.gridLayout_83.addWidget(self.pushButton_82, 4, 5, 1, 1)
+        self.gridLayout_83.addWidget(self.pushButton_82, 5, 5, 1, 1)
         self.verticalLayout_88.addLayout(self.gridLayout_83)
         self.verticalLayout_810.addLayout(self.verticalLayout_88)
         self.stackedWidget.addWidget(self.new_user)
@@ -4463,6 +5236,24 @@ class Ui_MainWindow(object):
         self.pushButton_102.setFont(font)
         self.pushButton_102.clicked.connect(self.get_exp_butn)
         self.gridLayout_103.addWidget(self.pushButton_102, 1, 1, 1, 1)
+        self.pushButton_106 = QPushButton(self.exp_analysis)
+        self.pushButton_106.setObjectName("pushButton_106")
+        self.pushButton_106.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.pushButton_106.setFont(font)
+        self.pushButton_106.clicked.connect(self.get_exp_pdf)
+        self.gridLayout_103.addWidget(self.pushButton_106, 1, 3, 1, 1)
         self.dateEdit102 = QDateEdit(self.exp_analysis)
         self.dateEdit102.setObjectName("dateEdit102")
         now = datetime.now()
@@ -4619,6 +5410,24 @@ class Ui_MainWindow(object):
 "}")
         self.pushButton_122.clicked.connect(self.reminded)
         self.horizontalLayout_1213.addWidget(self.pushButton_122)
+        self.pushButton_123 = QPushButton(self.donation_remainder)
+        self.pushButton_123.setMinimumSize(QSize(0, 40))
+        self.pushButton_123.setObjectName("pushButton_122")
+        self.pushButton_123.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        self.pushButton_123.clicked.connect(self.mailing_list)
+        self.horizontalLayout_1213.addWidget(self.pushButton_123)
         self.verticalLayout_1210.addLayout(self.horizontalLayout_1213)
         self.stackedWidget.addWidget(self.donation_remainder)
 
@@ -4694,7 +5503,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -4895,7 +5704,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -5077,7 +5886,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         mycursor.execute("select * from banks")
@@ -5293,7 +6102,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         mycursor = mydb.cursor()
@@ -5557,7 +6366,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         mycursor = mydb.cursor()
         mycursor.execute("select * from banks")
@@ -5748,6 +6557,32 @@ class Ui_MainWindow(object):
         self.pushButton.setIcon(icon3)
         self.gridLayout.addWidget(self.pushButton, 0, 1, 1, 1)
         self.pushButton.clicked.connect(self.get_donar_details)
+        self.pushButton2 = QPushButton(self.frame_content_wid_1)
+        self.pushButton2.setObjectName(u"pushButton2")
+        self.pushButton2.setMinimumSize(QSize(150, 40))
+        font8 = QFont()
+        font8.setFamily(u"Segoe UI")
+        font8.setPointSize(14)
+        font8.setBold(True)
+        self.pushButton2.setFont(font8)
+        self.pushButton2.setStyleSheet(u"QPushButton {\n"
+"	border: 2px solid rgb(52, 59, 72);\n"
+"	border-radius: 5px;	\n"
+"	background-color: rgb(52, 59, 72);\n"
+"}\n"
+"QPushButton:hover {\n"
+"	background-color: rgb(57, 65, 80);\n"
+"	border: 2px solid rgb(61, 70, 86);\n"
+"}\n"
+"QPushButton:pressed {	\n"
+"	background-color: rgb(35, 40, 49);\n"
+"	border: 2px solid rgb(43, 50, 61);\n"
+"}")
+        icon3 = QIcon()
+        icon3.addFile(u":/16x16/icons/16x16/cil-chevron-right.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushButton2.setIcon(icon3)
+        self.gridLayout.addWidget(self.pushButton2, 0, 2, 1, 1)
+        self.pushButton2.clicked.connect(self.get_donar_donations)
 
         self.labelVersion_3 = QLabel(self.frame_content_wid_1)
         self.labelVersion_3.setObjectName(u"labelVersion_3")
@@ -6065,7 +6900,7 @@ class Ui_MainWindow(object):
         host="localhost",
         user="root",
         password="anirudh123",
-        database = "chitra_gupta"
+        database="chitra_gupta"
         )
         print(mydb)
         now = datetime.now()
@@ -6341,6 +7176,36 @@ class Ui_MainWindow(object):
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
+        self.donor_donations = QWidget()
+        self.donor_donations.setObjectName("donor_donations")
+        self.verticalLayout_2210 = QVBoxLayout(self.donor_donations)
+        self.verticalLayout_2210.setObjectName("verticalLayout_2210")
+        self.verticalLayout_2212 = QVBoxLayout()
+        self.verticalLayout_2212.setObjectName("verticalLayout_2212")
+        self.label22 = QLabel(self.donor_donations)
+        self.label22.setMaximumSize(QSize(16777215, 30))
+        font = QFont()
+        font.setFamily("Segoe UI")
+        font.setPointSize(18)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label22.setFont(font)
+        self.label22.setAlignment(Qt.AlignCenter)
+        self.label22.setObjectName("label22")
+        self.label22.setText(QCoreApplication.translate("MainWindow", "All Donations"))
+        self.verticalLayout_2212.addWidget(self.label22)
+        self.verticalLayout_2210.addLayout(self.verticalLayout_2212)
+        self.widget22 = QWidget(self.donor_donations)
+        self.widget22.setMinimumSize(QSize(0, 350))
+        self.widget22.setObjectName("widget12")
+        self.verticalLayout_221212 = QVBoxLayout(self.widget22)
+        self.verticalLayout_221212.setObjectName("verticalLayout_221212")
+        self.verticalLayout_2210.addWidget(self.widget22)
+        self.horizontalLayout_2213 = QHBoxLayout()
+        self.horizontalLayout_2213.setSizeConstraint(QLayout.SetMinimumSize)
+        self.horizontalLayout_2213.setObjectName("horizontalLayout_2213")
+        self.verticalLayout_2210.addLayout(self.horizontalLayout_2213)
+        self.stackedWidget.addWidget(self.donor_donations)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
@@ -6448,6 +7313,7 @@ class Ui_MainWindow(object):
         self.labelBoxBlenderInstalation.setText(QCoreApplication.translate("MainWindow", u"Donations", None))
         self.lineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Phone Number", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Get Details", None))
+        self.pushButton2.setText(QCoreApplication.translate("MainWindow", u"Get Donor Donations", None))
         self.labelVersion_3.setText(QCoreApplication.translate("MainWindow", u"Enter Phone number for exsisting donor details.", None))
         self.labelVersion_4.setText(QCoreApplication.translate("MainWindow", u"All donations made for today", None))
       #  self.checkBox.setText(QCoreApplication.translate("MainWindow", u"CheckBox", None))
@@ -6460,7 +7326,7 @@ class Ui_MainWindow(object):
         self.new_donation_btn.setText(QCoreApplication.translate("MainWindow", u"New Donation", None))
         self.new_donor.setText(QCoreApplication.translate("MainWindow", u"New Donor", None))
         self.reports.setText(QCoreApplication.translate("MainWindow", u"Analysis", None))
-        self.remainders.setText(QCoreApplication.translate("MainWindow", u"Donation Remainders", None))
+        self.remainders.setText(QCoreApplication.translate("MainWindow", u"Donation Reminders", None))
         
         self.label31.setText(QCoreApplication.translate("MainWindow", "Expenditures"))
         self.commandLinkButton_312.setText(QCoreApplication.translate("MainWindow", u"Cash Book", None))
@@ -6574,6 +7440,7 @@ class Ui_MainWindow(object):
 
         self.label_87.setText(QCoreApplication.translate("MainWindow", "New User"))
         self.label_813.setText(QCoreApplication.translate("MainWindow", "Designation"))
+        self.label_814.setText(QCoreApplication.translate("MainWindow", "What is your favourite dish?"))
         self.radioButton_82.setText(QCoreApplication.translate("MainWindow", "Master User"))
         self.radioButton8.setText(QCoreApplication.translate("MainWindow", "Normal User"))
         self.label_810.setText(QCoreApplication.translate("MainWindow", "Username"))
@@ -6590,6 +7457,7 @@ class Ui_MainWindow(object):
 
         self.label10.setText(QCoreApplication.translate("MainWindow", "Analysis Of Expenditure"))
         self.pushButton_102.setText(QCoreApplication.translate("MainWindow", "Get all Expenditures"))
+        self.pushButton_106.setText(QCoreApplication.translate("MainWindow", "Get PDF"))
         self.pushButton_104.setText(QCoreApplication.translate("MainWindow", "Add Student"))
         self.pushButton_105.setText(QCoreApplication.translate("MainWindow", "Update Student Details"))
         self.label_102.setText(QCoreApplication.translate("MainWindow", "From Date"))
@@ -6606,7 +7474,9 @@ class Ui_MainWindow(object):
         self.pushButton_132.setText(QCoreApplication.translate("MainWindow", "Confirm"))
 
         self.label12.setText(QCoreApplication.translate("MainWindow", "Donation Remainders"))
+        
         self.pushButton_122.setText(QCoreApplication.translate("MainWindow", "Remainded"))
+        self.pushButton_123.setText(QCoreApplication.translate("MainWindow", "Mailing List"))
 
         self.label14.setText(QCoreApplication.translate("MainWindow", "Bank Statement "))
         self.label_142.setText(QCoreApplication.translate("MainWindow", "From"))
